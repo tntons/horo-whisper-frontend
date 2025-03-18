@@ -27,6 +27,9 @@ export default {
       fontFamily: {
         inter: ["var(--font-inter)", "sans-serif"],
       },
+      container: {
+        center: true,
+      },
 
     },
   },

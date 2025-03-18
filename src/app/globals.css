@@ -14,8 +14,19 @@
   }
 } */
 
-body {
+.container {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  height: 100vh;
+  width: calc(100vh * (390 / 844));
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+
+  /* Center all child elements */
+  display: flex;
+  justify-content: center; /* Horizontally center */
+  align-items: center; /* Vertically center */
+  flex-direction: column; /* Stack children vertically */
 }
