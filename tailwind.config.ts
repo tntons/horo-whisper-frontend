@@ -23,9 +23,11 @@ export default {
         greydate: "#979797",
         grey01: "#D4D4D4",
         grey02: "#6D6D6D",
+        blue01: "#2C2D4D",
       },
       fontFamily: {
         inter: ["var(--font-inter)", "sans-serif"],
+        playfair: ['Playfair Display', 'serif'],
       },
       container: {
         center: true,
