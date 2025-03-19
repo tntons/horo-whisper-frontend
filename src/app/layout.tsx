@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import {Inter} from "next/font/google";
 import "./globals.css";
-
+import Link from 'next/link';
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   weight: ["400", "700"],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -20,10 +21,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${inter.variable}antialiased`}
-      >
+    <html lang="en"  >
+      <body className={inter.className} >
+
+
+      <header className="flex items-center justify-between p-4 bg-purple04 text-white h-20 fixed top-0 left-0 right-0 z-50">
+  <h1 className="text-xl font-semibold">HoroWhisper</h1>
+</header>
+
+
+
+
+
         {children}
       </body>
     </html>
