@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  h1 {
+    @apply text-lg font-normal;
+  }
+  h2 {
+    @apply text-lg font-semibold;
+  }
+  p {
+    @apply text-base font-normal;
+  }
+}
+
 :root {
   --background: #FEF0E5;
   --foreground: #171717;
@@ -34,3 +46,5 @@
   overflow-y: auto;
   padding-top: 76px; /* Height of the navbar */
 }
+
+
