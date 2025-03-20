@@ -26,24 +26,34 @@
   }
 } */
 
+html, body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center; /* Centers the container horizontally */
+  align-items: center; /* Centers the container vertically */
+}
+
 .container {
   color: var(--foreground);
   background: var(--background);
   height: 100vh;
   width: calc(100vh * (390 / 844));
-  margin: 0 auto;
-  padding: 0;
-  overflow: hidden;
-  font-family: 'Inter', sans-serif;
-  position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start; /* Keeps Navbar at the top */
+  align-items: center;
+  margin: 0 auto;
+  overflow: hidden;
+  position: relative;
 }
 
 /* Add styles for the main content area */
 .main-content {
   flex: 1;
   overflow-y: auto;
+  width: 100%;
   padding-top: 76px; /* Height of the navbar */
 }
 
