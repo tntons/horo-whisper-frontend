@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  h1 {
+    @apply text-lg font-normal;
+  }
+  h2 {
+    @apply text-lg font-semibold;
+  }
+  p {
+    @apply text-base font-normal;
+  }
+}
+
 :root {
   --background: #FEF0E5;
   --foreground: #171717;
@@ -23,10 +35,16 @@
   padding: 0;
   overflow: hidden;
   font-family: 'Inter', sans-serif;
-
-  /* Center all child elements */
+  position: relative;
   display: flex;
-  justify-content: center; /* Horizontally center */
-  align-items: center; /* Vertically center */
-  flex-direction: column; /* Stack children vertically */
+  flex-direction: column;
 }
+
+/* Add styles for the main content area */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-top: 76px; /* Height of the navbar */
+}
+
+

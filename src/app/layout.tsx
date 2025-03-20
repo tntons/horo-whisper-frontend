@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import {Inter} from "next/font/google";
 import "./globals.css";
+import Navbar from "../components/Navbar";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   weight: ["400", "700"],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -19,9 +21,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable}antialiased`}>
-        <div className="container">{children}</div>
+    <html lang="en" className={inter.className}>
+      <body>
+        <div className="container">
+          <Navbar></Navbar>
+          <div className="main-content">
+            {children}
+          </div>
+        </div>
       </body>
     </html>
   );
