@@ -3,10 +3,10 @@ import { Search, SlidersHorizontal } from "lucide-react";
 
 const SearchBar: React.FC = () => {
   return (
-    <div className="w-full h-[38px] px-4 m-2 mt-3">
+    <div className="sticky z-10 w-full h-[38px] px-4 m-2 mt-3">
       <div className="flex items-center bg-greybackground border border-blue01 rounded-[12px] px-3 py-2 shadow-sm">
         {/* Search Icon */}
-        <Search size={15} className="text-black mr-2" />
+        <Search size={16} className="text-black mr-2" />
 
         {/* Search Input */}
         <input
