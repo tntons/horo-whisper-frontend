@@ -1,4 +1,5 @@
 import TellerCardBrowse from "../../components/TellerCardBrowse";
+import SearchBar from "../../components/SearchBar";
 
 const tellers = [
   {
@@ -30,6 +31,8 @@ const tellers = [
 export default function BrowseTeller() {
   return (
     <div className="flex flex-col items-center overflow-y-auto justify-between">
+      <SearchBar />
+
       {tellers.map((teller, index) => (
         <TellerCardBrowse key={index} {...teller} />
       ))}
