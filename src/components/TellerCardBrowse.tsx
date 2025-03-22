@@ -1,23 +1,3 @@
-// import React from "react";
-
-// const TellerCardBrowse: React.FC = () => {
-//   return (
-//     <div className="relative w-[90%] h-[146px] rounded-[7px] bg-white01 text-black flex items-center p-3 border border-greyborder">
-//       <img
-//         src="/teller00.png"
-//         alt="Teller"
-//         className="w-[40%] h-full object-cover rounded-[7px]"
-//       />
-
-//       <div className="flex-1 flex items-center justify-center">
-//         <p className="font-playfair text-2xl">Golf the Teller</p>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default TellerCardBrowse;
-
 import React from "react";
 import Image from "next/image";
 
@@ -71,9 +51,9 @@ const TellerCardBrowse: React.FC = () => {
       </div>
 
       {/* Arrow Icon */}
-      {/* <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600">
-        ➝
-      </div> */}
+      <div className="absolute top-3 right-2 w-[20px] h-[20px]">
+        <Image src="/arrow.png" alt="next arrow" width={20} height={20} />
+      </div>
     </div>
   );
 };
