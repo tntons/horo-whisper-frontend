@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import { ChevronRight } from "lucide-react";
 
 interface TellerCardProps {
   imageSrc: string;
@@ -31,7 +32,7 @@ const TellerCardBrowse: React.FC<TellerCardProps> = ({
         <Image src={imageSrc} alt="Teller" layout="fill" objectFit="cover" />
 
         {/* Rating Badge */}
-        <div className="absolute bottom-0 right-0 bg-purple01 text-white text-sm font-bold px-2 py-1 rounded-tl-md">
+        <div className="absolute bottom-0 right-0 bg-purple01 text-white text-base px-2 py-1 rounded-tl-md">
           {rating}
         </div>
       </div>
@@ -71,7 +72,7 @@ const TellerCardBrowse: React.FC<TellerCardProps> = ({
 
       {/* Arrow Icon */}
       <div className="absolute top-3 right-2 w-[20px] h-[20px]">
-        <Image src="/arrow.png" alt="next arrow" width={20} height={20} />
+        <ChevronRight size={20} className="text-[#5D5E7C]" />
       </div>
     </div>
   );
