@@ -31,7 +31,7 @@ const TellerCardBrowse: React.FC<TellerCardProps> = ({
         <Image src={imageSrc} alt="Teller" layout="fill" objectFit="cover" />
 
         {/* Rating Badge */}
-        <div className="absolute bottom-0 right-0 bg-purple01 text-white text-sm font-bold px-2 py-1">
+        <div className="absolute bottom-0 right-0 bg-purple01 text-white text-sm font-bold px-2 py-1 rounded-tl-md">
           {rating}
         </div>
       </div>
@@ -45,7 +45,7 @@ const TellerCardBrowse: React.FC<TellerCardProps> = ({
           {tags.map((tag, index) => (
             <span
               key={index}
-              className="bg-pink01 text-pink03 flex items-center border border-pink02 text-xs px-2 py-1 rounded-lg"
+              className="bg-pink01 text-pink03 flex items-center border border-pink02 text-xs px-2 py-1 rounded-full"
             >
               {tag}
             </span>
