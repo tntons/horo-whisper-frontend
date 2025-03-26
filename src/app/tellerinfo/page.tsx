@@ -105,10 +105,10 @@ export default function TellerDetail() {
             {/* Right Column - Description */}
             <div className="w-1/2 mt-1">
               <p>
-                "I have been practicing tarot for over 20 years and graduated
-                from a well-known institution specializing in spiritual and
-                intuitive arts. My passion lies in helping people find clarity
-                in love and relationships"
+                &quot;I have been practicing tarot for over 20 years and
+                graduated from a well-known institution specializing in
+                spiritual and intuitive arts. My passion lies in helping people
+                find clarity in love and relationships.&quot;
               </p>
             </div>
           </div>
