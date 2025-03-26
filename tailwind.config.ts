@@ -30,7 +30,7 @@ export default {
       },
       fontFamily: {
         inter: ["var(--font-inter)", "sans-serif"],
-        playfair: ['Playfair Display', 'serif'],
+        playfair: ["var(--font-playfair)", 'serif'],
       },
       fontSize: {
         'xs': '6px',      
