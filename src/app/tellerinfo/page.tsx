@@ -112,6 +112,14 @@ export default function TellerDetail() {
               </p>
             </div>
           </div>
+
+          {/* Book Button */}
+          <div className="flex justify-center mt-4">
+            <button className="bg-purple04 text-white rounded-xl px-28 py-1">
+              <span className="text-xl">Book</span>
+            </button>
+          </div>
+
         </div>
 
         {/* Reviews Section */}
@@ -149,10 +157,6 @@ export default function TellerDetail() {
         </div>
       </div>
 
-      {/* Fixed Book Button */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#2C2D4D] p-4">
-        <button className="w-full text-white text-xl font-bold">Book</button>
-      </div>
     </div>
   );
 }
