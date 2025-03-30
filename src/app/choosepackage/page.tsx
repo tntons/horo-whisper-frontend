@@ -87,10 +87,11 @@ export default function ChoosePackage() {
 
             <button
                 disabled={selectedPackage === null || selectedAnonymity === null}
-                className={`bg-purple04 mx-20 text-white py-2 rounded-xl ${(selectedPackage === null || selectedAnonymity === null) ? 'opacity-50' : ''}`}>
+                className={`bg-purple04 mx-20 text-white py-2 rounded-xl ${(selectedPackage === null || selectedAnonymity === null) ? 'opacity-50' : ''}`}
+                onClick={() => console.log("Book Button is Clicked")}
+            >
                 <h1 className="text-xl">Book</h1>
             </button>
-
 
         </div>
 

@@ -1,4 +1,5 @@
 'use client'
+import Header from "../components/Header";
 import Navbar from "../components/Navbar";
 import { usePathname } from 'next/navigation';
 
@@ -12,8 +13,15 @@ export default function ClientLayout({
 
   return (
     <div className="container">
-      {!hideNavbarPaths.includes(pathname) && <Navbar />}
-      <div className="main-content">{children}</div>
+      {!hideNavbarPaths.includes(pathname) && (
+        <>
+          <Header />
+          <Navbar />
+        </>
+      )}
+      <div className={`main-content ${!hideNavbarPaths.includes(pathname) ? 'pt-[76px] pb-3'  : ''}`}>
+        {children}
+      </div>
     </div>
   );
 } 
