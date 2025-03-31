@@ -2,23 +2,33 @@
 import React from 'react';
 import { useState } from 'react';
 import Box from '@/components/Box';
+import PaySuccessBox from '@/components/PaySuccessBox';
+import PayFailBox from '@/components/PayFailBox';
 
 export default function Payment() {
+    const [isPaySuccess, setIsPaySuccess] = useState<boolean | null>(null);
 
     return (
         <div className="flex flex-col h-full">
+            {isPaySuccess === true && <PaySuccessBox setIsPaySuccess={setIsPaySuccess} />}
+            {isPaySuccess === false && <PayFailBox setIsPaySuccess={setIsPaySuccess} />}
 
             <Box title="Scan QR Code to pay">
                 <div className="flex flex-col gap-3 justify-center items-center">
                     <h2>Total: 300 Baht </h2>
-                    <img src = "/promptPayQr.png" width={250} height={250} />
+                    <img src="/promptPayQr.png" width={250} height={250} />
                     <p className="text-lg">4:23 minutes</p>
 
                     <div className="flex flex-row gap-4 w-full">
-                        <button className=" text-greydate border border-greydate rounded-lg w-2/5 py-1">
+                        <button className=" text-greydate border border-greydate rounded-lg w-2/5 py-1"
+                                onClick={() => setIsPaySuccess(false)}
+                        >
                             <p className="text-lg">Cancel</p>
                         </button>
-                        <button className="text-black border border-black rounded-lg w-3/5 py-1">
+                        <button 
+                            className="text-black border border-black rounded-lg w-3/5 py-1"
+                            onClick={() => setIsPaySuccess(true)}
+                        >
                             <p className="text-lg">Already Paid?</p>
                         </button>
                     </div>

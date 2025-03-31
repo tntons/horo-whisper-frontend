@@ -24,6 +24,7 @@ export default {
         greydate: "#979797",
         greybackground: "#F6F6F6",
         greyborder: "#D0D0D0",
+        grey01: "#CECECE",
         grey02: "#6D6D6D",
         blue01: "#2C2D4D",
         white01: "#F8F8F8",
