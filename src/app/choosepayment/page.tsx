@@ -2,6 +2,8 @@
 import React from 'react';
 import { useState } from 'react';
 import Box from '@/components/Box';
+import PaySuccessBox from '@/components/PaySuccessBox';
+
 
 export default function ChoosePayment() {
     const [selectedPackage, setSelectedPackage] = useState<number | null>(null);
