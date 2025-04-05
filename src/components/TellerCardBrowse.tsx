@@ -25,6 +25,11 @@ const TellerCardBrowse: React.FC<TellerCardProps> = ({
   waitTime,
   price,
 }) => {
+  const truncatedTellerName =
+    tellerName.replace(/\s+/g, "").length > 10
+      ? tellerName.slice(0, 10) + "..."
+      : tellerName;
+
   return (
     <div className="relative my-2 w-[91%] h-[146px] rounded-[7px] bg-white01 text-black flex items-center p-3 border border-greyborder font-inter">
       {/* Image Section */}
@@ -36,7 +41,9 @@ const TellerCardBrowse: React.FC<TellerCardProps> = ({
       <div className="flex-1 flex flex-col justify-between ml-4 h-[90%]">
         {/* Name and Price */}
         <div className="flex justify-between items-baseline">
-          <div className="text-lg font-medium text-black">{tellerName}</div>
+          <div className="text-lg font-medium text-black">
+            {truncatedTellerName}
+          </div>
           <div className="text-base font-bold text-black">Starts ฿{price}</div>
         </div>
 
@@ -54,7 +61,7 @@ const TellerCardBrowse: React.FC<TellerCardProps> = ({
 
         {/* Rating */}
         <div className="flex items-center text-[12px]">
-          <span className="text-yellow-500">
+          <span className="text-[#FFC13C]">
             {"★".repeat(Math.floor(rating))}
           </span>
           <span className="ml-1 text-base font-medium">{rating}/5</span>
