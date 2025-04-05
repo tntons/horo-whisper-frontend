@@ -1,6 +1,8 @@
 import React from "react";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
+import { MessageSquareCode } from "lucide-react";
+import { Clock } from "lucide-react";
 
 interface TellerCardProps {
   imageSrc: string;
@@ -19,60 +21,62 @@ const TellerCardBrowse: React.FC<TellerCardProps> = ({
   rating,
   tellerName,
   tags,
-  description,
   reviews,
   waitTime,
   price,
-  questions,
 }) => {
   return (
-    <div className="relative m-2 w-[90%] h-[146px] rounded-[7px] bg-white01 text-black flex items-center p-3 border border-greyborder">
+    <div className="relative my-2 w-[91%] h-[146px] rounded-[7px] bg-white01 text-black flex items-center p-3 border border-greyborder font-inter">
       {/* Image Section */}
       <div className="w-[35%] h-full object-cover rounded-[7px] relative overflow-hidden">
         <Image src={imageSrc} alt="Teller" layout="fill" objectFit="cover" />
-
-        {/* Rating Badge */}
-        <div className="absolute bottom-0 right-0 bg-purple01 text-white text-base px-2 py-1 rounded-tl-md">
-          {rating}
-        </div>
       </div>
 
       {/* Info Section */}
-      <div className="flex-1 flex flex-col justify-between ml-4 h-full">
-        <div className="text-lg">{tellerName}</div>
+      <div className="flex-1 flex flex-col justify-between ml-4 h-[90%]">
+        {/* Name and Price */}
+        <div className="flex justify-between items-baseline">
+          <div className="text-lg font-medium text-black">{tellerName}</div>
+          <div className="text-base font-bold text-black">Starts ฿{price}</div>
+        </div>
 
         {/* Tags */}
-        <div className="flex space-x-2 my-1">
+        <div className="flex space-x-1 my-1">
           {tags.map((tag, index) => (
             <span
               key={index}
-              className="bg-pink01 text-pink03 flex items-center border border-pink02 text-xs px-2 py-1 rounded-full"
+              className="bg-pink01 text-pink03 flex items-center border border-pink02 text-[7px] px-1.5 py-0.5 rounded-full"
             >
               {tag}
             </span>
           ))}
         </div>
 
-        {/* Description */}
-        <p className="text-xs line-clamp-2">{description}</p>
+        {/* Rating */}
+        <div className="flex items-center text-[12px]">
+          <span className="text-yellow-500">
+            {"★".repeat(Math.floor(rating))}
+          </span>
+          <span className="ml-1 text-base font-medium">{rating}/5</span>
+        </div>
 
         {/* Reviews & Wait Time */}
-        <div className="flex items-center text-sm mt-1">
-          📖 <span className="ml-1 underline">{reviews} Reviews</span>
+        <div className="flex items-center text-[9px] mt-1">
+          <MessageSquareCode
+            size={12}
+            className="text-[#2C2D4D] font-extralight mr-2"
+          />
+          <span className="underline">{reviews} Reviews</span>
         </div>
-        <div className="flex items-center text-sm mt-1">
-          ⏳ Expected wait time - {waitTime} minutes
+        <div className="flex items-center text-[9px] mt-1">
+          <Clock size={12} className="text-[#2C2D4D] font-extralight mr-2" />
+          Expected wait time - {waitTime} minutes
         </div>
-
-        {/* Pricing */}
-        <p className="text-base mt-1">
-          From ฿{price} / {questions} questions
-        </p>
       </div>
 
       {/* Arrow Icon */}
-      <div className="absolute top-3 right-2 w-[20px] h-[20px]">
-        <ChevronRight size={20} className="text-[#5D5E7C]" />
+      <div className="absolute top-1/2 right-6 w-[20px] h-[20px] transform -translate-y-1/2">
+        <ChevronRight size={37} className="text-[#5D5E7C]" />
       </div>
     </div>
   );
