@@ -92,7 +92,7 @@ export default function BrowseTeller() {
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       </div>
 
-      <div className="flex flex-col items-center overflow-y-auto">
+      <div className="flex flex-col items-center overflow-y-auto no-scrollbar">
         {filteredTellers.length > 0 ? (
           filteredTellers.map((teller, index) => (
             <TellerCardBrowse key={index} {...teller} />
