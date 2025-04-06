@@ -8,8 +8,8 @@ export default function Home() {
 
                 </section>
 
-                <section className="w-full h-screen bg-background snap-start rounded-t-3xl justify-center items-center px-10 pt-6">
-                    <div className="flex flex-col gap-8">
+                <section className="w-full h-screen bg-background snap-start rounded-t-3xl justify-center items-center px-8 pt-6">
+                    <div className="flex flex-col gap-6">
 
                         <button className="bg-purple04 text-white rounded-xl px-20 py-2">
                             <h1>Book New Session</h1>
@@ -22,7 +22,8 @@ export default function Home() {
 
                         <div className='flex flex-col gap-3'>
                         <h2>Session History</h2>
-                        <SessionBox name="John Doe" date="2024-01-01" active={true} status="Active" />
+                        <SessionBox name="Mekk Maedhus" date="23 Mar 2025" active={false} status="Session Ended 2 hours ago" />
+                        <SessionBox name="Woon Wannaya" date="23 Mar 2025" active={false} status="Session Ended 2 hours ago" />
                         </div>
 
 
