@@ -11,7 +11,7 @@ const Box = ({ title, children }: BoxProps) => {
                     <h1>{title}</h1>
                 </div>
                 
-                <div className="bg-white p-4">
+                <div className="bg-greybackground p-4">
                     {children}
                 </div>
             </div>

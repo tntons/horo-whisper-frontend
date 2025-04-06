@@ -14,7 +14,7 @@ export default function ChoosePackage() {
                 <div className="flex flex-col gap-3">
                     <button
                         onClick={() => setSelectedPackage(0)}
-                        className={`w-full p-4 text-left border-2 rounded-lg hover:bg-gray-50 transition-colors ${selectedPackage === 0 ? 'border-purple02' : 'border-greyborder'}`}
+                        className={`w-full p-4 text-left border-2 rounded-lg transition-colors ${selectedPackage === 0 ? 'border-purple02' : 'border-greyborder'}`}
                     >
                         <div className="flex justify-between items-center">
                             <div>
@@ -29,7 +29,7 @@ export default function ChoosePackage() {
 
                     <button
                         onClick={() => setSelectedPackage(1)}
-                        className={`w-full p-4 text-left border-2 rounded-lg hover:bg-gray-50 transition-colors ${selectedPackage === 1 ? 'border-purple02' : 'border-greyborder'}`}
+                        className={`w-full p-4 text-left border-2 rounded-lg  transition-colors ${selectedPackage === 1 ? 'border-purple02' : 'border-greyborder'}`}
                     >
                         <div className="flex justify-between items-center">
                             <div>
