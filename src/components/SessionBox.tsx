@@ -12,8 +12,13 @@ const SessionBox = ({ name, date, active, status }: SessionBoxProps) => {
     return (
         <div className='flex flex-row items-center justify-between w-full h-20 bg-greybackground rounded-lg border border-greyborder p-3'>
             {/* Left Column - Image */}
-            <div className=" bg-gray-300 rounded-full flex-shrink-0 items-center justify-center">
-                <Image src="/teller00.png" width={45} height={45} alt="Teller profile" />
+            <div className="relative w-[45px] h-full bg-gray-300 rounded-lg flex-shrink-0 overflow-hidden">
+                <Image src="/teller00.png" width={45} height={45} alt="Teller profile" className="object-cover" />
+                {!active && (
+                <div className="absolute -bottom-0.5 bg-[#DED3F6]  py-0.5 flex justify-center items-center w-full">
+                    <span className='text-[#5E5F8C] text-sm -mt-0.5'>Review</span>
+                </div>
+                )}
             </div>
             
             {/* Middle Column - Details */}
