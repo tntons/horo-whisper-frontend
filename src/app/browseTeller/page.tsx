@@ -88,7 +88,7 @@ export default function BrowseTeller() {
 
   return (
     <div className="main-content flex flex-col items-center">
-      <div className="sticky z-10 flex flex-col items-center">
+      <div className="w-full sticky z-10 flex flex-col items-center">
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       </div>
 
