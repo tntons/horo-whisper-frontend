@@ -1,11 +1,13 @@
 import React from 'react';
-import SessionBox from '@/components/SessionBox';
+import SessionBox from '@/app/home/SessionBox';
 
 export default function Home() {
     return (
             <div className="h-screen w-full overflow-y-scroll snap-y snap-mandatory bg-gradient-to-b from-[#090C6C] via-[#575ABA] via-35% to-[#575ABA]">
                 <section className="w-full h-[30vh] snap-start">
-
+                <div className="flex flex-col items-center justify-center">
+                    <h1 className='text-white text-xl'>Your Daily Horoscope</h1>
+                </div>
                 </section>
 
                 <section className="w-full h-screen bg-background snap-start rounded-t-3xl justify-center items-center px-8 pt-6">

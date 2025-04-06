@@ -2,8 +2,8 @@
 import React from 'react';
 import { useState } from 'react';
 import Box from '@/components/Box';
-import PaySuccessBox from '@/components/PaySuccessBox';
-import PayFailBox from '@/components/PayFailBox';
+import PaySuccessBox from '@/app/payment/PaySuccessBox';
+import PayFailBox from '@/app/payment/PayFailBox';
 
 export default function Payment() {
     const [isPaySuccess, setIsPaySuccess] = useState<boolean | null>(null);

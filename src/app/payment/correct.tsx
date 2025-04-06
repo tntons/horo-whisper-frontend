@@ -1,12 +1,12 @@
 import React from "react";
 import Lottie from "react-lottie";
-import wrong from "../assets/wrong.json";
+import correct from "../../assets/correct.json";
 
-export default function Wrong() {
+export default function Correct() {
     const defaultOptions = {
         loop: false,
         autoplay: true,
-        animationData: wrong,
+        animationData: correct,
         rendererSettings: {
           preserveAspectRatio: "xMidYMid slice"
         }
@@ -18,7 +18,6 @@ export default function Wrong() {
           options={defaultOptions}
           height={55}
           width={55}
-          speed={1.5}
         />
       </div>
     );
