@@ -13,15 +13,15 @@ export default function ClientLayout({
 
   return (
     <div className="container">
-      {!hideNavbarPaths.includes(pathname) && (
+      {!hideNavbarPaths.includes(pathname || "") && (
         <>
           <Header />
-          <Navbar />
+          <Navbar pathname={pathname || ""} />
         </>
       )}
       <div
         className={`main-content ${
-          !hideNavbarPaths.includes(pathname) ? "pt-[76px] pb-[76px]" : ""
+          !hideNavbarPaths.includes(pathname || "") ? "pt-[76px] pb-[76px]" : ""
         }`}
       >
         {children}

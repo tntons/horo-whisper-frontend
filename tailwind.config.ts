@@ -27,6 +27,7 @@ export default {
         grey01: "#CECECE",
         grey02: "#6D6D6D",
         blue01: "#2C2D4D",
+        blue02: "#787BC3",
         white01: "#F8F8F8",
       },
       fontFamily: {
