@@ -2,10 +2,11 @@ import React from "react";
 import { MdHomeFilled } from "react-icons/md";
 import { IoCompass } from "react-icons/io5";
 import { FaUser } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
 
 const Navbar = ({ pathname }: { pathname: string }) => {
-  // Fallback for server-side rendering
   const activePath = pathname || "";
+  const router = useRouter();
 
   return (
     <nav className="absolute bottom-0 left-0 w-full h-[76px] bg-blue01 text-white flex items-center justify-center z-50">
@@ -14,6 +15,7 @@ const Navbar = ({ pathname }: { pathname: string }) => {
           className="fill-current"
           size={34}
           style={{ color: activePath === "/home" ? "#FFFFFF" : "#787BC3" }}
+          onClick={() => router.push("/home")}
         />
         <IoCompass
           className="fill-current"
@@ -26,6 +28,7 @@ const Navbar = ({ pathname }: { pathname: string }) => {
                 ? "#FFFFFF"
                 : "#787BC3",
           }}
+          onClick={() => router.push("/browseTeller")}
         />
         <FaUser
           className="fill-current"
@@ -33,6 +36,7 @@ const Navbar = ({ pathname }: { pathname: string }) => {
           style={{
             color: activePath === "/editProfile" ? "#FFFFFF" : "#787BC3",
           }}
+          onClick={() => router.push("/editProfile")}
         />
       </div>
     </nav>
