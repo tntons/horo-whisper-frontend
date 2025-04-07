@@ -67,3 +67,11 @@ html, body {
 .no-scrollbar::-webkit-scrollbar {
   display: none; /* For Chrome, Safari, and Opera */
 }
+
+.custom-toast {
+  font-size: 14px; /* Adjust font size */
+  padding: 14px; /* Adjust padding */
+  border-radius: 8px; /* Adjust border radius */
+  background-color: #F6F6F6; /* Custom success background color */
+  color: #000000; /* Custom text color */
+}

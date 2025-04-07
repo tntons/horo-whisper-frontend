@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function EditProfile() {
   const [name, setName] = useState("Thanadon Sigmatikaprakai");
@@ -10,6 +12,17 @@ export default function EditProfile() {
   const [something, setSomething] = useState("qwerty");
 
   const handleSubmit = () => {
+    // Show success toast
+    toast.success("You've successfully made the change!", {
+      position: "bottom-center",
+      autoClose: 3000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      className: "custom-toast",
+    });
+
     // Handle form submission logic here
     console.log({
       name,
@@ -22,6 +35,8 @@ export default function EditProfile() {
 
   return (
     <div className="flex flex-col items-center w-full h-full bg-[#FEF0E5] px-4 py-6">
+      <ToastContainer />
+
       {/* Edit Profile Section */}
       <div className="w-[75%] mt-4">
         <h2 className="text-xl font-bold text-[#171717] mb-4">Edit Profile</h2>
