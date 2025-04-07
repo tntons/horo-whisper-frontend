@@ -2,6 +2,7 @@
 
 import TellerCardBrowse from "../../components/TellerCardBrowse";
 import SearchBar from "../../components/SearchBar";
+import SearchFilter from "../../components/SearchFilter";
 import { useState } from "react";
 
 const tellers = [
@@ -88,8 +89,9 @@ export default function BrowseTeller() {
 
   return (
     <div className="main-content w-full flex flex-col overflow-y-auto">
-      <div className="sticky z-10 flex flex-col items-start px-2">
+      <div className="sticky top-0 pt-4 pb-2 z-10 flex items-start px-4 justify-between">
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+        <SearchFilter />
       </div>
 
       <div className="flex flex-col items-center overflow-y-auto no-scrollbar w-full">
