@@ -33,7 +33,7 @@ const TellerCardBrowse: React.FC<TellerCardProps> = ({
   return (
     <div className="relative my-2 w-[91%] h-[146px] rounded-[7px] bg-white01 text-black flex items-center p-3 border border-greyborder font-inter">
       {/* Image Section */}
-      <div className="w-[35%] h-full object-cover rounded-[7px] relative overflow-hidden">
+      <div className="w-[92px] h-full object-cover rounded-[7px] relative overflow-hidden">
         <Image src={imageSrc} alt="Teller" layout="fill" objectFit="cover" />
       </div>
 
