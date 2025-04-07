@@ -3,6 +3,7 @@
 import TellerCardBrowse from "../../components/TellerCardBrowse";
 import SearchBar from "../../components/SearchBar";
 import SearchFilter from "../../components/SearchFilter";
+import SearchSort from "@/components/SearchSort";
 import { useState } from "react";
 
 const tellers = [
@@ -92,6 +93,7 @@ export default function BrowseTeller() {
       <div className="sticky top-0 pt-4 pb-2 z-10 flex items-start px-4 justify-between">
         <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
         <SearchFilter />
+        <SearchSort />
       </div>
 
       <div className="flex flex-col items-center overflow-y-auto no-scrollbar w-full">
