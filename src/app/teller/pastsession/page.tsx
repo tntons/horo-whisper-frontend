@@ -1,8 +1,21 @@
+"use client";
+import React from 'react';
+import SessionMenu from '../SessionMenu';
+
 export default function PastSession() {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen bg-blue01 text-white">
-        <h1 className="text-4xl font-bold mb-4">Teller Page</h1>
-        <p className="text-lg">This is the Teller page content.</p>
+  const menuItems = [
+    { title: 'Current Sessions', path: '/teller/currentsession' },
+    { title: 'Upcoming Sessions', path: '/teller/upcomingsession' }
+  ];
+
+  return (
+    <div className="flex flex-col items-center h-screen pt-[76px]">
+      <div className='flex flex-col items-center w-full h-full p-4 '>
+      <SessionMenu 
+        currentTitle="Past Sessions"
+        menuItems={menuItems}
+      />
       </div>
-    );
+    </div>
+  );
   }
