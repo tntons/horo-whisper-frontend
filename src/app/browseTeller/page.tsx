@@ -1,9 +1,9 @@
 "use client";
 
-import TellerCardBrowse from "../../components/TellerCardBrowse";
-import SearchBar from "../../components/SearchBar";
-import SearchFilter from "../../components/SearchFilter";
-import SearchSort from "@/components/SearchSort";
+import TellerCardBrowse from "./TellerCardBrowse";
+import SearchBar from "./SearchBar";
+import SearchFilter from "./SearchFilter";
+import SearchSort from "./SearchSort";
 import { useState } from "react";
 
 const tellers = [
