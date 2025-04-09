@@ -1,9 +1,14 @@
 'use client'
 import React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation'
 import Box from '@/components/Box';
 
 export default function ChoosePackage() {
+    const params = useParams()
+    const tellerid = params.tellerid as String
+    const selectpack = params.selectpack as String
+    const [post, setPost] = useState(null)
     const [selectedPackage, setSelectedPackage] = useState<number | null>(null);
     const [selectedAnonymity, setSelectedAnonymity] = useState<number | null>(null);
 
