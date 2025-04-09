@@ -62,9 +62,6 @@ export default function CurrentSession() {
         ))}
       </div>
       </div>
-
-
-
     </div>
   );
 }
