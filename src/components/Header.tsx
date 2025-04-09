@@ -1,23 +1,40 @@
 import React from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { IoChevronBack } from "react-icons/io5";
+import { Info } from "lucide-react";
 
 interface HeaderProps {
   showBackButton?: boolean;
+  showInfoIcon?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ showBackButton = false }) => {
+const Header: React.FC<HeaderProps> = ({
+  showBackButton = false,
+  showInfoIcon = false,
+}) => {
   const router = useRouter();
   const pathname = usePathname();
 
   // Pages that should show back button
-  const pagesWithBackButton = ['/chat', '/tellerinfo', '/choosepackage', '/payment']
-  const shouldShowBackButton = showBackButton || pagesWithBackButton.includes(pathname);
+  const pagesWithBackButton = [
+    "/chat",
+    "/tellerinfo",
+    "/choosepackage",
+    "/payment",
+    "/editProfile",
+  ];
+  const shouldShowBackButton =
+    showBackButton || pagesWithBackButton.includes(pathname);
+
+  // Pages that should show the Info icon
+  const pagesWithInfoIcon = ["/editProfile"];
+  const shouldShowInfoIcon =
+    showInfoIcon || pagesWithInfoIcon.includes(pathname);
 
   return (
     <nav className="absolute top-0 left-0 w-full h-[76px] bg-blue01 text-white flex items-center justify-center z-50">
       {shouldShowBackButton && (
-        <button 
+        <button
           onClick={() => router.back()}
           className="absolute left-4 bottom-2.5"
         >
@@ -27,6 +44,14 @@ const Header: React.FC<HeaderProps> = ({ showBackButton = false }) => {
       <div className="text-[24px] font-playfair font-[100] absolute bottom-2">
         HoroWhisper
       </div>
+      {shouldShowInfoIcon && (
+        <button
+          onClick={() => alert("Info button clicked!")} // Replace with your desired action
+          className="absolute right-4 bottom-2.5"
+        >
+          <Info size={28} />
+        </button>
+      )}
     </nav>
   );
 };
