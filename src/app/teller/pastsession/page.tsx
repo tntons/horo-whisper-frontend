@@ -29,28 +29,34 @@ interface SessionInfo {
   };
 }
 
+interface ErrorResponse {
+  success: false;
+  code: string;
+  message: string;
+}
+
 export default function PastSession() {
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null);
+  const [sessionInfo, setSessionInfo] = useState<SessionInfo | ErrorResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-    const fetchSessionData = async () => {
-        try {
-            const tellerId = 1;
-            const response = await fetch(`/api/tellers/past-session/${tellerId}`);
-            const data = await response.json();
-            setSessionInfo(data);
-            console.log(data);
-        } catch (error) {
-            console.error('Error fetching session info:', error);
-        } finally {
-            setIsLoading(false);
-        }
+  const fetchSessionData = async () => {
+    try {
+      const tellerId = 1;
+      const response = await fetch(`/api/tellers/past-session/${tellerId}`);
+      const data = await response.json();
+      setSessionInfo(data);
+      console.log(data);
+    } catch (error) {
+      console.error('Error fetching session info:', error);
+    } finally {
+      setIsLoading(false);
     }
+  }
 
-    useEffect(() => {
-        fetchSessionData();
-    }, []);
+  useEffect(() => {
+    fetchSessionData();
+  }, []);
 
   const menuItems = [
     { title: 'Current Sessions', path: '/teller/currentsession' },
@@ -73,10 +79,10 @@ export default function PastSession() {
           <h1>Loading Session ...</h1>
         ) : !sessionInfo?.success ? (
           <div className="flex flex-col items-center justify-center mb-20 flex-1 gap-2">
-              <h2 className="text-xl font-medium text-gray-600">No Past Session Available</h2>
-              <p className="text-gray-500">You have not completed any session yet.</p>
+            <h2 className="text-xl font-medium text-gray-600">No Past Session Available</h2>
+            <p className="text-gray-500">You have not completed any session yet.</p>
           </div>
-      ) : (
+        ) : (
           <>
             <div className='flex flex-col items-center w-full h-full gap-3'>
               {sessionInfo?.data.sessions?.map((session, index) => (
@@ -93,7 +99,7 @@ export default function PastSession() {
             </div>
           </>
         )}
-          </div>
       </div>
-      );
+    </div>
+  );
 }

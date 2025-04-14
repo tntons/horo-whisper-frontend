@@ -63,11 +63,9 @@ const SessionBox = ({ sessionId, name, detail, date, time, current, past, upcomi
                 setIsDeclined(true);
                 setTimeout(() => {
                     setIsVisible(false);
-                }, 1000); // Match this with your transition duration
+                }, 1000);
             }
             console.log("Declined session");
-            // Refresh session data after acceptance
-            // You might want to refetch your sessions here
         } catch (error) {
             console.error('Error accepting session:', error);
         }
