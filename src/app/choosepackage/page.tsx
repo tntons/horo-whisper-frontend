@@ -3,6 +3,7 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation'
 import Box from '@/components/Box';
+import ConfirmBox from './ConfirmBox';
 
 interface PackageInfo {
     success: boolean;
@@ -15,18 +16,20 @@ interface PackageInfo {
     }>;
 }
 export default function ChoosePackage() {
-    const params = useParams()
-    const tellerid = params.tellerid as String
-    const selectpack = params.selectpack as String
-    const [post, setPost] = useState(null)
-    const [packageInfo, setPackageInfo] = useState<PackageInfo | null>(null)
+    const tellerId = 1;
+    const customerId = 1;
+    const params = useParams();
+    const tellerid = params.tellerid as String;
+    const selectpack = params.selectpack as String;
+    const [post, setPost] = useState(null);
+    const [packageInfo, setPackageInfo] = useState<PackageInfo | null>(null);
     const [selectedPackage, setSelectedPackage] = useState<number | null>(null);
     const [selectedAnonymity, setSelectedAnonymity] = useState<number | null>(null);
+    const [isConfirm, setIsConfirm] = useState(false);
 
     const fetchPackage = async () => {
         try {
-            const tellerid = 1;
-            const response = await fetch(`/api/tellers/teller-package/${tellerid}`);
+            const response = await fetch(`/api/tellers/teller-package/${tellerId}`);
             const data = await response.json();
             setPackageInfo(data);
         } catch (error) {
@@ -41,11 +44,43 @@ export default function ChoosePackage() {
         console.log(selectedPackage);
     }, [selectedPackage]);
 
+    const handleBookSession = async () => {
+        try {
+            const response = await fetch(`/api/customers/book-session`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    sessionData: {
+                        customerId: customerId,
+                        tellerId: tellerId,
+                        sessionStatus: "Pending"
+                    },
+                    paymentData: {
+                        customerId: customerId,
+                        packageId: selectedPackage,
+                        status: "Disabled"
+                    }
+                })
+            });
 
+            if (!response.ok) {
+                throw new Error('Failed to book session');
+            }
+
+            setIsConfirm(true);
+
+            console.log("Session is booked");
+
+        } catch (error) {
+            console.error('Error accepting session:', error);
+        }
+    }
 
     return (
         <div className="flex flex-col h-full">
-
+            {isConfirm && <ConfirmBox />}
             <Box title="Choose Package">
                 <div className="flex flex-col gap-3">
 
@@ -97,7 +132,7 @@ export default function ChoosePackage() {
                 <button
                     disabled={selectedPackage === null || selectedAnonymity === null}
                     className={`w-full bg-purple04 text-white py-3 rounded-xl ${(selectedPackage === null || selectedAnonymity === null) ? 'opacity-50' : ''}`}
-                    onClick={() => console.log("Book Button is Clicked")}
+                    onClick={() => handleBookSession()}
                 >
                     <span className="text-xl">Book</span>
                 </button>
