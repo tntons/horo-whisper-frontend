@@ -5,15 +5,16 @@ interface SessionBoxProps {
     sessionId: number;
     name: string;
     detail: string;
-    date: string;
-    time: string;
+    date: string | null;
+    time: string | null;
     current?: boolean;
     past?: boolean;
     upcoming?: boolean;
     message?: number;
+    onSessionUpdate?: () => void;
 }
 
-const SessionBox = ({ sessionId, name, detail, date, time, current, past, upcoming, message }: SessionBoxProps) => {
+const SessionBox = ({ sessionId, name, detail, date, time, current, past, upcoming, message, onSessionUpdate }: SessionBoxProps) => {
     const [isAccepted, setIsAccepted] = useState(false);
     const [isDeclined, setIsDeclined] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
@@ -35,9 +36,10 @@ const SessionBox = ({ sessionId, name, detail, date, time, current, past, upcomi
                 setIsAccepted(true);
                 setTimeout(() => {
                     setIsVisible(false);
+                    onSessionUpdate?.()
                 }, 1000); // Match this with your transition duration
             }
-            console.log("completed");
+            console.log("Accepted session");
             // Refresh session data after acceptance
             // You might want to refetch your sessions here
         } catch (error) {
@@ -63,7 +65,7 @@ const SessionBox = ({ sessionId, name, detail, date, time, current, past, upcomi
                     setIsVisible(false);
                 }, 1000); // Match this with your transition duration
             }
-            console.log("completed");
+            console.log("Declined session");
             // Refresh session data after acceptance
             // You might want to refetch your sessions here
         } catch (error) {
