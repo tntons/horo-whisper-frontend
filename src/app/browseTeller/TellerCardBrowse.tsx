@@ -1,10 +1,12 @@
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { MessageSquareCode } from "lucide-react";
 import { Clock } from "lucide-react";
 
 interface TellerCardProps {
+  tellerId: number;
   imageSrc: string;
   rating: number;
   tellerName: string;
@@ -16,6 +18,7 @@ interface TellerCardProps {
 }
 
 const TellerCardBrowse: React.FC<TellerCardProps> = ({
+  tellerId,
   imageSrc,
   rating,
   tellerName,
@@ -29,8 +32,17 @@ const TellerCardBrowse: React.FC<TellerCardProps> = ({
       ? tellerName.slice(0, 10) + "..."
       : tellerName;
 
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push(`/tellerinfo/${tellerId}`);
+  };
+
   return (
-    <div className="relative flex-shrink-0 my-2 w-[91%] !h-[146px] rounded-[7px] bg-white01 text-black flex items-center p-3 border border-greyborder font-inter">
+    <div
+      className="relative flex-shrink-0 my-2 w-[91%] !h-[146px] rounded-[7px] bg-white01 text-black flex items-center p-3 border border-greyborder font-inter"
+      onClick={handleCardClick}
+    >
       {/* Image Section */}
       <div className="w-[92px] h-full object-cover rounded-[7px] relative overflow-hidden">
         <Image src={imageSrc} alt="Teller" layout="fill" objectFit="cover" />

@@ -58,6 +58,7 @@ export default function BrowseTeller() {
           filteredTellers.map((teller, index) => (
             <TellerCardBrowse
               key={index}
+              tellerId={teller.tellerId}
               imageSrc={teller.imageSrc || "/default-profile.png"}
               rating={teller.averageRating || 0}
               tellerName={teller.tellerName || "Unknown"}

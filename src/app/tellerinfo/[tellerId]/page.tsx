@@ -1,48 +1,55 @@
-export default function TellerDetail() {
-  const packages = [
-    { price: 200, questions: 3 },
-    { price: 300, questions: 5 },
-    { price: 500, questions: 10 },
-  ];
+"use client";
 
-  const reviews = [
-    {
-      name: "Chalisa P***",
-      date: "19/03/2025",
-      title: "Life-Changing Reading!",
-      review: "Golf the Teller gave me so much clarity about my relationship",
-      rating: 5,
-    },
-    {
-      name: "Saharat N***",
-      date: "16/03/2025",
-      title: "A Guiding Light in My Love Life",
-      review:
-        "I felt lost after a breakup, but Golf's reading helped me understand what I needed to heal and move forward.",
-      rating: 5,
-    },
-    {
-      name: "Chalisa P***",
-      date: "13/03/2025",
-      title: "Life-Changing Reading!",
-      review: "Golf the Teller gave me so much clarity about my relationship",
-      rating: 5,
-    },
-    {
-      name: "Chalisa P***",
-      date: "13/03/2025",
-      title: "Life-Changing Reading!",
-      review: "Golf the Teller gave me so much clarity about my relationship",
-      rating: 5,
-    },
-    {
-      name: "Chalisa P***",
-      date: "13/03/2025",
-      title: "Life-Changing Reading!",
-      review: "Golf the Teller gave me so much clarity about my relationship",
-      rating: 5,
-    },
-  ];
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+
+export default function TellerDetail() {
+  const { tellerId } = useParams(); // Get the tellerId from the URL
+  const [teller, setTeller] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch teller details
+  const fetchTellerDetails = async () => {
+    try {
+      const response = await fetch(`/api/tellers/${tellerId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch teller details");
+      }
+      const data = await response.json();
+      setTeller(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTellerDetails();
+  }, [tellerId]);
+
+  if (isLoading) {
+    return <p className="text-center mt-4">Loading...</p>;
+  }
+
+  if (error) {
+    return <p className="text-center text-red-500 mt-4">{error}</p>;
+  }
+
+  if (!teller) {
+    return <p className="text-center mt-4">No teller details found.</p>;
+  }
+
+  const {
+    packages,
+    reviews,
+    tellerName,
+    specialty,
+    bio,
+    traffic,
+    totalNumberOfReviews,
+  } = teller;
 
   return (
     <div className="flex flex-col h-full">
@@ -57,25 +64,29 @@ export default function TellerDetail() {
 
             <div className="flex-1">
               <div className="flex justify-between w-full">
-                <h2 className=" font-medium mt-2">Golf the teller</h2>
-                <p className="text-gray-500 underline"> Report</p>
+                <h2 className="font-medium mt-2">{tellerName}</h2>
+                <p className="text-gray-500 underline">Report</p>
               </div>
 
               <div className="flex gap-2 mt-2">
-                <span className="bg-yellow01 text-yellow03 flex items-center text-sm px-2  rounded-xl border border-yellow02">
-                  Tarot Reading
-                </span>
-                <span className="bg-pink01 text-pink03 flex items-center text-sm px-2 py-1 rounded-xl border border-pink02">
-                  Love and Relationship
-                </span>
+                {specialty.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="bg-yellow01 text-yellow03 flex items-center text-sm px-2 rounded-xl border border-yellow02"
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
 
               <div className="flex mt-2">
-                <p className="text-md">28 Reviews</p>
+                <p className="text-md">{totalNumberOfReviews} Reviews</p>
               </div>
 
-              <div className="flex ">
-                <p className="text-md">Expected wait time - 3 minutes</p>
+              <div className="flex">
+                <p className="text-md">
+                  Expected wait time - {traffic} minutes
+                </p>
               </div>
             </div>
           </div>
@@ -93,7 +104,7 @@ export default function TellerDetail() {
               <div className="flex flex-col mt-2 gap-1 ml-6">
                 {packages.map((pkg, index) => (
                   <p key={index}>
-                    ฿ {pkg.price} / {pkg.questions} questions
+                    ฿ {pkg.price} / {pkg.questionNumber} questions
                   </p>
                 ))}
               </div>
@@ -104,12 +115,7 @@ export default function TellerDetail() {
 
             {/* Right Column - Description */}
             <div className="w-1/2 mt-1">
-              <p>
-                &quot;I have been practicing tarot for over 20 years and
-                graduated from a well-known institution specializing in
-                spiritual and intuitive arts. My passion lies in helping people
-                find clarity in love and relationships.&quot;
-              </p>
+              <p>{bio}</p>
             </div>
           </div>
 
@@ -119,7 +125,6 @@ export default function TellerDetail() {
               <span className="text-xl">Book</span>
             </button>
           </div>
-
         </div>
 
         {/* Reviews Section */}
@@ -147,16 +152,13 @@ export default function TellerDetail() {
                   </div>
                 </div>
 
-                <h1 className=" text-[13px] font-medium mt-2">
-                  {review.title}
-                </h1>
+                <h1 className="text-[13px] font-medium mt-2">{review.title}</h1>
                 <p className="mt-0.5">{review.review}</p>
               </div>
             ))}
           </div>
         </div>
       </div>
-
     </div>
   );
 }
