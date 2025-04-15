@@ -13,7 +13,6 @@ interface TellerCardProps {
   reviews: number;
   waitTime: number;
   price: number;
-  questions: number;
 }
 
 const TellerCardBrowse: React.FC<TellerCardProps> = ({

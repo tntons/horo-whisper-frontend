@@ -4,86 +4,39 @@ import TellerCardBrowse from "./TellerCardBrowse";
 import SearchBar from "./SearchBar";
 import SearchFilter from "./SearchFilter";
 import SearchSort from "./SearchSort";
-import { useState } from "react";
-
-const tellers = [
-  {
-    imageSrc: "/teller00.png",
-    rating: 4.8,
-    tellerName: "Golf the Teller",
-    tags: ["Tarot Reading", "Love and relationship"],
-    description:
-      "I have been practicing tarot for over 20 years and graduated from a well-known institution....",
-    reviews: 28,
-    waitTime: 3,
-    price: 200,
-    questions: 3,
-  },
-  {
-    imageSrc: "/teller00.png",
-    rating: 1.4,
-    tellerName: "Golfy the Teller",
-    tags: ["Love and relationship"],
-    description:
-      "I have been in love for over 20 years and graduated from romance novels....",
-    reviews: 2,
-    waitTime: 100,
-    price: 20,
-    questions: 5,
-  },
-  {
-    imageSrc: "/teller00.png",
-    rating: 4.8,
-    tellerName: "Paepae the Teller",
-    tags: ["Tarot Reading", "Love and relationship"],
-    description:
-      "I have been practicing tarot for over 20 years and graduated from a well-known institution....",
-    reviews: 28,
-    waitTime: 3,
-    price: 200,
-    questions: 3,
-  },
-  {
-    imageSrc: "/teller00.png",
-    rating: 1.4,
-    tellerName: "Mekk the Teller",
-    tags: ["Love and relationship"],
-    description:
-      "I have been in love for over 20 years and graduated from romance novels....",
-    reviews: 2,
-    waitTime: 100,
-    price: 20,
-    questions: 5,
-  },
-  {
-    imageSrc: "/teller00.png",
-    rating: 4.8,
-    tellerName: "MekkyMekko the Teller",
-    tags: ["Tarot Reading", "Love and relationship"],
-    description:
-      "I have been practicing tarot for over 20 years and graduated from a well-known institution....",
-    reviews: 28,
-    waitTime: 3,
-    price: 200,
-    questions: 3,
-  },
-  {
-    imageSrc: "/teller00.png",
-    rating: 1.4,
-    tellerName: "Tonseiei the Teller",
-    tags: ["Love and relationship"],
-    description:
-      "I have been in love for over 20 years and graduated from romance novels....",
-    reviews: 2,
-    waitTime: 100,
-    price: 20,
-    questions: 5,
-  },
-];
+import { useState, useEffect } from "react";
 
 export default function BrowseTeller() {
+  const [tellers, setTellers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  // Fetch tellers from the backend
+  const fetchTellers = async () => {
+    try {
+      const response = await fetch("/api/tellers");
+      if (!response.ok) {
+        throw new Error("Failed to fetch tellers");
+      }
+      const result = await response.json();
+      if (result.success) {
+        setTellers(result.data);
+      } else {
+        throw new Error("Failed to fetch tellers");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTellers();
+  }, []);
+
+  // Filter tellers based on the search query
   const filteredTellers = tellers.filter((teller) =>
     teller.tellerName.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -97,9 +50,23 @@ export default function BrowseTeller() {
       </div>
 
       <div className="flex flex-col items-center overflow-y-auto no-scrollbar w-full">
-        {filteredTellers.length > 0 ? (
+        {isLoading ? (
+          <p className="text-blue01 mt-4">Loading...</p>
+        ) : error ? (
+          <p className="text-red-500 mt-4">{error}</p>
+        ) : filteredTellers.length > 0 ? (
           filteredTellers.map((teller, index) => (
-            <TellerCardBrowse key={index} {...teller} />
+            <TellerCardBrowse
+              key={index}
+              imageSrc={teller.imageSrc || "/default-profile.png"}
+              rating={teller.averageRating || 0}
+              tellerName={teller.tellerName || "Unknown"}
+              tags={teller.specialty || []}
+              description={teller.bio || "No description available"}
+              reviews={teller.totalReviews || 0}
+              waitTime={teller.traffic || 0}
+              price={teller.minPrice || 0}
+            />
           ))
         ) : (
           <p className="text-blue01 mt-4">No tellers found.</p>
