@@ -23,7 +23,7 @@ const Navbar = ({ pathname }: { pathname: string }) => {
           style={{
             color:
               activePath === "/browseTeller" ||
-              activePath === "/tellerinfo" ||
+              activePath.startsWith("/tellerinfo/") ||
               activePath === "/choosepackage"
                 ? "#FFFFFF"
                 : "#787BC3",

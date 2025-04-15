@@ -21,13 +21,14 @@ const Header: React.FC<HeaderProps> = ({
   // Pages that should show back button
   const pagesWithBackButton = [
     "/chat",
-    "/tellerinfo",
     "/choosepackage",
     "/payment",
     "/editProfile",
   ];
   const shouldShowBackButton =
-    showBackButton || pagesWithBackButton.includes(pathname);
+    showBackButton ||
+    pagesWithBackButton.includes(pathname) ||
+    pathname.startsWith("/tellerinfo/");
 
   // Pages that should show the Info icon
   const pagesWithInfoIcon = ["/editProfile"];
