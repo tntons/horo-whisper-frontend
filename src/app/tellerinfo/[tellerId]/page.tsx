@@ -150,8 +150,10 @@ export default function TellerDetail() {
                   <div className="w-7 h-7 bg-[#D9D9D9] rounded-full"></div>
                   <div className="flex-1">
                     <div className="flex justify-between items-center">
-                      <p>{review.name}</p>
-                      <p className="text-greydate">{review.date}</p>
+                      <p>{review.customerName}</p>
+                      <p className="text-greydate">
+                        {new Date(review.reviewAt).toISOString().split("T")[0]}
+                      </p>
                     </div>
                     <div className="flex text-[#FFC13C] text-md">
                       {"★ ".repeat(review.rating)}
@@ -160,7 +162,7 @@ export default function TellerDetail() {
                 </div>
 
                 <h1 className="text-[13px] font-medium mt-2">{review.title}</h1>
-                <p className="mt-0.5">{review.review}</p>
+                <p className="mt-0.5">{review.comment}</p>
               </div>
             ))}
           </div>
