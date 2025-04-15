@@ -2,6 +2,8 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Clock } from "lucide-react";
+import { MessageSquareCode } from "lucide-react";
 
 export default function TellerDetail() {
   const { tellerId } = useParams(); // Get the tellerId from the URL
@@ -52,7 +54,7 @@ export default function TellerDetail() {
   } = teller;
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full font-inter">
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto">
         {/* Teller Info Card */}
@@ -64,7 +66,7 @@ export default function TellerDetail() {
 
             <div className="flex-1">
               <div className="flex justify-between w-full">
-                <h2 className="font-medium mt-2">{tellerName}</h2>
+                <h2 className="font-normal text-lg mt-2">{tellerName}</h2>
                 <p className="text-gray-500 underline">Report</p>
               </div>
 
@@ -72,21 +74,24 @@ export default function TellerDetail() {
                 {specialty.map((tag, index) => (
                   <span
                     key={index}
-                    className="bg-yellow01 text-yellow03 flex items-center text-sm px-2 rounded-xl border border-yellow02"
+                    className="bg-yellow01 text-yellow03 flex items-center text-sm px-2 py-0.5 rounded-xl border border-yellow02"
                   >
                     {tag}
                   </span>
                 ))}
               </div>
 
-              <div className="flex mt-2">
-                <p className="text-md">{totalNumberOfReviews} Reviews</p>
+              <div className="flex items-center text-md mt-2">
+                <MessageSquareCode
+                  size={12}
+                  className="text-[#2C2D4D] font-normal mr-2"
+                />
+                {totalNumberOfReviews} Reviews
               </div>
 
-              <div className="flex">
-                <p className="text-md">
-                  Expected wait time - {traffic} minutes
-                </p>
+              <div className="flex items-center text-md">
+                <Clock size={12} className="text-[#2C2D4D] font-normal mr-2" />
+                Expected wait time - {traffic} minutes
               </div>
             </div>
           </div>
@@ -94,14 +99,14 @@ export default function TellerDetail() {
           {/* Two Column Layout */}
           <div className="mt-4 flex gap-4">
             {/* Left Column - Packages */}
-            <div className="w-1/2">
-              <div className="flex justify-center">
+            <div className="w-1/2 ml-4">
+              <div className="flex">
                 <p className="bg-purple01/30 flex items-center text-md px-2 w-fit rounded-xl border border-black">
                   Packages
                 </p>
               </div>
 
-              <div className="flex flex-col mt-2 gap-1 ml-6">
+              <div className="flex flex-col mt-2 gap-1">
                 {packages.map((pkg, index) => (
                   <p key={index}>
                     ฿ {pkg.price} / {pkg.questionNumber} questions
@@ -111,7 +116,7 @@ export default function TellerDetail() {
             </div>
 
             {/* Dividing Line */}
-            <div className="border-l border-dashed border-[#D0D0D0]"></div>
+            <div className="border-l border-dashed border-[#D0D0D0] -ml-4"></div>
 
             {/* Right Column - Description */}
             <div className="w-1/2 mt-1">
@@ -121,8 +126,10 @@ export default function TellerDetail() {
 
           {/* Book Button */}
           <div className="flex justify-center mt-4">
-            <button className="bg-purple04 text-white rounded-xl px-28 py-1">
-              <span className="text-xl">Book</span>
+            <button className="bg-purple04 text-white rounded-xl px-28 py-1 w-[75%] h-[40px] flex items-center justify-center">
+              <span className="text-[19px] font-normal justify-center">
+                Book
+              </span>
             </button>
           </div>
         </div>
