@@ -19,16 +19,12 @@ const Header: React.FC<HeaderProps> = ({
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   // Pages that should show back button
-  const pagesWithBackButton = [
-    "/chat",
-    "/choosepackage",
-    "/payment",
-    "/editProfile",
-  ];
+  const pagesWithBackButton = ["/chat", "/payment", "/editProfile"];
   const shouldShowBackButton =
     showBackButton ||
     pagesWithBackButton.includes(pathname) ||
-    pathname.startsWith("/tellerinfo/");
+    pathname.startsWith("/tellerinfo/") ||
+    pathname.startsWith("/choosepackage/");
 
   // Pages that should show the Info icon
   const pagesWithInfoIcon = ["/editProfile"];
