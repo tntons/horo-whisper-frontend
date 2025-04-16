@@ -1,14 +1,60 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import SessionBox from "@/app/home/SessionBox";
 
+interface Session {
+  id: number;
+  customerId: number;
+  tellerId: number;
+  createdAt: string;
+  endedAt: string | null;
+  sessionStatus: string;
+  teller: {
+    user: {
+      username: string;
+    };
+  };
+}
+
 export default function Home() {
   const router = useRouter();
+  const [sessions, setSessions] = useState<Session[]>([]);
+
+  const fetchSessions = async () => {
+    try {
+      const customerId = 1; // Replace with actual customer ID
+      const response = await fetch(`/api/customers/sessions/${customerId}`); // Replace 1 with the actual customerId
+      if (!response.ok) {
+        throw new Error("Failed to fetch sessions");
+      }
+      const data = await response.json();
+      setSessions(data.data); // Set the fetched sessions
+    } catch (error) {
+      console.error("Error fetching sessions:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSessions();
+  }, []);
+
+  const currentSessions = sessions.filter(
+    (session) => session.sessionStatus === "Active"
+  );
+  const pendingSessions = sessions.filter(
+    (session) =>
+      session.sessionStatus === "Pending" ||
+      session.sessionStatus === "Processing"
+  );
+  const sessionHistory = sessions.filter(
+    (session) =>
+      session.sessionStatus === "Ended" || session.sessionStatus === "Declined"
+  );
 
   return (
-    <div className="h-screen w-full overflow-y-scroll snap-y snap-mandatory bg-gradient-to-b from-[#090C6C] via-[#575ABA] via-35% to-[#575ABA] no-scrollbar font-inter">
+    <div className="h-screen w-full overflow-y-scroll snap-y bg-gradient-to-b from-[#090C6C] via-[#575ABA] via-35% to-[#575ABA] no-scrollbar font-inter">
       <section className="w-full h-[30vh] snap-start">
         <div className="flex flex-col items-center justify-center">
           <h1 className="text-white text-lg mt-4 font-bold">
@@ -28,41 +74,53 @@ export default function Home() {
             </h1>
           </button>
 
-          <div className="flex flex-col gap-3">
-            <h2>Current Session</h2>
-            <SessionBox
-              name="Mekk Maedhus"
-              date="23 Mar 2025"
-              active={true}
-              status="Last reply: 2 hours ago"
-            />
-          </div>
+          {/* Current Sessions */}
+          {currentSessions.length > 0 && (
+            <div className="flex flex-col gap-3">
+              <h2>Current Session</h2>
+              {currentSessions.map((session) => (
+                <SessionBox
+                  key={session.id}
+                  name={session.teller.user.username}
+                  date={new Date(session.createdAt).toLocaleDateString()}
+                  active={true}
+                  sessionStatus={session.sessionStatus}
+                />
+              ))}
+            </div>
+          )}
 
-          <div className="flex flex-col gap-3">
-            <h2>Pending Session</h2>
-            <SessionBox
-              name="Mekk Maedhus"
-              date="23 Mar 2025"
-              active={true}
-              status="Last reply: 2 hours ago"
-            />
-          </div>
+          {/* Pending Sessions */}
+          {pendingSessions.length > 0 && (
+            <div className="flex flex-col gap-3">
+              <h2>Pending Session</h2>
+              {pendingSessions.map((session) => (
+                <SessionBox
+                  key={session.id}
+                  name={session.teller.user.username}
+                  date={new Date(session.createdAt).toLocaleDateString()}
+                  active={false}
+                  sessionStatus={session.sessionStatus}
+                />
+              ))}
+            </div>
+          )}
 
-          <div className="flex flex-col gap-3">
-            <h2>Session History</h2>
-            <SessionBox
-              name="Mekk Maedhus"
-              date="23 Mar 2025"
-              active={false}
-              status="Session Ended 2 hours ago"
-            />
-            <SessionBox
-              name="Woon Wannaya"
-              date="23 Mar 2025"
-              active={false}
-              status="Session Ended 2 hours ago"
-            />
-          </div>
+          {/* Session History */}
+          {sessionHistory.length > 0 && (
+            <div className="flex flex-col gap-3">
+              <h2>Session History</h2>
+              {sessionHistory.map((session) => (
+                <SessionBox
+                  key={session.id}
+                  name={session.teller.user.username}
+                  date={new Date(session.createdAt).toLocaleDateString()}
+                  active={false}
+                  sessionStatus={session.sessionStatus} // Pass sessionStatus directly
+                />
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </div>
