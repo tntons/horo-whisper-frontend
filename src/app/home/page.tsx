@@ -43,15 +43,46 @@ export default function Home() {
   const currentSessions = sessions.filter(
     (session) => session.sessionStatus === "Active"
   );
-  const pendingSessions = sessions.filter(
-    (session) =>
-      session.sessionStatus === "Pending" ||
-      session.sessionStatus === "Processing"
-  );
-  const sessionHistory = sessions.filter(
-    (session) =>
-      session.sessionStatus === "Ended" || session.sessionStatus === "Declined"
-  );
+
+  const pendingSessions = sessions
+    .filter(
+      (session) =>
+        session.sessionStatus === "Pending" ||
+        session.sessionStatus === "Processing"
+    )
+    .sort((a, b) => {
+      // Sort "Processing" sessions first
+      if (
+        a.sessionStatus === "Processing" &&
+        b.sessionStatus !== "Processing"
+      ) {
+        return -1;
+      }
+      if (
+        a.sessionStatus !== "Processing" &&
+        b.sessionStatus === "Processing"
+      ) {
+        return 1;
+      }
+      return 0; // Keep the order for other statuses
+    });
+
+  const sessionHistory = sessions
+    .filter(
+      (session) =>
+        session.sessionStatus === "Ended" ||
+        session.sessionStatus === "Declined"
+    )
+    .sort((a, b) => {
+      // Sort "Ended" sessions first
+      if (a.sessionStatus === "Ended" && b.sessionStatus !== "Ended") {
+        return -1;
+      }
+      if (a.sessionStatus !== "Ended" && b.sessionStatus === "Ended") {
+        return 1;
+      }
+      return 0; // Keep the order for other statuses
+    });
 
   return (
     <div className="h-screen w-full overflow-y-scroll no-scrollbar font-inter">
