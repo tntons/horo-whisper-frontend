@@ -50,7 +50,7 @@ export default function ChoosePackage() {
         },
         body: JSON.stringify({
           customerId: 1, // Replace with the actual customerId if available
-          tellerId: tellerId,
+          tellerId: parseInt(tellerId),
           packageId: selectedPackage,
         }),
       });
