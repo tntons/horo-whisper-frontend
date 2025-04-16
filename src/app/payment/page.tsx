@@ -51,11 +51,11 @@ export default function Payment() {
     const [timerKey, setTimerKey] = useState(0);
     const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const paymentId = 1; // Replace with actual payment ID
 
     useEffect(() => {
         const fetchPaymentInfo = async () => {
             try {
-                const paymentId = 5; // Replace with actual paymentId
                 const response = await fetch(`/api/customers/get-payment/${paymentId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch payment information');
@@ -81,7 +81,6 @@ export default function Payment() {
     const handleAlreadyPaid = async () => {
         setIsWaiting(true);
         try {
-            const paymentId = 5;
             const response = await fetch(`/api/customers/verify-payment/${paymentId}`, {
                 method: 'PATCH',
                 headers: {

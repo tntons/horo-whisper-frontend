@@ -39,10 +39,10 @@ export default function PastSession() {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [sessionInfo, setSessionInfo] = useState<SessionInfo | ErrorResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const tellerId = 2;
 
   const fetchSessionData = async () => {
     try {
-      const tellerId = 1;
       const response = await fetch(`/api/tellers/${tellerId}/past-session`);
       const data = await response.json();
       setSessionInfo(data);

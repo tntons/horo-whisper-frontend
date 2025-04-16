@@ -47,7 +47,7 @@ export default function CurrentSession() {
 
   const fetchSessionData = async () => {
     try {
-      const tellerId = 1;
+      const tellerId = 2;
       const response = await fetch(`/api/tellers/${tellerId}/current-session`);
       const data = await response.json();
       setSessionInfo(data);
@@ -92,8 +92,8 @@ export default function CurrentSession() {
                   sessionId={session.sessionId}
                   name={session.username}
                   detail={"This is the latest message in session"}
-                  date={session.endedDate}
-                  time={session.endedTime}
+                  date={session.createdDate} // must change to latest message date
+                  time={session.createdTime}
                   current={true}
                   message={3}
                 />
