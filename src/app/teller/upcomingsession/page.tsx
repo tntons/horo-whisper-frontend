@@ -41,8 +41,8 @@ export default function UpcomingSession() {
 
     const fetchSessionData = async () => {
         try {
-            const tellerId = 1;
-            const response = await fetch(`/api/tellers/upcoming-session/${tellerId}`);
+            const tellerId = 2;
+            const response = await fetch(`/api/tellers/${tellerId}/upcoming-session`);
             const data = await response.json();
             setSessionInfo(data);
             console.log(data);

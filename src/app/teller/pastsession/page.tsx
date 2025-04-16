@@ -43,7 +43,7 @@ export default function PastSession() {
   const fetchSessionData = async () => {
     try {
       const tellerId = 1;
-      const response = await fetch(`/api/tellers/past-session/${tellerId}`);
+      const response = await fetch(`/api/tellers/${tellerId}/past-session`);
       const data = await response.json();
       setSessionInfo(data);
       console.log(data);
