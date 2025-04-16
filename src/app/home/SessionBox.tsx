@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { GrNext } from "react-icons/gr";
+import React from "react";
 
 interface SessionBoxProps {
   name: string;
@@ -18,14 +19,14 @@ const SessionBox = ({ name, date, active, sessionStatus }: SessionBoxProps) => {
 
   switch (sessionStatus) {
     case "Pending":
-      statusMessage = "Waiting for confirmation";
+      statusMessage = "Waiting for confirmation\n ";
       showDate = false;
       showActiveStatus = false;
       showReviewBadge = false;
       break;
     case "Processing":
-      statusMessage = "Booking confirmed! Make payment now";
-      statusColor = "text-[#2CA600] underline";
+      statusMessage = "Booking confirmed!\nMake payment now";
+      statusColor = "text-[#2CA600] underline font-bold";
       isClickable = true;
       showDate = false;
       showActiveStatus = false;
@@ -39,7 +40,6 @@ const SessionBox = ({ name, date, active, sessionStatus }: SessionBoxProps) => {
       break;
     case "Declined":
       statusMessage = "Session declined";
-      showDate = false;
       showActiveStatus = false;
       showReviewBadge = false;
       break;
@@ -67,8 +67,8 @@ const SessionBox = ({ name, date, active, sessionStatus }: SessionBoxProps) => {
       </div>
 
       {/* Middle Column - Details */}
-      <div className="flex flex-col flex-grow mx-3 justify-center">
-        <h2 className="text-md font-bold">{name}</h2>
+      <div className="flex flex-col flex-grow mx-3 justify-start">
+        <h2 className="text-md font-bold leading-tight">{name}</h2>
         {showDate && <p className="text-md">{date}</p>}
 
         <div className="flex flex-row items-center gap-1 mt-1">
@@ -88,7 +88,12 @@ const SessionBox = ({ name, date, active, sessionStatus }: SessionBoxProps) => {
               }
             }}
           >
-            {statusMessage}
+            {statusMessage.split("\n").map((line, index) => (
+              <React.Fragment key={index}>
+                {line}
+                <br />
+              </React.Fragment>
+            ))}
           </p>
         </div>
       </div>

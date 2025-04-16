@@ -54,8 +54,8 @@ export default function Home() {
   );
 
   return (
-    <div className="h-screen w-full overflow-y-scroll snap-y bg-gradient-to-b from-[#090C6C] via-[#575ABA] via-35% to-[#575ABA] no-scrollbar font-inter">
-      <section className="w-full h-[30vh] snap-start">
+    <div className="h-screen w-full overflow-y-scroll no-scrollbar font-inter">
+      <section className="w-full h-[30vh] bg-gradient-to-b from-[#090C6C] via-[#575ABA] via-100% to-[#575ABA] ">
         <div className="flex flex-col items-center justify-center">
           <h1 className="text-white text-lg mt-4 font-bold">
             Your Daily Horoscope
@@ -63,8 +63,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="w-full h-screen bg-background snap-start justify-center items-center px-8 pt-6">
-        <div className="flex flex-col gap-6">
+      <section className="w-full h-screen bg-background justify-center items-center px-8 pt-6">
+        <div className="flex flex-col gap-6 pb-4">
           <button
             className="bg-purple04 text-white rounded-xl py-2 justify-center items-center"
             onClick={() => router.push("/browseTeller")}
@@ -116,7 +116,7 @@ export default function Home() {
                   name={session.teller.user.username}
                   date={new Date(session.createdAt).toLocaleDateString()}
                   active={false}
-                  sessionStatus={session.sessionStatus} // Pass sessionStatus directly
+                  sessionStatus={session.sessionStatus}
                 />
               ))}
             </div>
