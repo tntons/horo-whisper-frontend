@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="body-container">
+      <body className="body-container no-scrollbar">
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>

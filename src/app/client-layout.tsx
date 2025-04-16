@@ -9,21 +9,23 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const hideNavbarPaths = ["/welcome","/teller/currentsession","/teller/pastsession","/teller/upcomingsession"]; // Add any paths where you want to hide the navbar
+  const hideNavbarPaths = [
+    "/welcome",
+    "/teller/currentsession",
+    "/teller/pastsession",
+    "/teller/upcomingsession",
+  ]; // Add any paths where you want to hide the navbar
   const hideHeaderPaths = ["/welcome"]; // Add any paths where you want to hide the header
 
   return (
     <div className="container">
-
-      {!hideHeaderPaths.includes(pathname || "") && (
-        <Header/>
-      )}
+      {!hideHeaderPaths.includes(pathname || "") && <Header />}
 
       {!hideNavbarPaths.includes(pathname || "") && (
-          <Navbar pathname={pathname || ""} />
+        <Navbar pathname={pathname || ""} />
       )}
       <div
-        className={`main-content ${
+        className={`main-content no-scrollbar ${
           !hideNavbarPaths.includes(pathname || "") ? "pt-[76px] pb-[76px]" : ""
         }`}
       >

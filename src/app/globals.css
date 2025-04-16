@@ -33,6 +33,12 @@ html, body {
   display: flex;
   justify-content: center; /* Centers the container horizontally */
   align-items: center; /* Centers the container vertically */
+  overflow: hidden;
+}
+
+.body-container {
+  height: 100%;
+  overflow: hidden; /* Prevent scrollbars on the body container */
 }
 
 .container {
