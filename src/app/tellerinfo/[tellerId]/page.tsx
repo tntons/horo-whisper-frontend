@@ -33,7 +33,7 @@ export default function TellerDetail() {
   }, [tellerId]);
 
   if (isLoading) {
-    return <p className="text-center mt-4">Loading...</p>;
+    return <p className="text-center mt-4 text-lg text-blue01">Loading...</p>;
   }
 
   if (error) {

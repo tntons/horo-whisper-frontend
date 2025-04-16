@@ -1,7 +1,12 @@
+"use client";
+
 import React from "react";
+import { useRouter } from "next/navigation";
 import SessionBox from "@/app/home/SessionBox";
 
 export default function Home() {
+  const router = useRouter();
+
   return (
     <div className="h-screen w-full overflow-y-scroll snap-y snap-mandatory bg-gradient-to-b from-[#090C6C] via-[#575ABA] via-35% to-[#575ABA] no-scrollbar font-inter">
       <section className="w-full h-[30vh] snap-start">
@@ -14,7 +19,10 @@ export default function Home() {
 
       <section className="w-full h-screen bg-background snap-start justify-center items-center px-8 pt-6">
         <div className="flex flex-col gap-6">
-          <button className="bg-purple04 text-white rounded-xl py-2 justify-center items-center">
+          <button
+            className="bg-purple04 text-white rounded-xl py-2 justify-center items-center"
+            onClick={() => router.push("/browseTeller")}
+          >
             <h1 className="text-white text-[14px] font-bold">
               Book New Session
             </h1>

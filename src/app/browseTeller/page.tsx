@@ -51,7 +51,7 @@ export default function BrowseTeller() {
 
       <div className="flex flex-col items-center overflow-y-auto no-scrollbar w-full">
         {isLoading ? (
-          <p className="text-blue01 mt-4">Loading...</p>
+          <p className="text-blue01 mt-4 text-lg">Loading...</p>
         ) : error ? (
           <p className="text-red-500 mt-4">{error}</p>
         ) : filteredTellers.length > 0 ? (
