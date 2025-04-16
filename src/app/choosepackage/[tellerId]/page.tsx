@@ -149,10 +149,10 @@ export default function ChoosePackage() {
         </div>
       </Box>
 
-      <div className="mt-4 mx-4 mb-20">
+      <div className="mt-10 mx-4 flex justify-center">
         <button
           disabled={selectedPackage === null || selectedAnonymity === null}
-          className={`w-full bg-purple04 text-white py-3 rounded-xl ${
+          className={`w-[75%] h-[47px] bg-purple04 text-white py-3 rounded-xl flex justify-center items-center ${
             selectedPackage === null || selectedAnonymity === null
               ? "opacity-50"
               : ""
