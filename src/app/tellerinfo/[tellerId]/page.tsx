@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Clock } from "lucide-react";
 import { MessageSquareCode } from "lucide-react";
@@ -10,6 +10,7 @@ export default function TellerDetail() {
   const [teller, setTeller] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const router = useRouter();
 
   // Fetch teller details
   const fetchTellerDetails = async () => {
@@ -126,7 +127,10 @@ export default function TellerDetail() {
 
           {/* Book Button */}
           <div className="flex justify-center mt-4">
-            <button className="bg-purple04 text-white rounded-xl px-28 py-1 w-[75%] h-[40px] flex items-center justify-center">
+            <button
+              className="bg-purple04 text-white rounded-xl px-28 py-1 w-[75%] h-[40px] flex items-center justify-center"
+              onClick={() => router.push(`/choosepackage/${tellerId}`)}
+            >
               <span className="text-[19px] font-normal justify-center">
                 Book
               </span>

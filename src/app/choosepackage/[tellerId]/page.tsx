@@ -16,12 +16,7 @@ interface PackageInfo {
   }>;
 }
 export default function ChoosePackage() {
-  const tellerId = 1;
-  const customerId = 1;
-  const params = useParams();
-  const tellerid = params.tellerid as String;
-  const selectpack = params.selectpack as String;
-  const [post, setPost] = useState(null);
+  const { tellerId } = useParams();
   const [packageInfo, setPackageInfo] = useState<PackageInfo | null>(null);
   const [selectedPackage, setSelectedPackage] = useState<number | null>(null);
   const [selectedAnonymity, setSelectedAnonymity] = useState<number | null>(
@@ -41,7 +36,7 @@ export default function ChoosePackage() {
 
   useEffect(() => {
     fetchPackage();
-  }, []);
+  }, [tellerId]);
   useEffect(() => {
     console.log(selectedPackage);
   }, [selectedPackage]);
@@ -54,16 +49,9 @@ export default function ChoosePackage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          sessionData: {
-            customerId: customerId,
-            tellerId: tellerId,
-            sessionStatus: "Pending",
-          },
-          paymentData: {
-            customerId: customerId,
-            packageId: selectedPackage,
-            status: "Disabled",
-          },
+          customerId: 1, // Replace with the actual customerId if available
+          tellerId: tellerId,
+          packageId: selectedPackage,
         }),
       });
 
