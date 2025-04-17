@@ -16,7 +16,7 @@ export default function PaySuccessBox({ setIsPaySuccess }: PaySuccessBoxProps) {
                 <div className="flex flex-row gap-2 w-full">
                     <button 
                         className="bg-grey01 text-black px-3 py-1.5 rounded-lg w-1/2"
-                        onClick={() => router.push('home')}
+                        onClick={() => router.push('/home')}
                     >
                         <p className="text-md">Back Home</p>
                     </button>

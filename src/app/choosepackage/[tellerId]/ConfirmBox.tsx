@@ -1,5 +1,5 @@
 import { collectRoutesUsingEdgeRuntime } from "next/dist/build/utils";
-import Correct from "../../payment/correct";
+import Correct from "../../payment/[paymentId]/correct";
 import { useRouter } from "next/navigation";
 
 export default function ConfirmBox() {

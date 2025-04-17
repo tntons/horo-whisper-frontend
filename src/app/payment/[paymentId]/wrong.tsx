@@ -1,6 +1,6 @@
 import React from "react";
 import Lottie from "react-lottie";
-import wrong from "../../assets/wrong.json";
+import wrong from "../../../assets/wrong.json";
 
 export default function Wrong() {
     const defaultOptions = {

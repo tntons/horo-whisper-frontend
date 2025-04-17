@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { GrNext } from "react-icons/gr";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 interface SessionBoxProps {
   name: string;
@@ -57,37 +58,10 @@ const SessionBox = ({
       break;
   }
 
-  const handleVerifyPayment = async () => {
-    if (!paymentId) {
-      console.error("No payment ID available");
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `/api/customers/verify-payment/${paymentId}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to verify payment");
-      }
-
-      const data = await response.json();
-      console.log("Payment verification successful:", data);
-
-      if (onPaymentVerified) {
-        onPaymentVerified();
-      }
-    } catch (error) {
-      console.error("Error verifying payment:", error);
-    }
-  };
+  const router = useRouter();
+  const handleVerifyPayment = () => {
+    router.push(`/payment/${paymentId}`);
+  }
 
   return (
     <div className="flex flex-row items-center justify-between w-full h-[11vp] bg-greybackground rounded-lg border border-greyborder p-3">

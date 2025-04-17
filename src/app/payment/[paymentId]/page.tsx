@@ -1,10 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Box from '@/components/Box';
-import PaySuccessBox from '@/app/payment/PaySuccessBox';
-import PayFailBox from '@/app/payment/PayFailBox';
-import WaitingBox from '@/app/payment/WaitingBox';
+import PaySuccessBox from '@/app/payment/[paymentId]/PaySuccessBox';
+import PayFailBox from '@/app/payment/[paymentId]/PayFailBox';
+import WaitingBox from '@/app/payment/[paymentId]/WaitingBox';
 
 interface PaymentInfo {
     data: {
@@ -51,7 +51,7 @@ export default function Payment() {
     const [timerKey, setTimerKey] = useState(0);
     const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const paymentId = 1; // Replace with actual payment ID
+    const {paymentId} = useParams(); // Replace with actual payment ID
 
     useEffect(() => {
         const fetchPaymentInfo = async () => {
