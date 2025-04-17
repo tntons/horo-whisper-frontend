@@ -96,7 +96,9 @@ export default function PastSession() {
                   key={index}
                   sessionId={session.sessionId}
                   name={session.username}
-                  detail={`You have made: ${session.price} baht`}
+                  detail={session.sessionStatus == "Declined"
+                    ? 'You declined this session.'
+                    : `You have made: ${session.price} baht`}
                   date={session.endedDate}
                   time={session.endedTime}
                   past={true}
