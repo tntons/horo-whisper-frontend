@@ -11,6 +11,7 @@ interface Session {
   createdAt: string;
   endedAt: string | null;
   sessionStatus: string;
+  paymentId: number;
   teller: {
     user: {
       username: string;
@@ -116,6 +117,7 @@ export default function Home() {
                   date={new Date(session.createdAt).toLocaleDateString()}
                   active={true}
                   sessionStatus={session.sessionStatus}
+                  paymentId={session.paymentId}
                 />
               ))}
             </div>
@@ -132,6 +134,7 @@ export default function Home() {
                   date={new Date(session.createdAt).toLocaleDateString()}
                   active={false}
                   sessionStatus={session.sessionStatus}
+                  paymentId={session.paymentId} // Pass the paymentId
                 />
               ))}
             </div>
@@ -148,6 +151,7 @@ export default function Home() {
                   date={new Date(session.createdAt).toLocaleDateString()}
                   active={false}
                   sessionStatus={session.sessionStatus}
+                  paymentId={session.paymentId}
                 />
               ))}
             </div>

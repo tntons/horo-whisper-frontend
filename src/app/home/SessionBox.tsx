@@ -7,9 +7,16 @@ interface SessionBoxProps {
   date: string;
   active: boolean;
   sessionStatus: string;
+  paymentId: number;
 }
 
-const SessionBox = ({ name, date, active, sessionStatus }: SessionBoxProps) => {
+const SessionBox = ({
+  name,
+  date,
+  active,
+  sessionStatus,
+  paymentId,
+}: SessionBoxProps) => {
   let statusMessage = "";
   let statusColor = "";
   let isClickable = false;
@@ -48,6 +55,34 @@ const SessionBox = ({ name, date, active, sessionStatus }: SessionBoxProps) => {
       break;
   }
 
+  const handleVerifyPayment = async () => {
+    if (!paymentId) {
+      console.error("No payment ID available");
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/customers/verify-payment/${paymentId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to verify payment");
+      }
+
+      const data = await response.json();
+      console.log("Payment verification successful:", data);
+    } catch (error) {
+      console.error("Error verifying payment:", error);
+    }
+  };
+
   return (
     <div className="flex flex-row items-center justify-between w-full h-[11vp] bg-greybackground rounded-lg border border-greyborder p-3">
       {/* Left Column - Image */}
@@ -83,8 +118,8 @@ const SessionBox = ({ name, date, active, sessionStatus }: SessionBoxProps) => {
             className={`text-md ${statusColor}`}
             onClick={() => {
               if (isClickable) {
-                // Handle payment click here
                 console.log("Redirect to payment page");
+                handleVerifyPayment();
               }
             }}
           >

@@ -1,10 +1,10 @@
-'use client'
-import React, { useState, useEffect } from 'react';
-import SessionMenu from '../SessionMenu';
-import SessionBox from '../SessionBox';
-import SearchBar from '../../browseTeller/SearchBar';
-import SearchFilter from '../../browseTeller/SearchFilter';
-import SearchSort from '../../browseTeller/SearchSort';
+"use client";
+import React, { useState, useEffect } from "react";
+import SessionMenu from "../SessionMenu";
+import SessionBox from "../SessionBox";
+import SearchBar from "../../browseTeller/SearchBar";
+import SearchFilter from "../../browseTeller/SearchFilter";
+import SearchSort from "../../browseTeller/SearchSort";
 
 interface Session {
   sessionId: number;
@@ -37,9 +37,11 @@ interface ErrorResponse {
 
 export default function PastSession() {
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [sessionInfo, setSessionInfo] = useState<SessionInfo | ErrorResponse | null>(null);
+  const [sessionInfo, setSessionInfo] = useState<
+    SessionInfo | ErrorResponse | null
+  >(null);
   const [isLoading, setIsLoading] = useState(true);
-  const tellerId = 2;
+  const tellerId = 1;
 
   const fetchSessionData = async () => {
     try {
@@ -48,30 +50,30 @@ export default function PastSession() {
       setSessionInfo(data);
       console.log(data);
     } catch (error) {
-      console.error('Error fetching session info:', error);
+      console.error("Error fetching session info:", error);
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     fetchSessionData();
   }, []);
 
   const menuItems = [
-    { title: 'Current Sessions', path: '/teller/currentsession' },
-    { title: 'Upcoming Sessions', path: '/teller/upcomingsession' }
+    { title: "Current Sessions", path: "/teller/currentsession" },
+    { title: "Upcoming Sessions", path: "/teller/upcomingsession" },
   ];
 
   return (
-    <div className="flex flex-col items-center h-screen pt-[76px]">
-      <div className='flex flex-col items-center w-full h-full p-4 gap-5 '>
-        <SessionMenu
-          currentTitle="Past Sessions"
-          menuItems={menuItems}
-        />
+    <div className="flex flex-col items-center h-screen pt-[76px] font-inter">
+      <div className="flex flex-col items-center w-full h-full p-4 gap-5 ">
+        <SessionMenu currentTitle="Past Sessions" menuItems={menuItems} />
         <div className="flex flex-row items-center justify-between w-full">
-          <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          <SearchBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
           <SearchFilter />
           <SearchSort />
         </div>
@@ -79,12 +81,16 @@ export default function PastSession() {
           <h1>Loading Session ...</h1>
         ) : !sessionInfo?.success ? (
           <div className="flex flex-col items-center justify-center mb-20 flex-1 gap-2">
-            <h2 className="text-xl font-medium text-gray-600">No Past Session Available</h2>
-            <p className="text-gray-500">You have not completed any session yet.</p>
+            <h2 className="text-xl font-medium text-gray-600">
+              No Past Session Available
+            </h2>
+            <p className="text-gray-500">
+              You have not completed any session yet.
+            </p>
           </div>
         ) : (
           <>
-            <div className='flex flex-col items-center w-full h-full gap-3'>
+            <div className="flex flex-col items-center w-full h-full gap-3">
               {sessionInfo?.data.sessions?.map((session, index) => (
                 <SessionBox
                   key={index}
