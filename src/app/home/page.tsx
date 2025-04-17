@@ -135,6 +135,7 @@ export default function Home() {
                   active={false}
                   sessionStatus={session.sessionStatus}
                   paymentId={session.paymentId} // Pass the paymentId
+                  onPaymentVerified={fetchSessions} // Callback to refresh sessions
                 />
               ))}
             </div>

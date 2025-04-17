@@ -49,7 +49,7 @@ export default function CurrentSession() {
 
   const fetchSessionData = async () => {
     try {
-      const tellerId = 2;
+      const tellerId = 1;
       const response = await fetch(`/api/tellers/${tellerId}/current-session`);
       const data = await response.json();
       setSessionInfo(data);

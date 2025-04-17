@@ -8,6 +8,7 @@ interface SessionBoxProps {
   active: boolean;
   sessionStatus: string;
   paymentId: number;
+  onPaymentVerified?: () => void;
 }
 
 const SessionBox = ({
@@ -16,6 +17,7 @@ const SessionBox = ({
   active,
   sessionStatus,
   paymentId,
+  onPaymentVerified,
 }: SessionBoxProps) => {
   let statusMessage = "";
   let statusColor = "";
@@ -78,6 +80,10 @@ const SessionBox = ({
 
       const data = await response.json();
       console.log("Payment verification successful:", data);
+
+      if (onPaymentVerified) {
+        onPaymentVerified();
+      }
     } catch (error) {
       console.error("Error verifying payment:", error);
     }
