@@ -7,10 +7,22 @@ import SearchSort from "./SearchSort";
 import { useState, useEffect } from "react";
 
 export default function BrowseTeller() {
-  const [tellers, setTellers] = useState([]);
+  interface Teller {
+    tellerId: number;
+    tellerName: string;
+    imageSrc?: string;
+    averageRating?: number;
+    specialty?: string[];
+    bio?: string;
+    totalReviews?: number;
+    traffic?: number;
+    minPrice?: number;
+  }
+
+  const [tellers, setTellers] = useState<Teller[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch tellers from the backend
   const fetchTellers = async () => {
@@ -26,7 +38,7 @@ export default function BrowseTeller() {
         throw new Error("Failed to fetch tellers");
       }
     } catch (err) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : "An unknown error occurred");
     } finally {
       setIsLoading(false);
     }
