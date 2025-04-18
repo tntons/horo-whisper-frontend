@@ -11,9 +11,7 @@ export default function ClientLayout({
   const pathname = usePathname();
   const hideNavbarPaths = [
     "/welcome",
-    "/teller/currentsession",
-    "/teller/pastsession",
-    "/teller/upcomingsession",
+    pathname?.startsWith("/teller/") ? pathname : "",
   ]; // Add any paths where you want to hide the navbar
   const hideHeaderPaths = ["/welcome"]; // Add any paths where you want to hide the header
 

@@ -59,7 +59,10 @@ const Header: React.FC<HeaderProps> = ({
           </button>
         )}
         {shouldShowUserButton && (
-          <button className="absolute right-4 bottom-2.5">
+          <button
+            className="absolute right-4 bottom-2.5"
+            onClick={() => router.push("/teller/profile")}
+          >
             <UserRound size={24} />
           </button>
         )}
