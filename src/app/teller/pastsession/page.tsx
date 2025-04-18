@@ -65,6 +65,13 @@ export default function PastSession() {
     { title: "Upcoming Sessions", path: "/teller/upcomingsession" },
   ];
 
+  const filteredSession =
+    sessionInfo && "data" in sessionInfo
+      ? sessionInfo.data.sessions.filter((session) =>
+          session.username.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : [];
+
   return (
     <div className="flex flex-col items-center h-screen pt-[76px] font-inter">
       <div className="flex flex-col items-center w-full h-full p-4 gap-5 ">
@@ -73,6 +80,7 @@ export default function PastSession() {
           <SearchBar
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            forCustomer={false}
           />
           <SearchFilter />
           <SearchSort />
@@ -91,7 +99,7 @@ export default function PastSession() {
         ) : (
           <>
             <div className="flex flex-col items-center w-full h-full gap-3">
-              {sessionInfo?.data.sessions?.map((session, index) => (
+              {filteredSession.map((session, index) => (
                 <SessionBox
                   key={index}
                   sessionId={session.sessionId}
