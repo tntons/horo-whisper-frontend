@@ -2,8 +2,6 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
-import { IoChevronBack } from "react-icons/io5";
 
 export default function EditProfilePage() {
   const router = useRouter();
@@ -25,14 +23,14 @@ export default function EditProfilePage() {
     "Health and Well-being": false,
   });
 
-  const handleMethodChange = (method) => {
+  const handleMethodChange = (method: string) => {
     setSelectedMethods({
       ...selectedMethods,
       [method]: !selectedMethods[method],
     });
   };
 
-  const handleSpecialtyChange = (specialty) => {
+  const handleSpecialtyChange = (specialty: string) => {
     setSelectedSpecialties({
       ...selectedSpecialties,
       [specialty]: !selectedSpecialties[specialty],
@@ -58,8 +56,8 @@ export default function EditProfilePage() {
   return (
     <div className="h-full w-full mt-4 bg-[#FEF0E5] font-inter">
       {/* Content */}
-      <div className="p-4 bg-[#FEF2E9] rounded-lg mx-4 mt-4">
-        <h2 className="text-xl font-bold mb-2">Edit Profile</h2>
+      <div className="p-4 mx-4 mt-4">
+        <h2 className="text-xl font-bold mb-3">Edit Profile</h2>
 
         {/* Bio Section */}
         <div className="mb-3">
@@ -126,7 +124,7 @@ export default function EditProfilePage() {
         <div className="flex justify-center">
           <button
             onClick={handleSave}
-            className="bg-[#1F2359] text-white text-xl py-2 px-20 rounded-lg font-medium"
+            className="bg-[#1F2359] text-white text-xl py-2 px-24 rounded-lg"
           >
             Done
           </button>

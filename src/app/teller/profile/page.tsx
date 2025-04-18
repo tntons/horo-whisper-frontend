@@ -77,7 +77,7 @@ export default function TellerProfilePage() {
           <div className="flex items-center justify-center mt-4">
             <button
               className="flex items-center mt-3 bg-blue01 text-white px-4 py-2 rounded-lg text-lg gap-1"
-              onClick={() => router.push("/teller/profile/edit")}
+              onClick={() => router.push("/teller/profile/editProfile")}
             >
               <BsPencil className="mr-1" />
               <span>Edit Profile</span>
@@ -106,7 +106,10 @@ export default function TellerProfilePage() {
           </div>
 
           <div className="flex items-center justify-center mt-4">
-            <button className="flex items-center mt-3 bg-blue01 text-white px-4 py-2 rounded-lg text-lg gap-1">
+            <button
+              className="flex items-center mt-3 bg-blue01 text-white px-4 py-2 rounded-lg text-lg gap-1"
+              onClick={() => router.push("/teller/profile/editPackage")}
+            >
               Edit Package
             </button>
           </div>
