@@ -73,7 +73,7 @@ export default function PastSession() {
       : [];
 
   return (
-    <div className="flex flex-col items-center h-screen pt-[76px] font-inter">
+    <div className="flex flex-col items-center h-screen font-inter">
       <div className="flex flex-col items-center w-full h-full p-4 gap-5 ">
         <SessionMenu currentTitle="Past Sessions" menuItems={menuItems} />
         <div className="flex flex-row items-center justify-between w-full">
@@ -104,9 +104,11 @@ export default function PastSession() {
                   key={index}
                   sessionId={session.sessionId}
                   name={session.username}
-                  detail={session.sessionStatus == "Declined"
-                    ? 'You declined this session.'
-                    : `You have made: ${session.price} baht`}
+                  detail={
+                    session.sessionStatus == "Declined"
+                      ? "You declined this session."
+                      : `You have made: ${session.price} baht`
+                  }
                   date={session.endedDate}
                   time={session.endedTime}
                   past={true}

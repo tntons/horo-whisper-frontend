@@ -2,20 +2,22 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { FaStar } from "react-icons/fa";
 import { BsPencil } from "react-icons/bs";
 
 export default function TellerProfilePage() {
   const [acceptingCustomers, setAcceptingCustomers] = useState(true);
+  const router = useRouter();
 
   const toggleAcceptingCustomers = () => {
     setAcceptingCustomers(!acceptingCustomers);
   };
 
   return (
-    <div className="flex items-center w-full h-full bg-[#FEF0E5] font-inter">
+    <div className="flex mt-4 w-full h-full bg-[#FEF0E5] font-inter">
       {/* Main content */}
-      <div className="w-[90%] mx-auto mt-10">
+      <div className="w-[90%] mx-auto">
         {/* Accepting customers toggle */}
         <div className="bg-white rounded-lg p-4 mb-4 shadow">
           <div className="flex justify-between items-center ml-2 mr-4">
@@ -55,11 +57,11 @@ export default function TellerProfilePage() {
               <h2 className="text-lg font-bold">Golf the teller</h2>
 
               <div className="mt-1 flex">
-                <span className="bg-yellow-100 text-sm px-2 py-0.5 rounded-md text-yellow-800 mr-2">
+                <span className="bg-[#FBF6D1] rounded-full border border-[#D4BB2C] text-sm px-2 py-0.5 text-[#534002] mr-2">
                   Tarot Reading
                 </span>
-                <span className="bg-yellow-100 text-sm px-2 py-0.5 rounded-md text-yellow-800">
-                  Love and relationship
+                <span className="bg-[#FBF6D1] rounded-full border border-[#D4BB2C] text-sm px-2 py-0.5 text-[#534002] mr-2">
+                  Relationship
                 </span>
               </div>
 
@@ -73,7 +75,10 @@ export default function TellerProfilePage() {
           </div>
 
           <div className="flex items-center justify-center mt-4">
-            <button className="flex items-center mt-3 bg-blue01 text-white px-4 py-2 rounded-lg text-lg gap-1">
+            <button
+              className="flex items-center mt-3 bg-blue01 text-white px-4 py-2 rounded-lg text-lg gap-1"
+              onClick={() => router.push("/teller/profile/edit")}
+            >
               <BsPencil className="mr-1" />
               <span>Edit Profile</span>
             </button>
@@ -82,7 +87,7 @@ export default function TellerProfilePage() {
 
         {/* Earnings section */}
         <div className="bg-white rounded-lg p-4 mb-4 shadow">
-          <div className="flex justify-between items-center ml-3">
+          <div className="flex justify-between items-center mt-1 ml-3">
             <div>
               <h2 className="text-lg font-bold">You've made</h2>
               <div className="text-2xl font-bold">₿10,000</div>

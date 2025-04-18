@@ -65,13 +65,13 @@ export default function UpcomingSession() {
   ];
 
   const filteredSession =
-  sessionInfo && "data" in sessionInfo
-    ? sessionInfo.data.sessions.filter((session) =>
-        session.username.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : [];
+    sessionInfo && "data" in sessionInfo
+      ? sessionInfo.data.sessions.filter((session) =>
+          session.username.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : [];
   return (
-    <div className="flex flex-col items-center h-screen pt-[76px] font-inter">
+    <div className="flex flex-col items-center h-screen font-inter">
       <div className="flex flex-col items-center w-full h-full p-4 gap-5">
         <SessionMenu currentTitle="Upcoming Sessions" menuItems={menuItems} />
         <div className="flex flex-row items-center justify-between w-full">
