@@ -12,7 +12,7 @@ interface PackageItem {
   status: "Active" | "Deleted" | "New";
 }
 
-const EditPackageScreen: React.FC = () => {
+export default function EditPackagePage() {
   const tellerId = 1; // Replace with actual teller ID later
   const [packageInfo, setPackageInfo] = useState<PackageItem[]>([]);
 
@@ -20,11 +20,7 @@ const EditPackageScreen: React.FC = () => {
     try {
       const response = await fetch(`/api/tellers/${tellerId}/teller-package`);
       const data = await response.json();
-      const activePackages: PackageItem[] = data.data.map((item: any) => ({
-        ...item,
-        status: "Active",
-      }));
-      setPackageInfo(activePackages);
+      setPackageInfo(data.data);
     } catch (error) {
       console.error("Error fetching package:", error);
     }
@@ -75,6 +71,8 @@ const EditPackageScreen: React.FC = () => {
 
   const handleDone = async () => {
     try {
+      console.log("Packages submitted:", packageInfo);
+
       const response = await fetch(`/api/tellers/${tellerId}/teller-package`, {
         method: "PATCH",
         headers: {
@@ -84,8 +82,6 @@ const EditPackageScreen: React.FC = () => {
       });
 
       if (!response.ok) throw new Error("Failed to update packages");
-
-      console.log("Packages submitted:", packageInfo);
     } catch (error) {
       console.error("Error saving packages:", error);
     }
@@ -135,16 +131,18 @@ const EditPackageScreen: React.FC = () => {
                     <p className="text-black text-[14px]">฿</p>
                   </>
                 ) : (
-                  <>
-                    <p className="bg-white border border-gray-300 text-[14px] flex items-center rounded px-2 py-1 w-12 h-8">
-                      {item.questionNumber}
-                    </p>
-                    <p className="text-black text-[14px]">questions</p>
-                    <p className="bg-white border border-gray-300 text-[14px] flex items-center rounded px-2 py-1 w-20 h-8">
-                      {item.price}
-                    </p>
-                    <p className="text-black text-[14px]">฿</p>
-                  </>
+                  item.status === "Active" && (
+                    <>
+                      <p className="bg-white border border-gray-300 text-[14px] flex items-center rounded px-2 py-1 w-12 h-8">
+                        {item.questionNumber}
+                      </p>
+                      <p className="text-black text-[14px]">questions</p>
+                      <p className="bg-white border border-gray-300 text-[14px] flex items-center rounded px-2 py-1 w-20 h-8">
+                        {item.price}
+                      </p>
+                      <p className="text-black text-[14px]">฿</p>
+                    </>
+                  )
                 )}
 
                 <button
@@ -182,6 +180,4 @@ const EditPackageScreen: React.FC = () => {
       </div>
     </div>
   );
-};
-
-export default EditPackageScreen;
+}
