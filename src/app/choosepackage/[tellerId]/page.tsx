@@ -8,6 +8,7 @@ import ConfirmBox from "./ConfirmBox";
 interface PackageInfo {
   success: boolean;
   data: Array<{
+    status: string;
     id: number;
     tellerId: number;
     packageDetail: string | null;
@@ -72,37 +73,39 @@ export default function ChoosePackage() {
       {isConfirm && <ConfirmBox />}
       <Box title="Choose Package">
         <div className="flex flex-col gap-3">
-          {packageInfo?.data.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setSelectedPackage(item.id)}
-              className={`w-full p-4 text-left border-2 rounded-lg transition-colors ${
-                selectedPackage === item.id
-                  ? "border-purple02"
-                  : "border-greyborder"
-              }`}
-            >
-              <div className="flex justify-between items-center">
-                <div>
-                  <h2 className="text-lg font-medium">฿{item.price}</h2>
-                  <p className="text-gray-600">
-                    {item.questionNumber} questions
-                  </p>
+          {packageInfo?.data
+            .filter((pkg) => pkg.status === "Active")
+            .map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setSelectedPackage(item.id)}
+                className={`w-full p-4 text-left border-2 rounded-lg transition-colors ${
+                  selectedPackage === item.id
+                    ? "border-purple02"
+                    : "border-greyborder"
+                }`}
+              >
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-lg font-medium">฿{item.price}</h2>
+                    <p className="text-gray-600">
+                      {item.questionNumber} questions
+                    </p>
+                  </div>
+                  <div
+                    className={`h-6 w-6 border-2 rounded-full flex items-center justify-center ${
+                      selectedPackage === 0
+                        ? "border-purple02"
+                        : "border-greyborder"
+                    }`}
+                  >
+                    {selectedPackage === item.id && (
+                      <div className="h-3 w-3 bg-purple02 rounded-full" />
+                    )}
+                  </div>
                 </div>
-                <div
-                  className={`h-6 w-6 border-2 rounded-full flex items-center justify-center ${
-                    selectedPackage === 0
-                      ? "border-purple02"
-                      : "border-greyborder"
-                  }`}
-                >
-                  {selectedPackage === item.id && (
-                    <div className="h-3 w-3 bg-purple02 rounded-full" />
-                  )}
-                </div>
-              </div>
-            </button>
-          ))}
+              </button>
+            ))}
         </div>
       </Box>
 

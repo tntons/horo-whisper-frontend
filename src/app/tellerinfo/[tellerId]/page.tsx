@@ -108,11 +108,13 @@ export default function TellerDetail() {
               </div>
 
               <div className="flex flex-col mt-2 gap-1">
-                {packages.map((pkg, index) => (
-                  <p key={index}>
-                    ฿ {pkg.price} / {pkg.questionNumber} questions
-                  </p>
-                ))}
+                {packages
+                  .filter((pkg) => pkg.status === "Active")
+                  .map((pkg, index) => (
+                    <p key={index}>
+                      ฿ {pkg.price} / {pkg.questionNumber} questions
+                    </p>
+                  ))}
               </div>
             </div>
 
