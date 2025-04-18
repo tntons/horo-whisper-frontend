@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { IoChevronBack } from "react-icons/io5";
-import { Info } from "lucide-react";
+import { Info, UserRound } from "lucide-react";
 import ContactSupport from "./ContactSupport";
 
 interface HeaderProps {
   showBackButton?: boolean;
   showInfoIcon?: boolean;
+  showUserButton?: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({
   showBackButton = false,
   showInfoIcon = false,
+  showUserButton = false,
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -30,6 +32,9 @@ const Header: React.FC<HeaderProps> = ({
   const pagesWithInfoIcon = ["/editProfile"];
   const shouldShowInfoIcon =
     showInfoIcon || pagesWithInfoIcon.includes(pathname);
+
+  const pagesWithUserButton = pathname.startsWith("/teller/");
+  const shouldShowUserButton = pagesWithUserButton || showUserButton;
 
   return (
     <>
@@ -51,6 +56,11 @@ const Header: React.FC<HeaderProps> = ({
             className="absolute right-4 bottom-2.5"
           >
             <Info size={28} />
+          </button>
+        )}
+        {shouldShowUserButton && (
+          <button className="absolute right-4 bottom-2.5">
+            <UserRound size={24} />
           </button>
         )}
       </nav>
