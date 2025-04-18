@@ -9,18 +9,22 @@ interface PackageItem {
   packageDetail: string | null;
   questionNumber: number;
   price: number;
+  status: "Active" | "Deleted" | "New";
 }
 
 const EditPackageScreen: React.FC = () => {
   const tellerId = 1; // Replace with actual teller ID later
   const [packageInfo, setPackageInfo] = useState<PackageItem[]>([]);
-  const [isDone, setIsDone] = useState(false);
 
   const fetchPackage = async () => {
     try {
       const response = await fetch(`/api/tellers/${tellerId}/teller-package`);
       const data = await response.json();
-      setPackageInfo(data.data || []);
+      const activePackages: PackageItem[] = data.data.map((item: any) => ({
+        ...item,
+        status: "Active",
+      }));
+      setPackageInfo(activePackages);
     } catch (error) {
       console.error("Error fetching package:", error);
     }
@@ -28,31 +32,45 @@ const EditPackageScreen: React.FC = () => {
 
   useEffect(() => {
     fetchPackage();
-  }, [tellerId]);
+  }, []);
 
   const addPackageItem = () => {
     const newItem: PackageItem = {
-      id: Date.now(), // Temporary ID for UI
+      id: Date.now(), // temporary ID for UI only
       tellerId,
       packageDetail: null,
       questionNumber: 0,
       price: 0,
+      status: "New",
     };
     setPackageInfo((prev) => [...prev, newItem]);
   };
 
   const updatePackageItem = (
-    index: number,
+    id: number,
     key: keyof PackageItem,
     value: number | string | null
   ) => {
-    const updated = [...packageInfo];
-    updated[index] = { ...updated[index], [key]: value };
-    setPackageInfo(updated);
+    setPackageInfo((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, [key]: value } : item))
+    );
   };
 
   const removePackageItem = (id: number) => {
-    setPackageInfo((prev) => prev.filter((item) => item.id !== id));
+    setPackageInfo(
+      (prev) =>
+        prev
+          .map((item) => {
+            if (item.id === id) {
+              if (item.status === "New") {
+                return null; // remove from UI
+              }
+              return { ...item, status: "Deleted" };
+            }
+            return item;
+          })
+          .filter(Boolean) as PackageItem[]
+    );
   };
 
   const handleDone = async () => {
@@ -67,7 +85,7 @@ const EditPackageScreen: React.FC = () => {
 
       if (!response.ok) throw new Error("Failed to update packages");
 
-      console.log("Packages saved:", packageInfo);
+      console.log("Packages submitted:", packageInfo);
     } catch (error) {
       console.error("Error saving packages:", error);
     }
@@ -81,50 +99,71 @@ const EditPackageScreen: React.FC = () => {
         <div className="mb-3 text-[14px] text-black">Package offerings</div>
 
         <div className="space-y-3 text-[14px]">
-          {packageInfo.map((item, index) => (
-            <div key={item.id} className="flex items-center space-x-2">
-              <div className="w-6 text-black">{index + 1}.</div>
+          {packageInfo
+            .filter((item) => item.status !== "Deleted")
+            .map((item, index) => (
+              <div key={item.id} className="flex items-center space-x-2 ">
+                <div className="w-6 text-black">{index + 1}.</div>
 
-              <input
-                type="number"
-                value={item.questionNumber}
-                className="bg-white border border-gray-300 rounded px-2 py-1 w-12 h-10"
-                onChange={(e) =>
-                  updatePackageItem(
-                    index,
-                    "questionNumber",
-                    parseInt(e.target.value)
-                  )
-                }
-              />
+                {item.status === "New" ? (
+                  <>
+                    <input
+                      type="number"
+                      value={item.questionNumber}
+                      className="bg-white border border-gray-300 rounded px-2 py-1 w-12 h-8"
+                      onChange={(e) =>
+                        updatePackageItem(
+                          item.id,
+                          "questionNumber",
+                          parseInt(e.target.value)
+                        )
+                      }
+                    />
+                    <p className="text-black text-[14px]">questions</p>
+                    <input
+                      type="number"
+                      value={item.price}
+                      className="bg-white border border-gray-300 rounded px-2 py-1 w-20 h-8"
+                      onChange={(e) =>
+                        updatePackageItem(
+                          item.id,
+                          "price",
+                          parseInt(e.target.value)
+                        )
+                      }
+                    />
+                    <p className="text-black text-[14px]">฿</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="bg-white border border-gray-300 text-[14px] flex items-center rounded px-2 py-1 w-12 h-8">
+                      {item.questionNumber}
+                    </p>
+                    <p className="text-black text-[14px]">questions</p>
+                    <p className="bg-white border border-gray-300 text-[14px] flex items-center rounded px-2 py-1 w-20 h-8">
+                      {item.price}
+                    </p>
+                    <p className="text-black text-[14px]">฿</p>
+                  </>
+                )}
 
-              <p className="text-black text-[14px]">questions</p>
+                <button
+                  className="bg-[#E86464] rounded-full p-1"
+                  onClick={() => removePackageItem(item.id)}
+                >
+                  <Minus size={16} className="text-white" />
+                </button>
+              </div>
+            ))}
 
-              <input
-                type="number"
-                value={item.price}
-                className="bg-white border border-gray-300 rounded px-2 py-1 w-20 h-10"
-                onChange={(e) =>
-                  updatePackageItem(index, "price", parseInt(e.target.value))
-                }
-              />
-
-              <p className="text-black text-[14px]">฿</p>
-
-              <button
-                className="bg-[#E86464] rounded-full p-1"
-                onClick={() => removePackageItem(item.id)}
-              >
-                <Minus size={16} className="text-white" />
-              </button>
-            </div>
-          ))}
-
-          {/* Add Button */}
           <div className="flex items-center">
-            <div className="w-6 mt-3 text-black">{packageInfo.length + 1}.</div>
+            <div className="w-6 text-black">
+              {packageInfo.filter((item) => item.status !== "Deleted").length +
+                1}
+              .
+            </div>
             <button
-              className="bg-[#9C9C9C] text-white mt-3 rounded-full px-6 py-1"
+              className="bg-[#9C9C9C] text-white rounded-full ml-1 px-6 py-1"
               onClick={addPackageItem}
             >
               Add
@@ -133,8 +172,7 @@ const EditPackageScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* Done Button */}
-      <div className="flex items-center justify-center mt-10">
+      <div className="flex justify-center items-center mt-10">
         <button
           onClick={handleDone}
           className="bg-[#1F2359] text-white text-xl py-2 px-24 rounded-lg"
