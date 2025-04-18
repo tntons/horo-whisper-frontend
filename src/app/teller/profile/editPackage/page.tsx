@@ -1,22 +1,49 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Minus } from "lucide-react";
 
-interface PackageItem {
-  id: number;
-  quantity: number;
-  type: string;
-  price: number;
-  currency: string;
+interface PackageInfo {
+  success: boolean;
+  data: Array<{
+    id: number;
+    tellerId: number;
+    packageDetail: string | null;
+    questionNumber: number;
+    price: number;
+  }>;
 }
 
 const EditPackageScreen: React.FC = () => {
-  const [packageItems, setPackageItems] = useState<PackageItem[]>([
-    { id: 1, quantity: 3, type: "question", price: 200, currency: "₽" },
-    { id: 2, quantity: 5, type: "question", price: 300, currency: "₽" },
-    { id: 3, quantity: 10, type: "question", price: 500, currency: "₽" },
-  ]);
+  const tellerId = 1; // Replace with actual teller ID later
+  const [packageInfo, setPackageInfo] = useState<PackageInfo | null>(null);
+  const [isDone, setIsDone] = useState(false);
+
+  const fetchPackage = async () => {
+    try {
+      const response = await fetch(`/api/tellers/${tellerId}/teller-package`);
+      const data = await response.json();
+      setPackageInfo(data.data);
+
+      if (!packageInfo) {
+        console.error("No package data found");
+      }
+
+      console.log("Package data:", packageInfo);
+    } catch (error) {
+      console.error("Error fetching package:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPackage();
+  }, [tellerId]);
+
+  // const [packageItems, setPackageItems] = useState<PackageItem[]>([
+  //   { id: 1, quantity: 3, type: "question", price: 200, currency: "₽" },
+  //   { id: 2, quantity: 5, type: "question", price: 300, currency: "₽" },
+  //   { id: 3, quantity: 10, type: "question", price: 500, currency: "₽" },
+  // ]);
 
   const addPackageItem = () => {
     const newId =
@@ -47,18 +74,18 @@ const EditPackageScreen: React.FC = () => {
         <div className="mb-3 text-[14px] text-black">Package offerings</div>
 
         <div className="space-y-3 text-[14px]">
-          {packageItems.map((item, index) => (
+          {packageInfo?.map((item, index) => (
             <div key={item.id} className="flex items-center space-x-2">
               <div className="w-6 text-black">{index + 1}.</div>
 
               <input
                 type="number"
-                value={item.quantity}
+                value={item.questionNumber}
                 className="bg-white border border-gray-300 rounded px-2 py-1 w-12 h-10"
                 onChange={(e) => {
                   const updatedItems = [...packageItems];
-                  updatedItems[index].quantity = parseInt(e.target.value);
-                  setPackageItems(updatedItems);
+                  updatedItems[index].questionNumber = parseInt(e.target.value);
+                  setPackageInfo(updatedItems);
                 }}
               />
 
@@ -67,11 +94,11 @@ const EditPackageScreen: React.FC = () => {
               <input
                 type="number"
                 value={item.price}
-                className="bg-white border border-gray-300 rounded px-2 py-1 w-16 h-10"
+                className="bg-white border border-gray-300 rounded px-2 py-1 w-20 h-10"
                 onChange={(e) => {
                   const updatedItems = [...packageItems];
                   updatedItems[index].price = parseInt(e.target.value);
-                  setPackageItems(updatedItems);
+                  setPackageInfo(updatedItems);
                 }}
               />
 
@@ -86,19 +113,17 @@ const EditPackageScreen: React.FC = () => {
             </div>
           ))}
 
-          {packageItems.length < 6 && (
-            <div className="flex items-center">
-              <div className="w-6 mt-3 text-black">
-                {packageItems.length + 1}.
-              </div>
-              <button
-                className="bg-[#9C9C9C] text-white mt-3 rounded-full px-6 py-1"
-                onClick={addPackageItem}
-              >
-                Add
-              </button>
+          <div className="flex items-center">
+            <div className="w-6 mt-3 text-black">
+              {packageInfo?.length + 1}.
             </div>
-          )}
+            <button
+              className="bg-[#9C9C9C] text-white mt-3 rounded-full px-6 py-1"
+              onClick={addPackageItem}
+            >
+              Add
+            </button>
+          </div>
         </div>
       </div>
 
