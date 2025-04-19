@@ -59,11 +59,11 @@ const TellerCardBrowse: React.FC<TellerCardProps> = ({
         </div>
 
         {/* Tags */}
-        <div className="flex-1 space-x-1 my-1">
+        <div className="flex flex-wrap my-1">
           {tags.map((tag, index) => (
             <span
               key={index}
-              className="bg-yellow01 rounded-full border border-yellow02 text-[7px] px-1.5 py-0.5 text-yellow03"
+              className="bg-yellow01 rounded-full border border-yellow02 text-[7px] px-1.5 py-0.5 my-0.5 mr-1 text-yellow03"
             >
               {tag}
             </span>

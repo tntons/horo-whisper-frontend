@@ -92,14 +92,16 @@ export default function TellerProfilePage() {
             <div className="flex-1">
               <h2 className="text-lg font-bold">{profileInfo?.tellerName}</h2>
 
-              {profileInfo?.specialty.map((item, index) => (
-                <span
-                  key={index}
-                  className="bg-[#FBF6D1] rounded-full border border-[#D4BB2C] text-sm px-2 py-0.5 text-[#534002] mr-2"
-                >
-                  {item}
-                </span>
-              ))}
+              <div className="flex flex-wrap">
+                {profileInfo?.specialty.map((item, index) => (
+                  <span
+                    key={index}
+                    className="bg-[#FBF6D1] rounded-full border border-[#D4BB2C] text-sm px-2 py-0.5 text-[#534002] my-0.5 mr-1"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
 
               <p className="text-sm mt-2 text-gray-700">{profileInfo?.bio}</p>
             </div>

@@ -71,11 +71,11 @@ export default function TellerDetail() {
                 <p className="text-gray-500 underline">Report</p>
               </div>
 
-              <div className="flex-1 gap-2 mt-2">
+              <div className="flex flex-wrap mt-2">
                 {specialty.map((tag, index) => (
                   <span
                     key={index}
-                    className="bg-yellow01 rounded-full border border-yellow02 text-sm px-2 py-0.5 text-yellow03 mr-2"
+                    className="bg-yellow01 rounded-full border border-yellow02 text-sm px-2 py-0.5 text-yellow03 my-0.5 mr-1"
                   >
                     {tag}
                   </span>

@@ -21,8 +21,34 @@ export default function BrowseTeller() {
 
   const [tellers, setTellers] = useState<Teller[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const allTags = [
+    "Tarot Card",
+    "Palm Reading",
+    "Astrology",
+    "Others",
+    "Love and Relationship",
+    "Work and Education",
+    "Friends and Family",
+    "Health and Well-being",
+  ];
+
+  const filteredTellers = tellers
+    .filter((teller) =>
+      teller.tellerName.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .filter(
+      (teller) =>
+        selectedTags.length === 0 ||
+        (teller.specialty || []).some((tag) => selectedTags.includes(tag))
+    )
+    .filter((teller) =>
+      teller.minPrice === undefined ? true : teller.minPrice <= priceRange[1]
+    );
 
   // Fetch tellers from the backend
   const fetchTellers = async () => {
@@ -38,7 +64,9 @@ export default function BrowseTeller() {
         throw new Error("Failed to fetch tellers");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unknown error occurred");
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -48,16 +76,21 @@ export default function BrowseTeller() {
     fetchTellers();
   }, []);
 
-  // Filter tellers based on the search query
-  const filteredTellers = tellers.filter((teller) =>
-    teller.tellerName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
   return (
     <div className="main-content w-full flex flex-col overflow-y-auto">
       <div className="sticky top-0 pt-4 pb-2 z-10 flex items-start px-4 justify-between">
-        <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} forCustomer= {true} />
-        <SearchFilter />
+        <SearchBar
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          forCustomer={true}
+        />
+        <SearchFilter
+          selectedTags={selectedTags}
+          setSelectedTags={setSelectedTags}
+          priceRange={priceRange}
+          setPriceRange={setPriceRange}
+          allTags={allTags}
+        />
         <SearchSort />
       </div>
 

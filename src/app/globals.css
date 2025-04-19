@@ -81,3 +81,10 @@ html, body {
   background-color: #F6F6F6; /* Custom success background color */
   color: #000000; /* Custom text color */
 }
+
+input[type="range"].slider-blue::-webkit-slider-thumb {
+  background-color: #2C2D4D;
+}
+input[type="range"].slider-blue {
+  accent-color: #2C2D4D;
+}
