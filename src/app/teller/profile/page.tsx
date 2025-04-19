@@ -3,8 +3,18 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { FaStar } from "react-icons/fa";
 import { BsPencil } from "react-icons/bs";
+
+interface TellerProfile {
+  tellerId: number;
+  tellerName: string;
+  specialty: string[];
+  bio: string;
+  traffic: number;
+  totalNumberOfReviews: number;
+  averageRating: number;
+  packages: PackageItem[];
+}
 
 interface PackageItem {
   id: number;
@@ -24,20 +34,20 @@ export default function TellerProfilePage() {
   };
 
   const tellerId = 1; // Replace with actual teller ID later
-  const [packageInfo, setPackageInfo] = useState<PackageItem[]>([]);
+  const [profileInfo, setProfileInfo] = useState<TellerProfile>();
 
-  const fetchPackage = async () => {
+  const fetchProfile = async () => {
     try {
-      const response = await fetch(`/api/tellers/${tellerId}/teller-package`);
+      const response = await fetch(`/api/tellers/${tellerId}`);
       const data = await response.json();
-      setPackageInfo(data.data);
+      setProfileInfo(data);
     } catch (error) {
-      console.error("Error fetching package:", error);
+      console.error("Error fetching teller profile:", error);
     }
   };
 
   useEffect(() => {
-    fetchPackage();
+    fetchProfile();
   }, []);
 
   return (
@@ -70,7 +80,7 @@ export default function TellerProfilePage() {
         {/* Profile section */}
         <div className="bg-white rounded-lg p-4 mb-4 shadow">
           <div className="flex gap-4">
-            <div className="w-24 h-24 relative">
+            <div className="w-24 h-24 relative mb-4">
               <Image
                 src="/default-profile.png"
                 alt="Teller profile"
@@ -80,23 +90,18 @@ export default function TellerProfilePage() {
               />
             </div>
             <div className="flex-1">
-              <h2 className="text-lg font-bold">Golf the teller</h2>
+              <h2 className="text-lg font-bold">{profileInfo?.tellerName}</h2>
 
-              <div className="mt-1 flex">
-                <span className="bg-[#FBF6D1] rounded-full border border-[#D4BB2C] text-sm px-2 py-0.5 text-[#534002] mr-2">
-                  Tarot Reading
+              {profileInfo?.specialty.map((item, index) => (
+                <span
+                  key={index}
+                  className="bg-[#FBF6D1] rounded-full border border-[#D4BB2C] text-sm px-2 py-0.5 text-[#534002] mr-2"
+                >
+                  {item}
                 </span>
-                <span className="bg-[#FBF6D1] rounded-full border border-[#D4BB2C] text-sm px-2 py-0.5 text-[#534002] mr-2">
-                  Relationship
-                </span>
-              </div>
+              ))}
 
-              <p className="text-sm mt-2 text-gray-700">
-                "I have been practicing tarot for over 20 years and graduated
-                from a well-known institution specializing in spiritual and
-                intuitive arts. My passion lies in helping people find clarity
-                in love and relationships"
-              </p>
+              <p className="text-sm mt-2 text-gray-700">{profileInfo?.bio}</p>
             </div>
           </div>
 
@@ -125,7 +130,7 @@ export default function TellerProfilePage() {
               <div className="bg-[#B48FE8] text-md rounded-xl py-0.5 px-2 mb-2 flex justify-center text-center">
                 Packages
               </div>
-              {packageInfo
+              {profileInfo?.packages
                 .filter((item) => item.status === "Active")
                 .map((item) => (
                   <div key={item.id}>
@@ -151,15 +156,20 @@ export default function TellerProfilePage() {
         <div className="bg-white rounded-lg p-4 mb-4 shadow">
           <div className="flex space-y-0.5 justify-between ml-3 items-center">
             <div>
-              <div className="font-bold text-lg">4.8/5</div>
-              <div className="flex text-yellow-400">
-                <FaStar />
-                <FaStar />
-                <FaStar />
-                <FaStar />
-                <FaStar className="text-gray-300" />
+              <div className="font-bold text-lg">
+                {profileInfo?.averageRating}/5
               </div>
-              <div className="text-base text-gray-600">26 Reviews</div>
+              <div className="flex text-xl">
+                <span className="text-[#FFC13C]">
+                  {"★".repeat(Math.floor(profileInfo?.averageRating || 0))}
+                </span>
+                <span className="text-gray-300">
+                  {"★".repeat(5 - Math.floor(profileInfo?.averageRating || 5))}
+                </span>
+              </div>
+              <div className="text-base text-gray-600">
+                {profileInfo?.totalNumberOfReviews} Reviews
+              </div>
             </div>
 
             <button className="bg-[#727272] text-white text-lg px-4 py-2 mr-2 rounded-lg">
