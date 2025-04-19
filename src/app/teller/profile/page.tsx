@@ -1,10 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FaStar } from "react-icons/fa";
 import { BsPencil } from "react-icons/bs";
+
+interface PackageItem {
+  id: number;
+  tellerId: number;
+  packageDetail: string | null;
+  questionNumber: number;
+  price: number;
+  status: "Active" | "Deleted" | "New";
+}
 
 export default function TellerProfilePage() {
   const [acceptingCustomers, setAcceptingCustomers] = useState(true);
@@ -13,6 +22,23 @@ export default function TellerProfilePage() {
   const toggleAcceptingCustomers = () => {
     setAcceptingCustomers(!acceptingCustomers);
   };
+
+  const tellerId = 1; // Replace with actual teller ID later
+  const [packageInfo, setPackageInfo] = useState<PackageItem[]>([]);
+
+  const fetchPackage = async () => {
+    try {
+      const response = await fetch(`/api/tellers/${tellerId}/teller-package`);
+      const data = await response.json();
+      setPackageInfo(data.data);
+    } catch (error) {
+      console.error("Error fetching package:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPackage();
+  }, []);
 
   return (
     <div className="flex mt-4 w-full h-full bg-[#FEF0E5] font-inter">
@@ -99,9 +125,15 @@ export default function TellerProfilePage() {
               <div className="bg-[#B48FE8] text-md rounded-xl py-0.5 px-2 mb-2 flex justify-center text-center">
                 Packages
               </div>
-              <p className="text-md text-center">₿ 200 / 3 questions</p>
-              <p className="text-md text-center">₿ 300 / 5 questions</p>
-              <p className="text-md text-center">₿ 500 / 10 questions</p>
+              {packageInfo
+                .filter((item) => item.status === "Active")
+                .map((item) => (
+                  <div key={item.id}>
+                    <p className="text-md text-center">
+                      ₿ {item.price} / {item.questionNumber} questions
+                    </p>
+                  </div>
+                ))}
             </div>
           </div>
 
