@@ -9,6 +9,9 @@ export default function EditProfilePage() {
     "I have been practicing tarot for over 20 years and graduated from a well-known institution specializing in spiritual and intuitive arts. My passion lies in helping people find clarity in love and relationship"
   );
 
+  const [bankName, setBankName] = useState("Kasikorn Bank");
+  const [bankAccount, setBankAccount] = useState("123-456-7890");
+
   const [selectedMethods, setSelectedMethods] = useState({
     "Tarot Card": true,
     "Palm Reading": false,
@@ -71,11 +74,29 @@ export default function EditProfilePage() {
         </div>
 
         {/* Profile Picture */}
-        <div className="mb-6">
+        <div className="mb-3">
           <label className="block text-[14px] mb-1">Choose your pic</label>
           <button className="bg-[#9C9C9C] text-white font-light py-2 px-5 rounded-full">
             Choose File
           </button>
+        </div>
+
+        {/* Bank Section */}
+        <div className="mb-3">
+          <label className="block text-[14px] mb-1">Bank Name</label>
+          <input
+            className="w-full text-[13px] p-3 border border-gray-300 rounded-md"
+            value={bankName}
+            onChange={(e) => setBankName(e.target.value)}
+          />
+        </div>
+        <div className="mb-3">
+          <label className="block text-[14px] mb-1">Bank Account</label>
+          <input
+            className="w-full text-[13px] p-3 border border-gray-300 rounded-md"
+            value={bankAccount}
+            onChange={(e) => setBankAccount(e.target.value)}
+          />
         </div>
 
         {/* Reading Methods */}
