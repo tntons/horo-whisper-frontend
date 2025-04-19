@@ -17,20 +17,12 @@ export default function EditProfilePage() {
   const tellerId = 1; // Replace with actual teller ID later
   const [profileInfo, setProfileInfo] = useState<TellerProfile>();
 
-  const [bio, setBio] = useState("");
-  const [bankName, setBankName] = useState("");
-  const [bankAccount, setBankAccount] = useState("");
-
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const response = await fetch(`/api/tellers/${tellerId}`);
         const data = await response.json();
         setProfileInfo(data);
-
-        setBio(data.bio || "");
-        setBankName(data.bankName || "");
-        setBankAccount(data.bankAccountNumber || "");
       } catch (error) {
         console.error("Error fetching teller profile:", error);
       }
@@ -72,30 +64,6 @@ export default function EditProfilePage() {
     }
   }, [profileInfo?.specialty]);
 
-  const handleBioChange = (newBio: string) => {
-    setBio(newBio);
-    setProfileInfo((prev) => ({
-      ...prev!,
-      bio: newBio,
-    }));
-  };
-
-  const handleBankNameChange = (newBank: string) => {
-    setBankName(newBank);
-    setProfileInfo((prev) => ({
-      ...prev!,
-      bankName: newBank,
-    }));
-  };
-
-  const handleBankAccountChange = (newBankAcc: string) => {
-    setBankAccount(newBankAcc);
-    setProfileInfo((prev) => ({
-      ...prev!,
-      bankAccountNumber: newBankAcc,
-    }));
-  };
-
   const handleCheckboxChange = (name: string, isMethod: boolean) => {
     const updated =
       isMethod && selectedMethods
@@ -124,7 +92,12 @@ export default function EditProfilePage() {
 
   const handleSave = async () => {
     try {
-      console.log("Updated profile Info:", { ...profileInfo });
+      console.log("Updated profile Info:", {
+        bio: profileInfo?.bio,
+        bankname: profileInfo?.bankName,
+        bankAccountNumber: profileInfo?.bankAccountNumber,
+        specialty: profileInfo?.specialty,
+      });
 
       const response = await fetch(`/api/tellers/${tellerId}`, {
         method: "PATCH",
@@ -132,9 +105,9 @@ export default function EditProfilePage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          bio,
-          bankName,
-          bankAccountNumber: bankAccount,
+          bio: profileInfo?.bio,
+          bankName: profileInfo?.bankName,
+          bankAccountNumber: profileInfo?.bankAccountNumber,
           specialty: profileInfo?.specialty,
         }),
       });
@@ -168,8 +141,12 @@ export default function EditProfilePage() {
           <textarea
             className="w-full text-[13px] p-3 border border-gray-300 rounded-md"
             rows={5}
-            value={bio}
-            onChange={(e) => handleBioChange(e.target.value)}
+            value={profileInfo?.bio || ""}
+            onChange={(e) =>
+              setProfileInfo((prev) =>
+                prev ? { ...prev, bio: e.target.value } : prev
+              )
+            }
           />
         </div>
 
@@ -186,16 +163,24 @@ export default function EditProfilePage() {
           <label className="block text-[14px] mb-1">Bank Name</label>
           <input
             className="w-full text-[13px] p-3 border border-gray-300 rounded-md"
-            value={bankName}
-            onChange={(e) => handleBankNameChange(e.target.value)}
+            value={profileInfo?.bankName || ""}
+            onChange={(e) =>
+              setProfileInfo((prev) =>
+                prev ? { ...prev, bankName: e.target.value } : prev
+              )
+            }
           />
         </div>
         <div className="mb-3">
           <label className="block text-[14px] mb-1">Bank Account</label>
           <input
             className="w-full text-[13px] p-3 border border-gray-300 rounded-md"
-            value={bankAccount}
-            onChange={(e) => handleBankAccountChange(e.target.value)}
+            value={profileInfo?.bankAccountNumber || ""}
+            onChange={(e) =>
+              setProfileInfo((prev) =>
+                prev ? { ...prev, bankAccountNumber: e.target.value } : prev
+              )
+            }
           />
         </div>
 
@@ -208,7 +193,7 @@ export default function EditProfilePage() {
                 <input
                   type="checkbox"
                   id={`method-${method}`}
-                  checked={selectedMethods[method]}
+                  checked={selectedMethods[method] || false}
                   onChange={() => handleCheckboxChange(method, true)}
                   className="w-4 h-4"
                 />
@@ -229,7 +214,7 @@ export default function EditProfilePage() {
                 <input
                   type="checkbox"
                   id={`specialty-${specialty}`}
-                  checked={selectedSpecialties[specialty]}
+                  checked={selectedSpecialties[specialty] || false}
                   onChange={() => handleCheckboxChange(specialty, false)}
                   className="w-4 h-4"
                 />
