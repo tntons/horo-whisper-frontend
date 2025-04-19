@@ -40,16 +40,16 @@ const TellerCardBrowse: React.FC<TellerCardProps> = ({
 
   return (
     <div
-      className="relative flex-shrink-0 my-2 w-[91%] !h-[146px] rounded-[7px] bg-white01 text-black flex items-center p-3 border border-greyborder font-inter"
+      className="relative flex-shrink-0 my-2 w-[91%] rounded-[7px] bg-white01 text-black flex items-center p-3 border border-greyborder font-inter"
       onClick={handleCardClick}
     >
       {/* Image Section */}
-      <div className="w-[92px] h-full object-cover rounded-[7px] relative overflow-hidden">
+      <div className="w-[92px] h-[124px] object-cover rounded-[7px] relative overflow-hidden">
         <Image src={imageSrc} alt="Teller" layout="fill" objectFit="cover" />
       </div>
 
       {/* Info Section */}
-      <div className="flex-1 flex flex-col justify-between ml-4 h-[90%]">
+      <div className="flex-1 flex flex-col justify-between ml-4 mb-2 h-[90%]">
         {/* Name and Price */}
         <div className="flex justify-between items-baseline">
           <div className="text-lg font-medium text-black">
@@ -59,11 +59,11 @@ const TellerCardBrowse: React.FC<TellerCardProps> = ({
         </div>
 
         {/* Tags */}
-        <div className="flex space-x-1 my-1">
+        <div className="flex-1 space-x-1 my-1">
           {tags.map((tag, index) => (
             <span
               key={index}
-              className="bg-pink01 text-pink03 flex items-center border border-pink02 text-[7px] px-1.5 py-0.5 rounded-full"
+              className="bg-yellow01 rounded-full border border-yellow02 text-[7px] px-1.5 py-0.5 text-yellow03"
             >
               {tag}
             </span>
