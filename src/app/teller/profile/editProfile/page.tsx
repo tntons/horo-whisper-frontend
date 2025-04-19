@@ -39,6 +39,39 @@ export default function EditProfilePage() {
     fetchProfile();
   }, []);
 
+  const allMethods = ["Tarot Card", "Palm Reading", "Astrology", "Others"];
+  const allSpecialties = [
+    "Love and Relationship",
+    "Work and Education",
+    "Friends and Family",
+    "Health and Well-being",
+  ];
+
+  const [selectedMethods, setSelectedMethods] = useState<
+    Record<string, boolean>
+  >({});
+  const [selectedSpecialties, setSelectedSpecialties] = useState<
+    Record<string, boolean>
+  >({});
+
+  useEffect(() => {
+    if (profileInfo?.specialty) {
+      const methodState: Record<string, boolean> = {};
+      const specialtyState: Record<string, boolean> = {};
+
+      allMethods.forEach((method) => {
+        methodState[method] = profileInfo.specialty.includes(method);
+      });
+
+      allSpecialties.forEach((specialty) => {
+        specialtyState[specialty] = profileInfo.specialty.includes(specialty);
+      });
+
+      setSelectedMethods(methodState);
+      setSelectedSpecialties(specialtyState);
+    }
+  }, [profileInfo?.specialty]);
+
   const handleBioChange = (newBio: string) => {
     setBio(newBio);
     setProfileInfo((prev) => ({
@@ -63,53 +96,35 @@ export default function EditProfilePage() {
     }));
   };
 
-  const [selectedMethods, setSelectedMethods] = useState({
-    "Tarot Card": true,
-    "Palm Reading": false,
-    Astrology: false,
-    Others: false,
-  });
+  const handleCheckboxChange = (name: string, isMethod: boolean) => {
+    const updated =
+      isMethod && selectedMethods
+        ? { ...selectedMethods, [name]: !selectedMethods[name] }
+        : { ...selectedSpecialties, [name]: !selectedSpecialties[name] };
 
-  const [selectedSpecialties, setSelectedSpecialties] = useState({
-    "Love and Relationship": true,
-    "Work and Education": false,
-    "Friends and Family": false,
-    "Health and Well-being": false,
-  });
+    if (isMethod) {
+      setSelectedMethods(updated);
+    } else {
+      setSelectedSpecialties(updated);
+    }
 
-  const handleMethodChange = (method: string) => {
-    setSelectedMethods({
-      ...selectedMethods,
-      [method]: !selectedMethods[method],
-    });
-  };
+    const updatedSpecialty = [
+      ...Object.keys({ ...(isMethod ? updated : selectedMethods) }).filter(
+        (key) => (isMethod ? updated[key] : selectedMethods[key])
+      ),
+      ...Object.keys({ ...(!isMethod ? updated : selectedSpecialties) }).filter(
+        (key) => (!isMethod ? updated[key] : selectedSpecialties[key])
+      ),
+    ];
 
-  const handleSpecialtyChange = (specialty: string) => {
-    setSelectedSpecialties({
-      ...selectedSpecialties,
-      [specialty]: !selectedSpecialties[specialty],
-    });
+    setProfileInfo((prev) =>
+      prev ? { ...prev, specialty: updatedSpecialty } : prev
+    );
   };
 
   const handleSave = async () => {
     try {
-      console.log("Saving profile data:", {
-        bio,
-        bankName,
-        bankAccount,
-        methods: Object.keys(selectedMethods).filter(
-          (key) => selectedMethods[key]
-        ),
-        specialties: Object.keys(selectedSpecialties).filter(
-          (key) => selectedSpecialties[key]
-        ),
-      });
-
-      console.log("Temp updated profile Info:", {
-        bio,
-        bankName,
-        bankAccount,
-      });
+      console.log("Updated profile Info:", { ...profileInfo });
 
       const response = await fetch(`/api/tellers/${tellerId}`, {
         method: "PATCH",
@@ -120,6 +135,7 @@ export default function EditProfilePage() {
           bio,
           bankName,
           bankAccountNumber: bankAccount,
+          specialty: profileInfo?.specialty,
         }),
       });
 
@@ -193,7 +209,7 @@ export default function EditProfilePage() {
                   type="checkbox"
                   id={`method-${method}`}
                   checked={selectedMethods[method]}
-                  onChange={() => handleMethodChange(method)}
+                  onChange={() => handleCheckboxChange(method, true)}
                   className="w-4 h-4"
                 />
                 <label htmlFor={`method-${method}`} className="ml-2">
@@ -214,7 +230,7 @@ export default function EditProfilePage() {
                   type="checkbox"
                   id={`specialty-${specialty}`}
                   checked={selectedSpecialties[specialty]}
-                  onChange={() => handleSpecialtyChange(specialty)}
+                  onChange={() => handleCheckboxChange(specialty, false)}
                   className="w-4 h-4"
                 />
                 <label htmlFor={`specialty-${specialty}`} className="ml-2">
