@@ -35,7 +35,9 @@ interface ErrorResponse {
 export default function Home() {
   const router = useRouter();
   const [sessions, setSessions] = useState<Session[]>([]);
-  const [predictionData, setPredictionData] = useState<Prediction | ErrorResponse | null>(null);
+  const [predictionData, setPredictionData] = useState<
+    Prediction | ErrorResponse | null
+  >(null);
   const [isLoading, setIsLoading] = useState(true);
   const customerId = 1; // Replace with actual customer ID
 
@@ -53,7 +55,9 @@ export default function Home() {
   };
   const fetchPrediction = async () => {
     try {
-      const response = await fetch(`/api/customers/daily-prediction/${customerId}`);
+      const response = await fetch(
+        `/api/customers/daily-prediction/${customerId}`
+      );
 
       if (!response.ok) {
         console.log(response);
@@ -63,16 +67,14 @@ export default function Home() {
 
       setPredictionData(data.data);
       setIsLoading(false);
-
     } catch (error) {
       console.error("Error fetching prediction:", error);
     }
-  }
+  };
 
   useEffect(() => {
     fetchPrediction();
     fetchSessions();
-
   }, []);
   console.log(predictionData);
 
@@ -122,99 +124,96 @@ export default function Home() {
 
   const getLuckyColorClass = (color: string): string => {
     switch (color.toLowerCase()) {
-      case 'blue':
-        return 'bg-luckyblue';
-      case 'pink':
-        return 'bg-luckypink';
-      case 'white':
-        return 'bg-luckywhite';
+      case "blue":
+        return "bg-luckyblue";
+      case "pink":
+        return "bg-luckypink";
+      case "white":
+        return "bg-luckywhite";
       // Add more color mappings as needed
       default:
-        return 'bg-purple03'; // fallback color
+        return "bg-purple03"; // fallback color
     }
   };
 
   return (
     <div className="h-screen w-full overflow-y-scroll no-scrollbar font-inter">
-      <section className="w-full h-[30vh] bg-gradient-to-b from-[#090C6C] via-[#575ABA] via-70% to-[#575ABA] py-4 px-4">
+      <section className="w-full bg-gradient-to-b from-[#090C6C] via-[#575ABA] via-100% to-[#575ABA] py-4 px-4">
         <div className="flex items-center justify-center">
-          <h1 className="text-white text-lg font-bold">
+          <h1 className="text-white mb-2 text-lg font-bold">
             Your Daily Horoscope
           </h1>
         </div>
 
-        {isLoading ?(
+        {isLoading ? (
           <div></div>
-        ): predictionData ? (
-          <div className="flex flex-row w-full h-full items-center justify-between p-4 gap-3">
+        ) : predictionData ? (
+          <div className="flex flex-row w-full h-full space-x-2 justify-between p-2 gap-2">
             {/* Left Island */}
             <div className="bg-purple02 w-8/12 h-full rounded-lg ">
-              <div className='flex flex-col h-full p-2 gap-1'>
-                <h1 className="text-white text-[11px] font-bold">
+              <div className="flex flex-col h-full p-3 gap-1">
+                <h1 className="text-white text-md font-bold">
                   Today's Prediction
                 </h1>
                 <div className="flex w-full h-full bg-purple03 rounded-lg p-2">
-                  <p className="text-white text-[9px] font-thin text-opacity-80">
-                    {predictionData && "prediction" in predictionData && predictionData.prediction}
+                  <p className="text-white text-base">
+                    {predictionData &&
+                      "prediction" in predictionData &&
+                      predictionData.prediction}
                   </p>
                 </div>
               </div>
             </div>
             {/* Right Island */}
-            <div className="flex flex-col w-4/12 h-full gap-3">
-
+            <div className="flex flex-col items-start justify-between h-full w-4/12 gap-4">
               <div className="flex flex-col bg-purple02 w-full h-1/2 rounded-lg ">
-                <div className='flex flex-col h-full p-2 gap-1'>
-                  <h1 className="text-white text-[11px] font-bold">
-                    Lucky Color
-                  </h1>
+                <div className="flex flex-col h-full p-2 gap-1">
+                  <h1 className="text-white text-md font-bold">Lucky Color</h1>
                   <div className="flex w-full h-full bg-purple03 rounded-lg p-1">
-                    <div className="flex flex-row w-full items-center justify-evenly gap-1">
-                      {predictionData && 'luckyColors' in predictionData &&
+                    <div className="flex flex-row w-full items-center justify-evenly gap-2">
+                      {predictionData &&
+                        "luckyColors" in predictionData &&
                         predictionData.luckyColors.map((color, index) => (
                           <div
                             key={index}
-                            className={`w-5 h-5 rounded-full ${getLuckyColor(color)}`}
+                            className={`w-5 h-5 rounded-full ${getLuckyColor(
+                              color
+                            )}`}
                           />
-                        ))
-                      }
+                        ))}
                     </div>
                   </div>
                 </div>
               </div>
 
               <div className="flex flex-col bg-purple02 w-full h-1/2 rounded-lg ">
-                <div className='flex flex-col h-full p-2 gap-1'>
-                  <h1 className="text-white text-[11px] font-bold">
-                    Lucky Number
-                  </h1>
+                <div className="flex flex-col h-full p-2 gap-1">
+                  <h1 className="text-white text-md font-bold">Lucky Number</h1>
                   <div className="flex w-full h-full bg-purple03 rounded-lg p-1">
-                    <div className="flex flex-row w-full items-center justify-evenly gap-2">
-                      {predictionData && 'luckyNumbers' in predictionData &&
+                    <div className="flex flex-row w-full items-center justify-evenly gap-3">
+                      {predictionData &&
+                        "luckyNumbers" in predictionData &&
                         predictionData.luckyNumbers.map((number, index) => (
                           <p key={index} className="text-white text-[17px]">
                             {number}
                           </p>
-                        ))
-                      }
+                        ))}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        ) :
+        ) : (
           <div className="flex flex-col w-full h-full items-center justify-center gap-2">
-
             <h1 className="text-white text-lg font-normal text-opacity-80">
               Not Available
             </h1>
             <h1 className="text-white text-lg font-normal text-opacity-80">
               Please Login or Enter Prediction Attribute
             </h1>
-
           </div>
-        }
+        )}
       </section>
 
       <section className="w-full h-screen bg-background justify-center items-center px-8 pt-6">
