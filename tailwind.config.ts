@@ -29,6 +29,17 @@ export default {
         blue01: "#2C2D4D",
         blue02: "#787BC3",
         white01: "#F8F8F8",
+        luckyblack: "#333333",
+        luckywhite: "#FFFFFF",
+        luckygrey: "#D9D9D9",
+        luckyred: "#E95050",
+        luckyorange: "#F29C11",
+        luckyyellow: "#F7EB82",
+        luckygreen: "#80EC79",
+        luckyblue: "#53B1EF",
+        luckypurple: "#A678E1",
+        luckypink: "#F071E5",
+        luckybrown: "#A45D44"
       },
       fontFamily: {
         inter: ["var(--font-inter)", "sans-serif"],
