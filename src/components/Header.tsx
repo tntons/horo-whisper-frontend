@@ -30,12 +30,22 @@ const Header: React.FC<HeaderProps> = ({
     pathname.startsWith("/teller/profile");
 
   // Pages that should show the Info icon
-  const pagesWithInfoIcon = ["/editProfile"];
+  const pagesWithInfoIcon = [
+    "/editProfile",
+    "/teller/profile/editProfile",
+    "/teller/profile/editPackage",
+  ];
   const shouldShowInfoIcon =
     showInfoIcon || pagesWithInfoIcon.includes(pathname);
 
   const pagesWithUserButton = pathname.startsWith("/teller/");
-  const shouldShowUserButton = pagesWithUserButton || showUserButton;
+  const pagesWithoutUserButton = [
+    "/teller/profile/editProfile",
+    "/teller/profile/editPackage",
+  ];
+  const shouldShowUserButton =
+    (pagesWithUserButton || showUserButton) &&
+    !pagesWithoutUserButton.includes(pathname);
 
   return (
     <>
