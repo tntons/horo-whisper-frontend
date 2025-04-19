@@ -1,16 +1,67 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
+
+interface TellerProfile {
+  tellerId: number;
+  tellerName: string;
+  specialty: string[];
+  bio: string;
+  profilePic: string;
+  bankName: string;
+  bankAccountNumber: string;
+}
 
 export default function EditProfilePage() {
-  const router = useRouter();
-  const [bio, setBio] = useState(
-    "I have been practicing tarot for over 20 years and graduated from a well-known institution specializing in spiritual and intuitive arts. My passion lies in helping people find clarity in love and relationship"
-  );
+  const tellerId = 1; // Replace with actual teller ID later
+  const [profileInfo, setProfileInfo] = useState<TellerProfile>();
 
-  const [bankName, setBankName] = useState("Kasikorn Bank");
-  const [bankAccount, setBankAccount] = useState("123-456-7890");
+  const [bio, setBio] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [bankAccount, setBankAccount] = useState("");
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch(`/api/tellers/${tellerId}`);
+        const data = await response.json();
+        setProfileInfo(data);
+
+        setBio(data.bio || "");
+        setBankName(data.bankName || "");
+        setBankAccount(data.bankAccountNumber || "");
+      } catch (error) {
+        console.error("Error fetching teller profile:", error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  const handleBioChange = (newBio: string) => {
+    setBio(newBio);
+    setProfileInfo((prev) => ({
+      ...prev!,
+      bio: newBio,
+    }));
+  };
+
+  const handleBankNameChange = (newBank: string) => {
+    setBankName(newBank);
+    setProfileInfo((prev) => ({
+      ...prev!,
+      bankName: newBank,
+    }));
+  };
+
+  const handleBankAccountChange = (newBankAcc: string) => {
+    setBankAccount(newBankAcc);
+    setProfileInfo((prev) => ({
+      ...prev!,
+      bankAccountNumber: newBankAcc,
+    }));
+  };
 
   const [selectedMethods, setSelectedMethods] = useState({
     "Tarot Card": true,
@@ -40,24 +91,57 @@ export default function EditProfilePage() {
     });
   };
 
-  const handleSave = () => {
-    // Save profile data (would connect to API in real implementation)
-    console.log("Saving profile data:", {
-      bio,
-      methods: Object.keys(selectedMethods).filter(
-        (key) => selectedMethods[key]
-      ),
-      specialties: Object.keys(selectedSpecialties).filter(
-        (key) => selectedSpecialties[key]
-      ),
-    });
+  const handleSave = async () => {
+    try {
+      console.log("Saving profile data:", {
+        bio,
+        bankName,
+        bankAccount,
+        methods: Object.keys(selectedMethods).filter(
+          (key) => selectedMethods[key]
+        ),
+        specialties: Object.keys(selectedSpecialties).filter(
+          (key) => selectedSpecialties[key]
+        ),
+      });
 
-    // Navigate back to profile page
-    router.back();
+      console.log("Temp updated profile Info:", {
+        bio,
+        bankName,
+        bankAccount,
+      });
+
+      const response = await fetch(`/api/tellers/${tellerId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          bio,
+          bankName,
+          bankAccountNumber: bankAccount,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to update profile");
+
+      toast.success("You've successfully made the change!", {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        className: "custom-toast",
+      });
+    } catch (error) {
+      console.error("Error saving packages:", error);
+    }
   };
 
   return (
     <div className="h-full w-full mt-4 bg-[#FEF0E5] font-inter">
+      <ToastContainer />
       {/* Content */}
       <div className="p-4 mx-4 mt-4">
         <h2 className="text-xl font-bold mb-3">Edit Profile</h2>
@@ -69,7 +153,7 @@ export default function EditProfilePage() {
             className="w-full text-[13px] p-3 border border-gray-300 rounded-md"
             rows={5}
             value={bio}
-            onChange={(e) => setBio(e.target.value)}
+            onChange={(e) => handleBioChange(e.target.value)}
           />
         </div>
 
@@ -87,7 +171,7 @@ export default function EditProfilePage() {
           <input
             className="w-full text-[13px] p-3 border border-gray-300 rounded-md"
             value={bankName}
-            onChange={(e) => setBankName(e.target.value)}
+            onChange={(e) => handleBankNameChange(e.target.value)}
           />
         </div>
         <div className="mb-3">
@@ -95,7 +179,7 @@ export default function EditProfilePage() {
           <input
             className="w-full text-[13px] p-3 border border-gray-300 rounded-md"
             value={bankAccount}
-            onChange={(e) => setBankAccount(e.target.value)}
+            onChange={(e) => handleBankAccountChange(e.target.value)}
           />
         </div>
 
