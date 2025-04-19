@@ -4,7 +4,7 @@ import TellerCardBrowse from "./TellerCardBrowse";
 import SearchBar from "./SearchBar";
 import SearchFilter from "./SearchFilter";
 import SearchSort from "./SearchSort";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 export default function BrowseTeller() {
   interface Teller {
@@ -23,6 +23,7 @@ export default function BrowseTeller() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+  const [sortOption, setSortOption] = useState("Default");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,7 +51,28 @@ export default function BrowseTeller() {
       teller.minPrice === undefined ? true : teller.minPrice <= priceRange[1]
     );
 
-  // Fetch tellers from the backend
+  const sortedFilteredTellers = useMemo(() => {
+    const tellersCopy = [...filteredTellers];
+    switch (sortOption) {
+      case "Price: Low to High":
+        return tellersCopy.sort(
+          (a, b) => (a.minPrice || 0) - (b.minPrice || 0)
+        );
+      case "Price: High to Low":
+        return tellersCopy.sort(
+          (a, b) => (b.minPrice || 0) - (a.minPrice || 0)
+        );
+      case "Rating: High to Low":
+        return tellersCopy.sort(
+          (a, b) => (b.averageRating || 0) - (a.averageRating || 0)
+        );
+      case "Estimated Wait Time":
+        return tellersCopy.sort((a, b) => (a.traffic || 0) - (b.traffic || 0));
+      default:
+        return tellersCopy;
+    }
+  }, [filteredTellers, sortOption]);
+
   const fetchTellers = async () => {
     try {
       const response = await fetch("/api/tellers");
@@ -91,7 +113,7 @@ export default function BrowseTeller() {
           setPriceRange={setPriceRange}
           allTags={allTags}
         />
-        <SearchSort />
+        <SearchSort setSortOption={setSortOption} selectedSort={sortOption} />
       </div>
 
       <div className="flex flex-col items-center overflow-y-auto no-scrollbar w-full">
@@ -99,8 +121,8 @@ export default function BrowseTeller() {
           <p className="text-blue01 mt-4 text-lg">Loading...</p>
         ) : error ? (
           <p className="text-red-500 mt-4">{error}</p>
-        ) : filteredTellers.length > 0 ? (
-          filteredTellers.map((teller, index) => (
+        ) : sortedFilteredTellers.length > 0 ? (
+          sortedFilteredTellers.map((teller, index) => (
             <TellerCardBrowse
               key={index}
               tellerId={teller.tellerId}
