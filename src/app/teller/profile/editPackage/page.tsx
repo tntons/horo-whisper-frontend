@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import { Minus } from "lucide-react";
 
 interface PackageItem {
@@ -82,6 +83,16 @@ export default function EditPackagePage() {
       });
 
       if (!response.ok) throw new Error("Failed to update packages");
+
+      toast.success("You've successfully made the change!", {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        className: "custom-toast",
+      });
     } catch (error) {
       console.error("Error saving packages:", error);
     }
@@ -89,6 +100,7 @@ export default function EditPackagePage() {
 
   return (
     <div className="h-full w-full flex flex-col ml-2 mt-4 bg-[#FEF0E5] font-inter">
+      <ToastContainer />
       <div className="p-4 mx-4 mt-4 justify-start items-start">
         <h2 className="text-xl font-bold mb-3">Edit Package</h2>
 
