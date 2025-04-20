@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Clock } from "lucide-react";
 import { MessageSquareCode } from "lucide-react";
+import { apiFetch } from "@/lib/api/fetch";
 
 export default function TellerDetail() {
   const { tellerId } = useParams(); // Get the tellerId from the URL
@@ -15,7 +16,7 @@ export default function TellerDetail() {
   // Fetch teller details
   const fetchTellerDetails = async () => {
     try {
-      const response = await fetch(`/api/tellers/${tellerId}`);
+      const response = await apiFetch(`/tellers/${tellerId}`);
       if (!response.ok) {
         throw new Error("Failed to fetch teller details");
       }

@@ -5,6 +5,7 @@ import SessionBox from "../SessionBox";
 import SearchBar from "../../browseTeller/SearchBar";
 import SearchFilter from "../../browseTeller/SearchFilter";
 import SearchSort from "../../browseTeller/SearchSort";
+import { apiFetch } from "@/lib/api/fetch";
 
 interface Session {
   sessionId: number;
@@ -46,7 +47,7 @@ export default function PastSession() {
 
   const fetchSessionData = async () => {
     try {
-      const response = await fetch(`/api/tellers/${tellerId}/past-session`);
+      const response = await apiFetch(`/tellers/${tellerId}/past-session`);
       const data = await response.json();
       setSessionInfo(data);
       console.log(data);

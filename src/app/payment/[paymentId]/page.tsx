@@ -5,7 +5,7 @@ import Box from '@/components/Box';
 import PaySuccessBox from '@/app/payment/[paymentId]/PaySuccessBox';
 import PayFailBox from '@/app/payment/[paymentId]/PayFailBox';
 import WaitingBox from '@/app/payment/[paymentId]/WaitingBox';
-
+import { apiFetch } from '@/lib/api/fetch';
 interface PaymentInfo {
     data: {
         package: {
@@ -56,7 +56,7 @@ export default function Payment() {
     useEffect(() => {
         const fetchPaymentInfo = async () => {
             try {
-                const response = await fetch(`/api/customers/get-payment/${paymentId}`);
+                const response = await apiFetch(`/customers/get-payment/${paymentId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch payment information');
                 }
@@ -81,7 +81,7 @@ export default function Payment() {
     const handleAlreadyPaid = async () => {
         setIsWaiting(true);
         try {
-            const response = await fetch(`/api/customers/verify-payment/${paymentId}`, {
+            const response = await apiFetch(`/customers/verify-payment/${paymentId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

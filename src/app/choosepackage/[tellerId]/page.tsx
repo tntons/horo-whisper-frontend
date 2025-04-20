@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Box from "@/components/Box";
 import ConfirmBox from "./ConfirmBox";
+import { apiFetch } from "@/lib/api/fetch";
 
 interface PackageInfo {
   success: boolean;
@@ -27,7 +28,7 @@ export default function ChoosePackage() {
 
   const fetchPackage = async () => {
     try {
-      const response = await fetch(`/api/tellers/${tellerId}/teller-package`);
+      const response = await apiFetch(`/tellers/${tellerId}/teller-package`);
       const data = await response.json();
       setPackageInfo(data);
     } catch (error) {
@@ -44,7 +45,7 @@ export default function ChoosePackage() {
 
   const handleBookSession = async () => {
     try {
-      const response = await fetch(`/api/customers/book-session`, {
+      const response = await apiFetch(`/customers/book-session`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

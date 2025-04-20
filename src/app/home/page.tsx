@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import SessionBox from "@/app/home/SessionBox";
+import { apiFetch } from "@/lib/api/fetch";
 import { getLuckyColor } from "./GetLuckyColor";
 
 interface Session {
@@ -43,12 +44,9 @@ export default function Home() {
 
   const fetchSessions = async () => {
     try {
-      const response = await fetch(`/api/customers/sessions/${customerId}`); // Replace 1 with the actual customerId
-      if (!response.ok) {
-        throw new Error("Failed to fetch sessions");
-      }
-      const data = await response.json();
-      setSessions(data.data); // Set the fetched sessions
+      const payload = await apiFetch(`/customers/sessions/${customerId}`)
+      console.log('payload', payload)
+      setSessions(payload.data) 
     } catch (error) {
       console.error("Error fetching sessions:", error);
     }

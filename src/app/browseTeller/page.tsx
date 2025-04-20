@@ -5,6 +5,7 @@ import SearchBar from "./SearchBar";
 import SearchFilter from "./SearchFilter";
 import SearchSort from "./SearchSort";
 import { useState, useEffect, useMemo } from "react";
+import { apiFetch } from "@/lib/api/fetch";
 
 export default function BrowseTeller() {
   interface Teller {
@@ -75,13 +76,10 @@ export default function BrowseTeller() {
 
   const fetchTellers = async () => {
     try {
-      const response = await fetch("/api/tellers");
-      if (!response.ok) {
-        throw new Error("Failed to fetch tellers");
-      }
-      const result = await response.json();
-      if (result.success) {
-        setTellers(result.data);
+      const response = await apiFetch("/tellers");
+      console.log(response);
+      if (response.success) {
+        setTellers(response.data);
       } else {
         throw new Error("Failed to fetch tellers");
       }

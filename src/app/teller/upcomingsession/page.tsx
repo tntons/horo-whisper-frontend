@@ -5,6 +5,7 @@ import SessionBox from "../SessionBox";
 import SearchBar from "../../browseTeller/SearchBar";
 import SearchSort from "../../browseTeller/SearchSort";
 import { IoRefresh } from "react-icons/io5";
+import { apiFetch } from "@/lib/api/fetch";
 
 interface Session {
   sessionId: number;
@@ -45,7 +46,7 @@ export default function UpcomingSession() {
   const fetchSessionData = async () => {
     try {
       const tellerId = 1;
-      const response = await fetch(`/api/tellers/${tellerId}/upcoming-session`);
+      const response = await apiFetch(`/tellers/${tellerId}/upcoming-session`);
       const data = await response.json();
       setSessionInfo(data);
       console.log(data);

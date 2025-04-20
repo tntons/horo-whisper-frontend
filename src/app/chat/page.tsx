@@ -4,7 +4,7 @@ import { IoSend } from "react-icons/io5";
 import { AiFillPicture } from "react-icons/ai";
 import { useState, useRef, useEffect, ChangeEvent } from 'react';
 import { message } from './message_data';
-
+import { apiFetch } from '@/lib/api/fetch';
 interface Message {
     id: number;
     content: string;
@@ -23,7 +23,7 @@ export default function Chat() {
     const fetchSessionData = async () => {
         try {
             const tellerId = 1;
-            const response = await fetch(`/api/tellers/${tellerId}/current-session`);
+            const response = await apiFetch(`/tellers/${tellerId}/current-session`);
             const data = await response.json();
             setSessionInfo(data);
             console.log(data);
@@ -58,7 +58,7 @@ export default function Chat() {
         };
 
         try {
-            const res = await fetch('/api/chat', {
+            const res = await apiFetch('/chat', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)

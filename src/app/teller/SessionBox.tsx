@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { RiDeleteBinLine } from "react-icons/ri";
+import { apiFetch } from '@/lib/api/fetch';
 interface SessionBoxProps {
     sessionId: number;
     name: string;
@@ -22,7 +23,7 @@ const SessionBox = ({ sessionId, name, detail, date, time, current, past, upcomi
 
     const handleAcceptSession = async (sessionId: number) => {
         try {
-            const response = await fetch(`/api/tellers/accept-session/${sessionId}`, {
+            const response = await apiFetch(`/tellers/accept-session/${sessionId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -49,7 +50,7 @@ const SessionBox = ({ sessionId, name, detail, date, time, current, past, upcomi
 
     const handleDeclineSession = async (sessionId: number) => {
         try {
-            const response = await fetch(`/api/tellers/decline-session/${sessionId}`, {
+            const response = await apiFetch(`/tellers/decline-session/${sessionId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
