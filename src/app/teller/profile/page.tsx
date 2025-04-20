@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { BsPencil } from "react-icons/bs";
+import { apiFetch } from "@/lib/api/fetch";
 
 interface TellerProfile {
   tellerId: number;
@@ -38,8 +39,8 @@ export default function TellerProfilePage() {
 
   const fetchProfile = async () => {
     try {
-      const response = await fetch(`/api/tellers/${tellerId}`);
-      const data = await response.json();
+      const response = await apiFetch(`/tellers/${tellerId}`);
+      const data = await response.data;
       setProfileInfo(data);
     } catch (error) {
       console.error("Error fetching teller profile:", error);

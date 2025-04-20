@@ -34,7 +34,7 @@ export default function Welcome() {
 
             const { token } = await res.json();
             localStorage.setItem('APP_TOKEN', token);
-            router.replace('/');
+            router.replace('/login/select-role');
             setBusy(false);
         }
 
