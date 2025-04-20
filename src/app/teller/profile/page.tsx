@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { BsPencil } from "react-icons/bs";
 import { apiFetch } from "@/lib/api/fetch";
+import { signOut } from "next-auth/react";
 
 interface TellerProfile {
   tellerId: number;
@@ -51,11 +52,23 @@ export default function TellerProfilePage() {
     fetchProfile();
   }, []);
 
+  const handleLogout = async () => {
+    localStorage.removeItem("APP_TOKEN")
+    await signOut({ callbackUrl: "/login" })
+  }
+
   return (
     <div className="flex mt-4 w-full h-full bg-[#FEF0E5] font-inter">
       {/* Main content */}
       <div className="w-[90%] mx-auto">
         {/* Accepting customers toggle */}
+        <button
+          onClick={handleLogout}
+          className="self-end mb-4 text-sm text-red-600 hover:underline"
+        >
+          Logout
+        </button>
+
         <div className="bg-white rounded-lg p-4 mb-4 shadow">
           <div className="flex justify-between items-center ml-2 mr-4">
             <p className="font-bold text-lg">

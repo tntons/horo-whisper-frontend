@@ -44,7 +44,7 @@ export default function Home() {
 
   const fetchSessions = async () => {
     try {
-      const payload = await apiFetch(`/customers/sessions/${customerId}`)
+      const payload = await apiFetch(`/customers/sessions`)
       console.log('payload', payload)
       setSessions(payload.data) 
     } catch (error) {
@@ -235,6 +235,7 @@ export default function Home() {
                   name={session.teller.user.username}
                   date={new Date(session.createdAt).toLocaleDateString()}
                   active={true}
+                  sessionId={session.id}
                   sessionStatus={session.sessionStatus}
                   paymentId={session.paymentId}
                 />
@@ -253,6 +254,7 @@ export default function Home() {
                   date={new Date(session.createdAt).toLocaleDateString()}
                   active={false}
                   sessionStatus={session.sessionStatus}
+                  sessionId={session.id}
                   paymentId={session.paymentId} // Pass the paymentId
                   onPaymentVerified={fetchSessions} // Callback to refresh sessions
                 />
@@ -270,6 +272,7 @@ export default function Home() {
                   name={session.teller.user.username}
                   date={new Date(session.createdAt).toLocaleDateString()}
                   active={false}
+                  sessionId={session.id}
                   sessionStatus={session.sessionStatus}
                   paymentId={session.paymentId}
                 />

@@ -77,7 +77,7 @@ export default function BrowseTeller() {
   const fetchTellers = async () => {
     try {
       const response = await apiFetch("/tellers");
-      console.log(response);
+      console.log("Fetch Tellers response",response);
       if (response.success) {
         setTellers(response.data);
       } else {
