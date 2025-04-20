@@ -40,6 +40,7 @@ export default function UpcomingSession() {
     SessionInfo | ErrorResponse | null
   >(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [sortOption, setSortOption] = useState("Latest: newest first");
 
   const fetchSessionData = async () => {
     try {
@@ -66,22 +67,32 @@ export default function UpcomingSession() {
 
   const filteredSession =
     sessionInfo && "data" in sessionInfo
-      ? sessionInfo.data.sessions.filter((session) =>
+      ? sessionInfo.data.sessions
+        .filter((session) =>
           session.username.toLowerCase().includes(searchQuery.toLowerCase())
         )
+        .sort((a, b) => {
+          // Convert date and time strings to comparable format
+          const dateTimeA = new Date(`${a.createdDate} ${a.createdTime}`);
+          const dateTimeB = new Date(`${b.createdDate} ${b.createdTime}`);
+
+          // Sort based on selected option
+          return sortOption === "Earliest: oldest first"
+            ? dateTimeA.getTime() - dateTimeB.getTime()  // Ascending order
+            : dateTimeB.getTime() - dateTimeA.getTime(); // Descending order
+        })
       : [];
   return (
     <div className="flex flex-col items-center h-screen font-inter">
       <div className="flex flex-col items-center w-full h-full p-4 gap-5">
         <SessionMenu currentTitle="Upcoming Sessions" menuItems={menuItems} />
-        <div className="flex flex-row items-center justify-between w-full">
+        <div className="flex flex-row items-center  w-full gap-3">
           <SearchBar
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             forCustomer={false}
           />
-          <SearchFilter />
-          <SearchSort />
+          <SearchSort selectedSort={sortOption} setSortOption={setSortOption} forCustomer={false} />
         </div>
         {isLoading ? (
           <h1>Loading Session ...</h1>

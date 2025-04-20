@@ -13,7 +13,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   forCustomer
 }) => {
   return (
-    <div className="flex w-[69%] h-[38px] bg-greybackground border border-blue01 rounded-[12px] px-3 py-2 shadow-sm">
+    <div className="flex w-full h-[38px] bg-greybackground border border-blue01 rounded-[12px] px-3 py-2 shadow-sm">
       {/* Search Icon */}
       <Search size={20} className="text-[#696969] flex-shrink-0 mr-2" />
 

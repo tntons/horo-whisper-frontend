@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ArrowDownUp } from "lucide-react";
 
-const sortOptions = [
+const customerSortOptions = [
   "Default",
   "Price: Low to High",
   "Price: High to Low",
@@ -9,14 +9,22 @@ const sortOptions = [
   "Estimated Wait Time",
 ];
 
+const tellerSortOptions = [
+  "Latest: newest first",
+  "Earliest: oldest first",
+];
+
+
 interface SearchSortProps {
   selectedSort: string;
   setSortOption: (option: string) => void;
+  forCustomer: boolean;
 }
 
 const SearchSort: React.FC<SearchSortProps> = ({
   selectedSort,
   setSortOption,
+  forCustomer
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -38,17 +46,28 @@ const SearchSort: React.FC<SearchSortProps> = ({
       {isOpen && (
         <div className="absolute right-0 top-12 z-50 bg-white border border-gray-300 rounded-xl w-56 shadow-md">
           <ul className="text-md text-gray-800">
-            {sortOptions.map((option) => (
-              <li
-                key={option}
-                className={`px-4 py-2 hover:bg-blue01 hover:text-white cursor-pointer ${
-                  selectedSort === option ? "bg-blue01 text-white" : ""
-                }`}
-                onClick={() => handleSelect(option)}
-              >
-                {option}
-              </li>
-            ))}
+            {forCustomer
+              ? customerSortOptions.map((option) => (
+                <li
+                  key={option}
+                  className={`px-4 py-2 hover:bg-blue01 hover:text-white cursor-pointer ${selectedSort === option ? "bg-blue01 text-white" : ""
+                    }`}
+                  onClick={() => handleSelect(option)}
+                >
+                  {option}
+                </li>
+              ))
+              : tellerSortOptions.map((option) => (
+                <li
+                  key={option}
+                  className={`px-4 py-2 hover:bg-blue01 hover:text-white cursor-pointer ${selectedSort === option ? "bg-blue01 text-white" : ""
+                    }`}
+                  onClick={() => handleSelect(option)}
+                >
+                  {option}
+                </li>
+              ))
+            }
           </ul>
         </div>
       )}

@@ -17,7 +17,7 @@ interface PackageInfo {
   }>;
 }
 export default function ChoosePackage() {
-  const { tellerId } = useParams();
+  const { tellerId } = useParams() as { tellerId: string };
   const [packageInfo, setPackageInfo] = useState<PackageInfo | null>(null);
   const [selectedPackage, setSelectedPackage] = useState<number | null>(null);
   const [selectedAnonymity, setSelectedAnonymity] = useState<number | null>(

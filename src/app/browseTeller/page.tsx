@@ -100,7 +100,7 @@ export default function BrowseTeller() {
 
   return (
     <div className="main-content w-full flex flex-col overflow-y-auto">
-      <div className="sticky top-0 pt-4 pb-2 z-10 flex items-start px-4 justify-between">
+      <div className="sticky top-0 pt-4 pb-2 z-10 flex items-start px-4 justify-between gap-3">
         <SearchBar
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
@@ -113,7 +113,7 @@ export default function BrowseTeller() {
           setPriceRange={setPriceRange}
           allTags={allTags}
         />
-        <SearchSort setSortOption={setSortOption} selectedSort={sortOption} />
+        <SearchSort setSortOption={setSortOption} selectedSort={sortOption} forCustomer ={true} />
       </div>
 
       <div className="flex flex-col items-center overflow-y-auto no-scrollbar w-full">

@@ -31,6 +31,8 @@ export default function EditPackagePage() {
     fetchPackage();
   }, []);
 
+  console.log(packageInfo);
+
   const addPackageItem = () => {
     const newItem: PackageItem = {
       id: Date.now(), // temporary ID for UI only
