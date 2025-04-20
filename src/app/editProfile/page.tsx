@@ -9,6 +9,7 @@ import { apiFetch } from "@/lib/api/fetch"
 
 export default function EditProfile() {
   const [name, setName] = useState("")
+  const [surname, setSurname] = useState("")
   const [dateOfBirth, setDateOfBirth] = useState("")
   const [timeOfBirth, setTimeOfBirth] = useState("")
   const [whatever, setWhatever] = useState("")
@@ -25,8 +26,21 @@ export default function EditProfile() {
         const user = res.data.user
         console.log('user', user)
         setName(user.firstName || "")
-        setDateOfBirth(user.birthDate || "")
-        setTimeOfBirth(user.birthTime || "")
+        setSurname(user.lastName || "")
+
+        if (user.birthDate) {
+          const dt = new Date(user.birthDate)
+
+          setDateOfBirth(dt.toISOString().split('T')[0])
+  
+          setTimeOfBirth(dt
+            .toTimeString()
+            .split(' ')[0]
+            .slice(0, 5))
+        } else {
+          setDateOfBirth('')
+          setTimeOfBirth('')
+        }
         // setWhatever(prediction?.birthPlace || "")
         // setSomething(prediction?.relationship || "")
       } catch (err) {
@@ -50,13 +64,13 @@ export default function EditProfile() {
         })
       })
       // update prediction attributes
-      await apiFetch('/customers/prediction-attributes', {
-        method: 'PATCH',
-        body: JSON.stringify({
-          birthPlace: whatever,
-          relationship: something
-        })
-      })
+      // await apiFetch('/customers/prediction-attributes', {
+      //   method: 'PATCH',
+      //   body: JSON.stringify({
+      //     birthPlace: whatever,
+      //     relationship: something
+      //   })
+      // })
       toast.success("You've successfully updated your profile!", {
         position: "bottom-center",
         autoClose: 3000,
@@ -102,6 +116,17 @@ export default function EditProfile() {
             <input
               type="text"
               value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-normal text-[#171717]">
+              Surname
+            </label>
+            <input
+              type="text"
+              value={surname}
               onChange={(e) => setName(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-3 py-2"
             />

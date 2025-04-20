@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { RiDeleteBinLine } from "react-icons/ri";
 import { apiFetch } from '@/lib/api/fetch';
+import { useRouter } from 'next/navigation';
 interface SessionBoxProps {
     sessionId: number;
     name: string;
@@ -19,6 +20,7 @@ const SessionBox = ({ sessionId, name, detail, date, time, current, past, upcomi
     const [isAccepted, setIsAccepted] = useState(false);
     const [isDeclined, setIsDeclined] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
+    const router = useRouter();
 
 
     const handleAcceptSession = async (sessionId: number) => {
@@ -83,7 +85,9 @@ const SessionBox = ({ sessionId, name, detail, date, time, current, past, upcomi
             : isDeclined
                 ? 'opacity-0 transform scale-95'
                 : 'opacity-100 scale-100'
-            }`}>
+            }`}
+            // TODO: past sessions should not be clickable if the session is declined
+            onClick={(current || past) ? () => router.push(`/chat?sessionId=${sessionId}`) : undefined}>
             <div className={`${upcoming ? 'w-10/12' : 'w-full'} h-full `}>
                 <div className={`flex flex-row justify-between w-full h-24 bg-greybackground ${upcoming ? 'rounded-l-lg' : 'rounded-lg'} border border-greyborder px-6 py-4`}>
                     {/* left Column - Details */}

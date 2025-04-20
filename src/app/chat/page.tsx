@@ -5,6 +5,7 @@ import { AiFillPicture } from "react-icons/ai";
 import { useState, useRef, useEffect, ChangeEvent } from 'react';
 import { message } from './message_data';
 import { apiFetch } from '@/lib/api/fetch';
+import { useSearchParams } from 'next/navigation';
 interface Message {
     id: number;
     content: string;
@@ -14,29 +15,29 @@ interface Message {
 
 export default function Chat() {
 
-    const [messages, setMessages] = useState<Message[]>(message);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState('');
     const [sessionInfo, setSessionInfo] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-    const fetchSessionData = async () => {
-        try {
-            const tellerId = 1;
-            const response = await apiFetch(`/tellers/${tellerId}/current-session`);
-            const data = await response.json();
-            setSessionInfo(data);
-            console.log(data);
-        } catch (error) {
-            console.error("Error fetching session info:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const searchParams = useSearchParams();
+    const sessionId = searchParams.get('sessionId')
 
     useEffect(() => {
-        fetchSessionData();
-    }, []);
+        if (!sessionId) return
+
+        async function loadMessages() {
+            try {
+                const data = await apiFetch(`/chats/${sessionId}`)
+                console.log('data', data)
+                setMessages(data.data)
+            } catch (err) {
+                console.error('Error loading messages:', err)
+            }
+        }
+
+        loadMessages()
+    }, [sessionId])
 
     const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         setInputValue(e.target.value);
@@ -49,33 +50,28 @@ export default function Chat() {
 
     // TODO: change the schema to match the backend
     const handleSendMessage = async () => {
-        if (!inputValue.trim() || !sessionInfo) return;
+        if (!inputValue.trim() || !sessionId) return;
 
         const payload = {
-            sessionId: sessionInfo.id,                     
-            senderId: sessionInfo.userId || 1,            
+            sessionId: Number(sessionId),                                
             content: inputValue
         };
 
         try {
-            const res = await apiFetch('/chat', {
+            const res = await apiFetch('/chats', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
 
-            if (res.ok) {
-                const newChat = await res.json();
-                setMessages([...messages, {
-                    id: newChat.id,
-                    content: newChat.content,
-                    timestamp: new Date(newChat.createdAt).toLocaleTimeString(),
-                    isUser: true
-                }]);
-                setInputValue('');
-            } else {
-                console.error("Failed to send message");
-            }
+            const newChat = await res.data;
+            setMessages([...messages, {
+                id: newChat.id,
+                content: newChat.content,
+                timestamp: new Date(newChat.createdAt).toLocaleTimeString(),
+                isUser: true
+            }]);
+            setInputValue('');
         } catch (error) {
             console.error("Error sending message", error);
         }
@@ -140,7 +136,7 @@ export default function Chat() {
                                         <p className="text-md">{message.content}</p>
                                     </div>
                                     <span className={`text-sm text-gray-500 ${message.isUser ? 'text-right' : 'text-left'}`}>
-                                        {message.timestamp}
+                                        {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </span>
                                 </div>
                             </div>

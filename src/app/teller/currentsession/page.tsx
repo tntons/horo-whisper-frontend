@@ -53,7 +53,7 @@ export default function CurrentSession() {
     try {
       const tellerId = 1;
       const response = await apiFetch(`/tellers/${tellerId}/current-session`);
-      const data = await response.json();
+      const data = await response;
       setSessionInfo(data);
       console.log(data);
     } catch (error) {
