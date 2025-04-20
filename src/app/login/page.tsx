@@ -17,29 +17,24 @@ export default function Welcome() {
 
     useEffect(() => {
         async function exchange() {
-            const sess = await getSession();
-            if (!sess?.idToken) return;
+            const sess = await getSession()
+            if (!sess?.idToken) return
 
-            const res = await apiFetch('/auth/google', {
-                method: 'POST',
-                body: JSON.stringify({ idToken: sess.idToken }),
-            });
-
-            if (!res.ok) {
-                const errText = await res.text();
-                console.error('Exchange failed:', errText);
-                setBusy(false);
-                return;
+            try {
+                const { token } = await apiFetch('/auth/google', {
+                    method: 'POST',
+                    body: JSON.stringify({ idToken: sess.idToken }),
+                })
+                localStorage.setItem('APP_TOKEN', token)
+                router.replace('/')
+            } catch (err: any) {
+                console.error('Exchange failed:', err.message)
+                setBusy(false)
             }
-
-            const { token } = await res.json();
-            localStorage.setItem('APP_TOKEN', token);
-            router.replace('/login/select-role');
-            setBusy(false);
         }
+        exchange()
+    }, [router])
 
-        exchange();
-    }, [router]);
     return (
         <div className="flex flex-col items-center p-4">
             <div className="mt-40">
