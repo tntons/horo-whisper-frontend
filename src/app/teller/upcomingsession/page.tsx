@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import SessionMenu from "../SessionMenu";
 import SessionBox from "../SessionBox";
 import SearchBar from "../../browseTeller/SearchBar";
-import SearchFilter from "../../browseTeller/SearchFilter";
 import SearchSort from "../../browseTeller/SearchSort";
+import { IoRefresh } from "react-icons/io5";
 
 interface Session {
   sessionId: number;
@@ -85,7 +85,7 @@ export default function UpcomingSession() {
   return (
     <div className="flex flex-col items-center h-screen font-inter">
       <div className="flex flex-col items-center w-full h-full p-4 gap-5">
-        <SessionMenu currentTitle="Upcoming Sessions" menuItems={menuItems} />
+        <SessionMenu currentTitle="Upcoming Sessions" menuItems={menuItems} refresh={fetchSessionData} />
         <div className="flex flex-row items-center  w-full gap-3">
           <SearchBar
             searchQuery={searchQuery}

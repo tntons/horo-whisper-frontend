@@ -87,7 +87,7 @@ export default function CurrentSession() {
   return (
     <div className="flex flex-col items-center h-screen font-inter">
       <div className="flex flex-col items-center w-full h-full p-4 gap-5 ">
-        <SessionMenu currentTitle="Current Sessions" menuItems={menuItems} />
+        <SessionMenu currentTitle="Current Sessions" menuItems={menuItems}refresh={fetchSessionData}/>
         <div className="flex flex-row items-center justify-between w-full gap-3">
           <SearchBar
             searchQuery={searchQuery}
