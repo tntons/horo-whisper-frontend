@@ -83,8 +83,7 @@ export default function Home() {
     fetchPrediction();
     fetchSessions();
   }, []);
-  console.log("this is prediction")
-  console.log(predictionData);
+
 
   const currentSessions = sessions.filter(
     (session) => session.sessionStatus === "Active"
@@ -130,19 +129,6 @@ export default function Home() {
       return 0; // Keep the order for other statuses
     });
 
-  const getLuckyColorClass = (color: string): string => {
-    switch (color.toLowerCase()) {
-      case "blue":
-        return "bg-luckyblue";
-      case "pink":
-        return "bg-luckypink";
-      case "white":
-        return "bg-luckywhite";
-      // Add more color mappings as needed
-      default:
-        return "bg-purple03"; // fallback color
-    }
-  };
 
   return (
     <div className="h-screen w-full overflow-y-scroll no-scrollbar font-inter">
