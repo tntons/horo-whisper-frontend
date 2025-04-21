@@ -17,6 +17,8 @@ interface TellerProfile {
   totalNumberOfReviews: number;
   averageRating: number;
   packages: PackageItem[];
+  totalAmountFromEndedSessions: number;
+  numberOfEndedSessions: number;
 }
 
 interface PackageItem {
@@ -55,9 +57,9 @@ export default function TellerProfilePage() {
   }, []);
 
   const handleLogout = async () => {
-    localStorage.removeItem("APP_TOKEN")
-    await signOut({ callbackUrl: "/login" })
-  }
+    localStorage.removeItem("APP_TOKEN");
+    await signOut({ callbackUrl: "/login" });
+  };
 
   return (
     <div className="flex mt-4 w-full h-full bg-[#FEF0E5] font-inter">
@@ -139,9 +141,13 @@ export default function TellerProfilePage() {
           <div className="flex justify-between items-center mt-1 ml-3">
             <div>
               <h2 className="text-lg font-bold">You've made</h2>
-              <div className="text-2xl font-bold">₿10,000</div>
+              <div className="text-2xl font-bold">
+                ₿{profileInfo?.totalAmountFromEndedSessions}
+              </div>
               <p className="text-sm">By advising</p>
-              <p className="font-bold">198 Customers</p>
+              <p className="font-bold">
+                {profileInfo?.numberOfEndedSessions} Customers
+              </p>
             </div>
 
             <div className="space-y-0.5 mr-4 flex flex-col items-start justify-start">
