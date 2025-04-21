@@ -53,17 +53,17 @@ export default function Home() {
   };
   const fetchPrediction = async () => {
     try {
-      const response = await fetch(
-        `/api/customers/daily-prediction/${customerId}`
+      const res = await apiFetch('/me', { method: 'GET' }, { skipAuth: false })
+      console.log('Current user:', res.id)
+
+      const response = await apiFetch(
+        `/customers/daily-prediction`
       );
+      console.log("Prediction response:", response);
 
-      if (!response.ok) {
-        console.log(response);
-        throw new Error("Failed to fetch prediction");
-      }
-      const data = await response.json();
+      const data = await response.data;
 
-      setPredictionData(data.data);
+      setPredictionData(data);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching prediction:", error);
