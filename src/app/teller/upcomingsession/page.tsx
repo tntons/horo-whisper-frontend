@@ -50,6 +50,7 @@ export default function UpcomingSession() {
       setSessionInfo(response);
 
     } catch (error) {
+      setSessionInfo(null)
       console.error("Error fetching session info:", error);
     } finally {
       setIsLoading(false);
@@ -59,6 +60,7 @@ export default function UpcomingSession() {
   useEffect(() => {
     fetchSessionData();
   }, []);
+
 
   const menuItems = [
     { title: "Current Sessions", path: "/teller/currentsession" },

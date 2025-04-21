@@ -32,16 +32,12 @@ const SessionBox = ({ sessionId, name, detail, date, time, current, past, upcomi
                 },
             });
 
-            if (!response.ok) {
-                throw new Error('Failed to accept session');
-            }
-            if (response.ok) {
-                setIsAccepted(true);
-                setTimeout(() => {
-                    setIsVisible(false);
-                    onSessionUpdate?.()
-                }, 1000); // Match this with your transition duration
-            }
+            setIsAccepted(true);
+            setTimeout(() => {
+                setIsVisible(false);
+                onSessionUpdate?.()
+            }, 1000); // Match this with your transition duration
+
             console.log("Accepted session");
             // Refresh session data after acceptance
             // You might want to refetch your sessions here
@@ -59,15 +55,12 @@ const SessionBox = ({ sessionId, name, detail, date, time, current, past, upcomi
                 },
             });
 
-            if (!response.ok) {
-                throw new Error('Failed to decline session');
-            }
-            if (response.ok) {
-                setIsDeclined(true);
-                setTimeout(() => {
-                    setIsVisible(false);
-                }, 1000);
-            }
+
+            setIsDeclined(true);
+            setTimeout(() => {
+                setIsVisible(false);
+            }, 1000);
+
             console.log("Declined session");
         } catch (error) {
             console.error('Error accepting session:', error);

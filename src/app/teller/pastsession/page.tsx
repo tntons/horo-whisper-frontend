@@ -52,6 +52,7 @@ export default function PastSession() {
       const response = await apiFetch(`/tellers/${tellerId}/past-session`);
       setSessionInfo(response);
     } catch (error) {
+      setSessionInfo(null);
       console.error("Error fetching session info:", error);
     } finally {
       setIsLoading(false);
