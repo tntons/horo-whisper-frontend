@@ -18,7 +18,20 @@ export default function Chat() {
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const socketRef = useRef<Socket | null>(null)
     const currentUserId = useRef<number | null>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
+    const [autoScroll, setAutoScroll] = useState(true)
 
+    const handleScroll = () => {
+        if (!containerRef.current) return
+        const { scrollTop, scrollHeight, clientHeight } = containerRef.current
+        setAutoScroll(scrollHeight - scrollTop - clientHeight < 50)
+    }
+
+    useEffect(() => {
+        if (autoScroll && containerRef.current) {
+            containerRef.current.scrollTop = containerRef.current.scrollHeight
+        }
+    }, [messages, autoScroll])
 
     useEffect(() => {
         if (!sessionId) return
@@ -128,7 +141,11 @@ export default function Chat() {
             </section>
 
             {/* chat section */}
-            <section className="flex-1 overflow-y-auto p-4">
+            <section 
+                ref={containerRef}
+                onScroll={handleScroll}
+                className="flex-1 overflow-y-auto p-4"
+            >
                 <div className="flex flex-col gap-4">
                     {messages.map((message) => (
                         <div key={message.id} className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}>

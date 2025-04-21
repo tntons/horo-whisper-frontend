@@ -4,7 +4,6 @@ import SessionMenu from "../SessionMenu";
 import SessionBox from "../SessionBox";
 import SearchBar from "../../browseTeller/SearchBar";
 import SearchSort from "../../browseTeller/SearchSort";
-import { IoRefresh } from "react-icons/io5";
 import { apiFetch } from "@/lib/api/fetch";
 import { getTellerId } from "@/app/utils/getTellerId";
 
