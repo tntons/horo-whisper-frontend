@@ -45,7 +45,7 @@ export default function Home() {
   const fetchSessions = async () => {
     try {
       const payload = await apiFetch(`/customers/sessions`)
-      console.log('payload', payload)
+      console.log('Session data', payload)
       setSessions(payload.data) 
     } catch (error) {
       console.error("Error fetching sessions:", error);
