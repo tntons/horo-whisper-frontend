@@ -1,10 +1,9 @@
 import Correct from './correct';
 import { useRouter } from 'next/navigation';
-interface PaySuccessBoxProps {
-    setIsPaySuccess: (value: boolean | null) => void;
-}
 
-export default function PaySuccessBox({ setIsPaySuccess }: PaySuccessBoxProps) {
+
+
+export default function PaySuccessBox({ sessionId }: {sessionId: number | null}) {
     const router = useRouter();
     return (
         <div className="fixed inset-0 bg-grey02 bg-opacity-50 flex flex-col items-center justify-center z-50">
@@ -20,7 +19,10 @@ export default function PaySuccessBox({ setIsPaySuccess }: PaySuccessBoxProps) {
                     >
                         <p className="text-md">Back Home</p>
                     </button>
-                    <button className="bg-purple04 text-white px-3 py-1.5 rounded-lg w-1/2">
+                    <button 
+                    className="bg-purple04 text-white px-3 py-1.5 rounded-lg w-1/2"
+                        onClick={ () => router.push(`/chat?sessionId=${sessionId}`)}
+                    >
                         <p className="text-md">Join Chat Now</p>
                     </button>
                 </div>

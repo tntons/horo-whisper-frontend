@@ -52,17 +52,13 @@ export default function Payment() {
     const [paymentInfo, setPaymentInfo] = useState<PaymentInfo | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const {paymentId} = useParams(); // Replace with actual payment ID
+    const [sessionId, setSessionId] = useState<number | null>(null);
 
     useEffect(() => {
         const fetchPaymentInfo = async () => {
             try {
                 const response = await apiFetch(`/customers/get-payment/${paymentId}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch payment information');
-                }
-                const data = await response.json();
-                console.log(data);
-                setPaymentInfo(data);
+                setPaymentInfo(response);
             } catch (error) {
                 console.error('Error fetching payment info:', error);
             } finally {
@@ -87,9 +83,8 @@ export default function Payment() {
                     'Content-Type': 'application/json',
                 },
             });
-            if (!response.ok) {
-                throw new Error('Failed to verify payment');
-            }
+
+            setSessionId(response.data.updatedSession.id);
 
             setIsPaySuccess(true);
         } catch (error) {
@@ -102,7 +97,7 @@ export default function Payment() {
 
     return (
         <div className="flex flex-col h-full">
-            {isPaySuccess === true && <PaySuccessBox setIsPaySuccess={setIsPaySuccess} />}
+            {isPaySuccess === true && <PaySuccessBox sessionId={sessionId}/>}
             {isPaySuccess === false && <PayFailBox setIsPaySuccess={handleTryAgain} />}
             {isWaiting && <WaitingBox />}
             <Box title="Scan QR Code to pay">
