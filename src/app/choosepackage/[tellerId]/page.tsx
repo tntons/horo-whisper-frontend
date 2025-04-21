@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Box from "@/components/Box";
 import ConfirmBox from "./ConfirmBox";
 import { apiFetch } from "@/lib/api/fetch";
-import { getTellerId } from "@/app/utils/getTellerId";
+import { getCustomerId } from "@/app/utils/getCustomer";
 
 interface PackageInfo {
   success: boolean;
@@ -23,11 +23,24 @@ export default function ChoosePackage() {
   const [selectedPackage, setSelectedPackage] = useState<number | null>(null)
   const [selectedAnonymity, setSelectedAnonymity] = useState<number | null>(null)
   const [isConfirm, setIsConfirm] = useState(false)
-  const [tellerId, setTellerId] = useState<number | null>(null)
+  const {tellerId} = useParams()
+  const [customerId , setCustomerId] = useState<number | null>(null)
 
+  useEffect(() => {
+    const fetchCustomerId = async () => {
+      try {
+        const id = await getCustomerId()
+        setCustomerId(id)
+      } catch (error) {
+        console.error('Error fetching customer ID:', error)
+      }
+    }
+    fetchCustomerId()
+  }, [])
   const fetchPackage = async () => {
     try {
-      setTellerId(await getTellerId())
+
+      // setTellerId(tellerId)
       const data = await apiFetch(`/tellers/${tellerId}/teller-package`)
       setPackageInfo(data)
     } catch (error) {
@@ -50,15 +63,14 @@ export default function ChoosePackage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          customerId: 1, // Replace with the actual customerId if available
+          customerId: customerId, 
           tellerId: parseInt(tellerId),
           packageId: selectedPackage,
         }),
       });
+      console.log(response);
 
-      if (!response.ok) {
-        throw new Error("Failed to book session");
-      }
+  
 
       setIsConfirm(true);
 
