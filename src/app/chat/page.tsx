@@ -1,85 +1,97 @@
-'use client';
-import Image from 'next/image';
-import { IoSend } from "react-icons/io5";
-import { AiFillPicture } from "react-icons/ai";
-import { useState, useRef, useEffect, ChangeEvent } from 'react';
-import { message } from './message_data';
-import { apiFetch } from '@/lib/api/fetch';
-interface Message {
-    id: number;
-    content: string;
-    timestamp: string;
-    isUser: boolean;
-}
+'use client'
+import { useEffect, useState, useRef, ChangeEvent } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { io, Socket } from 'socket.io-client'
+import { IoSend } from 'react-icons/io5'
+import { AiFillPicture } from 'react-icons/ai'
+import Image from 'next/image'
+import { apiFetch } from '@/lib/api/fetch'
+
+interface Message { id: number; content: string; timestamp: string; isUser: boolean }
+let socket: Socket
 
 export default function Chat() {
+    const params = useSearchParams()
+    const sessionId = Number(params.get('sessionId'))
+    const [messages, setMessages] = useState<Message[]>([])
+    const [inputValue, setInputValue] = useState('')
+    const textareaRef = useRef<HTMLTextAreaElement>(null)
+    const socketRef = useRef<Socket | null>(null)
+    const currentUserId = useRef<number | null>(null)
 
-    const [messages, setMessages] = useState<Message[]>(message);
-    const [inputValue, setInputValue] = useState('');
-    const [sessionInfo, setSessionInfo] = useState<any>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-    const fetchSessionData = async () => {
-        try {
-            const tellerId = 1;
-            const response = await apiFetch(`/tellers/${tellerId}/current-session`);
-            const data = await response.json();
-            setSessionInfo(data);
-            console.log(data);
-        } catch (error) {
-            console.error("Error fetching session info:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     useEffect(() => {
-        fetchSessionData();
-    }, []);
+        if (!sessionId) return
+        // connect once
+        socketRef.current = io('http://localhost:8000', {
+            auth: { token: localStorage.getItem('APP_TOKEN') }
+        })
+        socketRef.current.emit('join', sessionId)
+
+        socketRef.current.on('newMessage', (chat: any) => {
+            console.log('New message user:', currentUserId.current)
+            console.log('New message sender:', chat.senderId)
+            const isUser = chat.senderId == currentUserId.current
+            setMessages(msgs => [
+                ...msgs,
+                {
+                    id: chat.id,
+                    content: chat.content,
+                    timestamp: chat.createdAt,
+                    isUser: isUser
+                }
+            ])
+        })
+
+        // initial load via REST (optional)
+        fetch(`http://localhost:8000/chats/${sessionId}`, {
+            headers: { Authorization: `Bearer ${localStorage.getItem('APP_TOKEN')}` }
+        })
+            .then(r => r.json())
+            .then(d => setMessages(d.data))
+
+
+        return () => {
+            if (!socketRef.current) {
+                console.error('Socket not connected yet')
+                return
+            } 
+            socketRef.current.disconnect()
+        }
+    }, [sessionId])
 
     const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        setInputValue(e.target.value);
+        setInputValue(e.target.value)
         if (textareaRef.current) {
-            textareaRef.current.style.height = 'inherit';
-            const scrollHeight = textareaRef.current.scrollHeight;
-            textareaRef.current.style.height = `${Math.min(scrollHeight, 120)}px`;
+            textareaRef.current.style.height = 'inherit'
+            const sh = textareaRef.current.scrollHeight
+            textareaRef.current.style.height = `${Math.min(sh, 120)}px`
         }
-    };
+    }
 
-    // TODO: change the schema to match the backend
-    const handleSendMessage = async () => {
-        if (!inputValue.trim() || !sessionInfo) return;
+    const handleSendMessage = () => {
+        if (!inputValue.trim() || !sessionId) return
+        const payload = { sessionId, content: inputValue }
+        if (!socketRef.current) {
+            console.error('Socket not connected yet')
+            return
+        }
+        socketRef.current.emit('sendMessage', payload)
+        setInputValue('')
+    }
 
-        const payload = {
-            sessionId: sessionInfo.id,                     
-            senderId: sessionInfo.userId || 1,            
-            content: inputValue
-        };
-
-        try {
-            const res = await apiFetch('/chat', {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-
-            if (res.ok) {
-                const newChat = await res.json();
-                setMessages([...messages, {
-                    id: newChat.id,
-                    content: newChat.content,
-                    timestamp: new Date(newChat.createdAt).toLocaleTimeString(),
-                    isUser: true
-                }]);
-                setInputValue('');
-            } else {
-                console.error("Failed to send message");
+    useEffect(() => {
+        async function loadCurrentUser() {
+            try {
+                const res = await apiFetch('/me', { method: 'GET' }, { skipAuth: false })
+                console.log('Current user:', res.id)
+                currentUserId.current = res.id
+            } catch (error) {
+                console.error(error)
             }
-        } catch (error) {
-            console.error("Error sending message", error);
         }
-    };
+        loadCurrentUser()
+    }, [])
 
     return (
         <div className="flex flex-col h-full relative">
@@ -134,13 +146,13 @@ export default function Chat() {
                                 )}
                                 <div className="flex flex-col gap-1">
                                     <div className={`p-3 rounded-2xl ${message.isUser
-                                            ? 'bg-[#D2D4FF] text-black rounded-br-none'
-                                            : 'bg-white text-black rounded-bl-none'
+                                        ? 'bg-[#D2D4FF] text-black rounded-br-none'
+                                        : 'bg-white text-black rounded-bl-none'
                                         }`}>
                                         <p className="text-md">{message.content}</p>
                                     </div>
                                     <span className={`text-sm text-gray-500 ${message.isUser ? 'text-right' : 'text-left'}`}>
-                                        {message.timestamp}
+                                        {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                     </span>
                                 </div>
                             </div>

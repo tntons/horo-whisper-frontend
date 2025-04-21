@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { Minus } from "lucide-react";
+import { apiFetch } from "@/lib/api/fetch";
 
 interface PackageItem {
   id: number;
@@ -19,8 +20,8 @@ export default function EditPackagePage() {
 
   const fetchPackage = async () => {
     try {
-      const response = await fetch(`/api/tellers/${tellerId}/teller-package`);
-      const data = await response.json();
+      const response = await apiFetch(`/tellers/teller-package`);
+      const data = await response.data;
       setPackageInfo(data.data);
     } catch (error) {
       console.error("Error fetching package:", error);
@@ -76,7 +77,7 @@ export default function EditPackagePage() {
     try {
       console.log("Packages submitted:", packageInfo);
 
-      const response = await fetch(`/api/tellers/${tellerId}/teller-package`, {
+      const response = await apiFetch(`/tellers/teller-package`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

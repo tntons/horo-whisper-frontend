@@ -1,13 +1,26 @@
-export async function apiFetch(path: string, opts: RequestInit = {}) {
-  const token = localStorage.getItem('APP_TOKEN')
-  if (!token) throw new Error('Not authenticated')
+export async function apiFetch(
+  path: string,
+  opts: RequestInit = {},
+  { skipAuth = false } = {}
+) {
   const headers = new Headers(opts.headers)
-  headers.set('Authorization', `Bearer ${token}`)
   headers.set('Content-Type', 'application/json')
+
+  if (!skipAuth) {
+    const token = localStorage.getItem('APP_TOKEN')
+    if (!token) throw new Error('Not authenticated')
+    headers.set('Authorization', `Bearer ${token}`)
+  }
+
   const res = await fetch(`http://localhost:8000${path}`, {
     ...opts,
     headers,
   })
-  if (!res.ok) throw new Error(`${res.status} ${await res.text()}`)
+
+  if (!res.ok) {
+    const txt = await res.text()
+    throw new Error(`${res.status} ${txt}`)
+  }
+
   return res.json()
 }

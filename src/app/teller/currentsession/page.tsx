@@ -6,6 +6,7 @@ import SearchBar from "../../browseTeller/SearchBar";
 import SearchFilter from "../../browseTeller/SearchFilter";
 import SearchSort from "../../browseTeller/SearchSort";
 import { apiFetch } from "@/lib/api/fetch";
+import { getTellerId } from "@/app/utils/getTellerId";
 
 interface Session {
   sessionId: number;
@@ -51,9 +52,9 @@ export default function CurrentSession() {
 
   const fetchSessionData = async () => {
     try {
-      const tellerId = 1;
+      const tellerId = await getTellerId();
       const response = await apiFetch(`/tellers/${tellerId}/current-session`);
-      const data = await response.json();
+      const data = await response;
       setSessionInfo(data);
       console.log(data);
     } catch (error) {

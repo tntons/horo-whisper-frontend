@@ -9,6 +9,7 @@ interface SessionBoxProps {
   active: boolean;
   sessionStatus: string;
   paymentId: number;
+  sessionId: number;
   onPaymentVerified?: () => void;
 }
 
@@ -18,6 +19,7 @@ const SessionBox = ({
   active,
   sessionStatus,
   paymentId,
+  sessionId,
   onPaymentVerified,
 }: SessionBoxProps) => {
   let statusMessage = "";
@@ -64,7 +66,9 @@ const SessionBox = ({
   }
 
   return (
-    <div className="flex flex-row items-center justify-between w-full h-[11vp] bg-greybackground rounded-lg border border-greyborder p-3">
+    <div className="flex flex-row items-center justify-between w-full h-[11vp] bg-greybackground rounded-lg border border-greyborder p-3"
+      onClick={(active) ? () => router.push(`/chat?sessionId=${sessionId}`) : undefined}
+    >
       {/* Left Column - Image */}
       <div className="relative w-[45px] h-full bg-gray-300 rounded-lg flex-shrink-0 overflow-hidden">
         <Image

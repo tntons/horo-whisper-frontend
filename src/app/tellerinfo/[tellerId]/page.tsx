@@ -17,10 +17,7 @@ export default function TellerDetail() {
   const fetchTellerDetails = async () => {
     try {
       const response = await apiFetch(`/tellers/${tellerId}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch teller details");
-      }
-      const data = await response.json();
+      const data = await response.data;
       setTeller(data);
     } catch (err) {
       setError(err.message);

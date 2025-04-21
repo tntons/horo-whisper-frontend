@@ -44,8 +44,8 @@ export default function Home() {
 
   const fetchSessions = async () => {
     try {
-      const payload = await apiFetch(`/customers/sessions/${customerId}`)
-      console.log('payload', payload)
+      const payload = await apiFetch(`/customers/sessions`)
+      console.log('Session data', payload)
       setSessions(payload.data) 
     } catch (error) {
       console.error("Error fetching sessions:", error);
@@ -53,17 +53,17 @@ export default function Home() {
   };
   const fetchPrediction = async () => {
     try {
-      const response = await fetch(
-        `/api/customers/daily-prediction/${customerId}`
+      const res = await apiFetch('/me', { method: 'GET' }, { skipAuth: false })
+      console.log('Current user:', res.id)
+
+      const response = await apiFetch(
+        `/customers/daily-prediction`
       );
+      console.log("Prediction response:", response);
 
-      if (!response.ok) {
-        console.log(response);
-        throw new Error("Failed to fetch prediction");
-      }
-      const data = await response.json();
+      const data = await response.data;
 
-      setPredictionData(data.data);
+      setPredictionData(data);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching prediction:", error);
@@ -235,6 +235,7 @@ export default function Home() {
                   name={session.teller.user.username}
                   date={new Date(session.createdAt).toLocaleDateString()}
                   active={true}
+                  sessionId={session.id}
                   sessionStatus={session.sessionStatus}
                   paymentId={session.paymentId}
                 />
@@ -253,6 +254,7 @@ export default function Home() {
                   date={new Date(session.createdAt).toLocaleDateString()}
                   active={false}
                   sessionStatus={session.sessionStatus}
+                  sessionId={session.id}
                   paymentId={session.paymentId} // Pass the paymentId
                   onPaymentVerified={fetchSessions} // Callback to refresh sessions
                 />
@@ -270,6 +272,7 @@ export default function Home() {
                   name={session.teller.user.username}
                   date={new Date(session.createdAt).toLocaleDateString()}
                   active={false}
+                  sessionId={session.id}
                   sessionStatus={session.sessionStatus}
                   paymentId={session.paymentId}
                 />

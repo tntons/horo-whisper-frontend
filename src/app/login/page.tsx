@@ -24,9 +24,10 @@ export default function Welcome() {
                 const { token } = await apiFetch('/auth/google', {
                     method: 'POST',
                     body: JSON.stringify({ idToken: sess.idToken }),
-                })
+                },
+                { skipAuth: true })
                 localStorage.setItem('APP_TOKEN', token)
-                router.replace('/')
+                router.replace('/login/select-role')
             } catch (err: any) {
                 console.error('Exchange failed:', err.message)
                 setBusy(false)
