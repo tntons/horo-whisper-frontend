@@ -12,6 +12,7 @@ export default function ClientLayout({
   const hideNavbarPaths = [
     "/welcome",
     pathname?.startsWith("/teller/") ? pathname : "",
+    pathname?.startsWith("/chat") ? pathname : "",
   ]; // Add any paths where you want to hide the navbar
   const hideHeaderPaths = ["/welcome"]; // Add any paths where you want to hide the header
 
