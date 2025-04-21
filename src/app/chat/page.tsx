@@ -32,7 +32,7 @@ export default function Chat() {
 
     const fetchSessionStatus = async () => {
         try {
-            const res = await apiFetch(`/tellers/sessiondata/${sessionId}`, { method: 'PATCH' }, { skipAuth: false })
+            const res = await apiFetch(`/tellers/sessiondata/${sessionId}`, { method: 'GET' }, { skipAuth: false })
             console.log('Fetch Session Data', res)
             if (res.data.sessionStatus == 'Ended') {
                 setIsEnded(true)
@@ -47,7 +47,7 @@ export default function Chat() {
 
     useEffect(() => {
         fetchSessionStatus()
-    },[])
+    }, [])
 
     useEffect(() => {
         if (autoScroll && containerRef.current) {
@@ -77,6 +77,11 @@ export default function Chat() {
                 }
             ])
         })
+
+        socketRef.current.on('sessionEnded', () => {
+            console.log('listening session ended')
+            setIsEnded(true);
+        });
 
         // initial load via REST (optional)
         fetch(`http://localhost:8000/chats/${sessionId}`, {
@@ -123,7 +128,15 @@ export default function Chat() {
         try {
             const res = await apiFetch(`/tellers/end-session/${sessionId}`, { method: 'PATCH' }, { skipAuth: false })
             console.log('Session ended:', res)
-            fetchSessionStatus()
+
+            if (!socketRef.current) {
+                console.error('Socket not connected yet')
+                return
+            }
+            socketRef.current.emit('endSession', { sessionId });
+            console.log('session end is clicked')
+
+            setIsEnded(true)
         } catch (error) {
             console.error(error)
         }
@@ -223,39 +236,39 @@ export default function Chat() {
                 </div>
             </section>
 
-                {!isEnded ? (
-                    <div className="w-full bg-[#565896] border-t border-gray-200 px-4 py-3">
-                        <div className="flex flex-row items-start gap-6">
-                            <button className="mt-2">
-                                <AiFillPicture className="fill-white" size={20} />
-                            </button>
-                            <textarea
-                                ref={textareaRef}
-                                value={inputValue}
-                                onChange={handleTextareaChange}
-                                placeholder="Type your message..."
-                                rows={1}
-                                className="flex-1 bg-[#F5F5F5] px-3 py-2 text-md focus:outline-none resize-none overflow-auto min-h-[16px]"
-                                style={{ lineHeight: '20px', maxHeight: '120px' }}
-                            />
-                            <button className="mt-2" onClick={handleSendMessage}>
-                                <IoSend className="fill-white" size={20} />
-                            </button>
-                        </div>
+            {!isEnded ? (
+                <div className="w-full bg-[#565896] border-t border-gray-200 px-4 py-3">
+                    <div className="flex flex-row items-start gap-6">
+                        <button className="mt-2">
+                            <AiFillPicture className="fill-white" size={20} />
+                        </button>
+                        <textarea
+                            ref={textareaRef}
+                            value={inputValue}
+                            onChange={handleTextareaChange}
+                            placeholder="Type your message..."
+                            rows={1}
+                            className="flex-1 bg-[#F5F5F5] px-3 py-2 text-md focus:outline-none resize-none overflow-auto min-h-[16px]"
+                            style={{ lineHeight: '20px', maxHeight: '120px' }}
+                        />
+                        <button className="mt-2" onClick={handleSendMessage}>
+                            <IoSend className="fill-white" size={20} />
+                        </button>
                     </div>
-                ):(
-                    <div className="w-full bg-[#565896] border-t border-gray-200 px-4 py-2">
-                        <div className="flex flex-col items-center justify-between gap-2">
-                            <span className="text-white text-lg">Session is Ended</span>
-                            <button 
-                                onClick={() => console.log('Review clicked')}
-                                className="bg-white text-lg text-[#565896] px-4 py-1 rounded-lg hover:bg-opacity-90 transition-colors font-medium"
-                            >
-                                Write me a Review!
-                            </button>
-                        </div>
+                </div>
+            ) : (
+                <div className="w-full bg-[#565896] border-t border-gray-200 px-4 py-2">
+                    <div className="flex flex-col items-center justify-between gap-2">
+                        <span className="text-white text-lg">Session is Ended</span>
+                        <button
+                            onClick={() => console.log('Review clicked')}
+                            className="bg-white text-lg text-[#565896] px-4 py-1 rounded-lg hover:bg-opacity-90 transition-colors font-medium"
+                        >
+                            Write me a Review!
+                        </button>
                     </div>
-                )}
+                </div>
+            )}
         </div>
     );
 }
