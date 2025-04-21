@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Box from "@/components/Box";
 import ConfirmBox from "./ConfirmBox";
 import { apiFetch } from "@/lib/api/fetch";
+import { getTellerId } from "@/app/utils/getTellerId";
 
 interface PackageInfo {
   success: boolean;
@@ -18,27 +19,25 @@ interface PackageInfo {
   }>;
 }
 export default function ChoosePackage() {
-  const { tellerId } = useParams() as { tellerId: string };
-  const [packageInfo, setPackageInfo] = useState<PackageInfo | null>(null);
-  const [selectedPackage, setSelectedPackage] = useState<number | null>(null);
-  const [selectedAnonymity, setSelectedAnonymity] = useState<number | null>(
-    null
-  );
-  const [isConfirm, setIsConfirm] = useState(false);
+  const [packageInfo, setPackageInfo] = useState<PackageInfo | null>(null)
+  const [selectedPackage, setSelectedPackage] = useState<number | null>(null)
+  const [selectedAnonymity, setSelectedAnonymity] = useState<number | null>(null)
+  const [isConfirm, setIsConfirm] = useState(false)
+  const [tellerId, setTellerId] = useState<number | null>(null)
 
   const fetchPackage = async () => {
     try {
-      const response = await apiFetch(`/tellers/${tellerId}/teller-package`);
-      const data = await response.json();
-      setPackageInfo(data);
+      setTellerId(await getTellerId())
+      const data = await apiFetch(`/tellers/${tellerId}/teller-package`)
+      setPackageInfo(data)
     } catch (error) {
-      console.error("Error fetching package:", error);
+      console.error('Error fetching package:', error)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchPackage();
-  }, [tellerId]);
+    fetchPackage()                             
+  }, [])
   useEffect(() => {
     console.log(selectedPackage);
   }, [selectedPackage]);
