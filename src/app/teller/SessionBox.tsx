@@ -87,7 +87,7 @@ const SessionBox = ({ sessionId, name, detail, date, time, current, past, upcomi
                 : 'opacity-100 scale-100'
             }`}
             // TODO: past sessions should not be clickable if the session is declined
-            onClick={(current || past) ? () => router.push(`/chat?sessionId=${sessionId}`) : undefined}>
+            onClick={(current || past) ? () => router.push(`/chat?sessionId=${sessionId}&&usertype=teller`) : undefined}>
             <div className={`${upcoming ? 'w-10/12' : 'w-full'} h-full `}>
                 <div className={`flex flex-row justify-between w-full h-24 bg-greybackground ${upcoming ? 'rounded-l-lg' : 'rounded-lg'} border border-greyborder px-6 py-4`}>
                     {/* left Column - Details */}

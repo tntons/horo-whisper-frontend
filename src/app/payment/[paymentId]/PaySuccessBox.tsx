@@ -21,7 +21,7 @@ export default function PaySuccessBox({ sessionId }: {sessionId: number | null})
                     </button>
                     <button 
                     className="bg-purple04 text-white px-3 py-1.5 rounded-lg w-1/2"
-                        onClick={ () => router.push(`/chat?sessionId=${sessionId}`)}
+                        onClick={ () => router.push(`/chat?sessionId=${sessionId}&&usertype=customer`)}
                     >
                         <p className="text-md">Join Chat Now</p>
                     </button>

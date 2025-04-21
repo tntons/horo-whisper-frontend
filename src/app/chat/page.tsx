@@ -13,6 +13,8 @@ let socket: Socket
 export default function Chat() {
     const params = useSearchParams()
     const sessionId = Number(params.get('sessionId'))
+    const userType = params.get('usertype')
+    const isCustomer = userType=='customer' ? true : false
     const [messages, setMessages] = useState<Message[]>([])
     const [inputValue, setInputValue] = useState('')
     const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -132,8 +134,15 @@ export default function Chat() {
                         </div>
                         <div className="flex flex-col bg-greybackground w-full h-1/2 rounded-lg border border-greyborder items-center justify-center">
                             <button className='flex flex-col items-center justify-center'>
+                                {isCustomer ? (
+                                <>
                                 <span className='text-base font-bold text-purple02'>Share Prediction </span>
                                 <span className='text-base font-bold text-purple02'>Attributes </span>
+                                </>
+                                ):(
+                                    <span className='text-base font-bold text-purple02'>End Session</span>
+                                )}
+
                             </button>
                         </div>
                     </div>
