@@ -32,7 +32,7 @@ export default function Chat() {
 
     const fetchSessionStatus = async () => {
         try {
-            const res = await apiFetch(`/tellers/end-session/${sessionId}`, { method: 'PATCH' }, { skipAuth: false })
+            const res = await apiFetch(`/tellers/sessiondata/${sessionId}`, { method: 'PATCH' }, { skipAuth: false })
             console.log('Fetch Session Data', res)
             if (res.data.sessionStatus == 'Ended') {
                 setIsEnded(true)

@@ -45,11 +45,10 @@ export default function UpcomingSession() {
 
   const fetchSessionData = async () => {
     try {
-      const tellerId = getTellerId();
+      const tellerId = await getTellerId();
       const response = await apiFetch(`/tellers/${tellerId}/upcoming-session`);
-      const data = await response.data;
-      setSessionInfo(data);
-      console.log(data);
+      setSessionInfo(response);
+
     } catch (error) {
       console.error("Error fetching session info:", error);
     } finally {
@@ -65,6 +64,7 @@ export default function UpcomingSession() {
     { title: "Current Sessions", path: "/teller/currentsession" },
     { title: "Past Sessions", path: "/teller/pastsession" },
   ];
+  
 
   const filteredSession =
     sessionInfo && "data" in sessionInfo

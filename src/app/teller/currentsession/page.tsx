@@ -54,9 +54,7 @@ export default function CurrentSession() {
     try {
       const tellerId = await getTellerId();
       const response = await apiFetch(`/tellers/${tellerId}/current-session`);
-      const data = await response;
-      setSessionInfo(data);
-      console.log(data);
+      setSessionInfo(response);
     } catch (error) {
       console.error("Error fetching session info:", error);
     } finally {

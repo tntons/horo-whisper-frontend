@@ -44,14 +44,13 @@ export default function PastSession() {
   >(null);
   const [isLoading, setIsLoading] = useState(true);
   const [sortOption, setSortOption] = useState("Latest: newest first");
-  const tellerId = getTellerId();
+
 
   const fetchSessionData = async () => {
     try {
+      const tellerId = await getTellerId();
       const response = await apiFetch(`/tellers/${tellerId}/past-session`);
-      const data = await response.data;
-      setSessionInfo(data);
-      console.log(data);
+      setSessionInfo(response);
     } catch (error) {
       console.error("Error fetching session info:", error);
     } finally {
