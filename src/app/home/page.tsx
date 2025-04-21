@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import SessionBox from "@/app/home/SessionBox";
 import { apiFetch } from "@/lib/api/fetch";
 import { getLuckyColor } from "./GetLuckyColor";
+import { getCustomerId } from "@/app/utils/getCustomer";
 
 interface Session {
   id: number;
@@ -40,8 +41,20 @@ export default function Home() {
     Prediction | ErrorResponse | null
   >(null);
   const [isLoading, setIsLoading] = useState(true);
-  const customerId = 1; // Replace with actual customer ID
+  const [customerId, setCustomerId] = useState<number | null>(null);
 
+    useEffect(() => {
+      const fetchCustomerId = async () => {
+        try {
+          const id = await getCustomerId()
+          setCustomerId(id)
+        } catch (error) {
+          console.error('Error fetching customer ID:', error)
+        }
+      }
+      fetchCustomerId()
+    }, [])
+  
   const fetchSessions = async () => {
     try {
       const payload = await apiFetch(`/customers/sessions`)
@@ -53,20 +66,16 @@ export default function Home() {
   };
   const fetchPrediction = async () => {
     try {
-      const res = await apiFetch('/me', { method: 'GET' }, { skipAuth: false })
-      console.log('Current user:', res.id)
-
       const response = await apiFetch(
-        `/customers/daily-prediction`
+        `/customers/daily-prediction/${customerId}`,
       );
-      console.log("Prediction response:", response);
-
       const data = await response.data;
-
       setPredictionData(data);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching prediction:", error);
+      setPredictionData(null)
+      setIsLoading(false);
     }
   };
 
@@ -74,6 +83,7 @@ export default function Home() {
     fetchPrediction();
     fetchSessions();
   }, []);
+  console.log("this is prediction")
   console.log(predictionData);
 
   const currentSessions = sessions.filter(
