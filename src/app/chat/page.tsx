@@ -260,12 +260,14 @@ export default function Chat() {
                 <div className="w-full bg-[#565896] border-t border-gray-200 px-4 py-2">
                     <div className="flex flex-col items-center justify-between gap-2">
                         <span className="text-white text-lg">Session is Ended</span>
+                        {isCustomer && (
                         <button
                             onClick={() => console.log('Review clicked')}
                             className="bg-white text-lg text-[#565896] px-4 py-1 rounded-lg hover:bg-opacity-90 transition-colors font-medium"
                         >
                             Write me a Review!
                         </button>
+                        )}
                     </div>
                 </div>
             )}

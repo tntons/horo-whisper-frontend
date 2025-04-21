@@ -6,11 +6,22 @@ import { Clock } from "lucide-react";
 import { MessageSquareCode } from "lucide-react";
 import { apiFetch } from "@/lib/api/fetch";
 
+interface Review {
+  id: number;
+  username: string;
+  reviewAt: string;
+  rating: number;
+  comment: string;
+  profilePic: string;
+}
 export default function TellerDetail() {
   const { tellerId } = useParams(); // Get the tellerId from the URL
   const [teller, setTeller] = useState(null);
+
+
+  const [reviewInfo, setReviewInfo] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+
   const router = useRouter();
 
   // Fetch teller details
@@ -18,8 +29,20 @@ export default function TellerDetail() {
     try {
       const response = await apiFetch(`/tellers/${tellerId}`);
       setTeller(response);
-    } catch (err) {
-      setError(err.message);
+    } catch (error) {
+      console.log("Error fetching teller details:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const response = await apiFetch(`/tellers/get-review/${tellerId}`);
+      const data = await response.data;
+      setReviewInfo(data);
+    } catch (error) {
+      console.log("Error fetching teller details:", error);
     } finally {
       setIsLoading(false);
     }
@@ -27,15 +50,15 @@ export default function TellerDetail() {
 
   useEffect(() => {
     fetchTellerDetails();
-  }, [tellerId]);
+    fetchReviews();
+  }, []);
+
+
 
   if (isLoading) {
     return <p className="text-center mt-4 text-lg text-blue01">Loading...</p>;
   }
 
-  if (error) {
-    return <p className="text-center text-red-500 mt-4">{error}</p>;
-  }
 
   if (!teller) {
     return <p className="text-center mt-4">No teller details found.</p>;
@@ -144,7 +167,7 @@ export default function TellerDetail() {
           </div>
 
           <div>
-            {reviews.map((review, index) => (
+            {reviewInfo.map((review, index) => (
               <div
                 key={index}
                 className="bg-white p-3 border-b-2 border-greyborder"
@@ -153,7 +176,7 @@ export default function TellerDetail() {
                   <div className="w-7 h-7 bg-[#D9D9D9] rounded-full"></div>
                   <div className="flex-1">
                     <div className="flex justify-between items-center">
-                      <p>{review.customerName}</p>
+                      <p>{review.username}</p>
                       <p className="text-greydate">
                         {new Date(review.reviewAt).toISOString().split("T")[0]}
                       </p>
@@ -164,7 +187,7 @@ export default function TellerDetail() {
                   </div>
                 </div>
 
-                <h1 className="text-[13px] font-medium mt-2">{review.title}</h1>
+                <h1 className="text-[13px] font-medium mt-2">TILEEEE</h1>
                 <p className="mt-0.5">{review.comment}</p>
               </div>
             ))}
