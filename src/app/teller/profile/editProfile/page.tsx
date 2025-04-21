@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
+import { apiFetch } from "@/lib/api/fetch";
+import { getTellerId } from "@/app/utils/getTellerId";
 
 interface TellerProfile {
   tellerId: number;
@@ -14,14 +16,14 @@ interface TellerProfile {
 }
 
 export default function EditProfilePage() {
-  const tellerId = 1; // Replace with actual teller ID later
+  const tellerId = getTellerId();
   const [profileInfo, setProfileInfo] = useState<TellerProfile>();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch(`/api/tellers/${tellerId}`);
-        const data = await response.json();
+        const response = await apiFetch(`/tellers/${tellerId}`);
+        const data = await response.data;
         setProfileInfo(data);
       } catch (error) {
         console.error("Error fetching teller profile:", error);
@@ -98,8 +100,9 @@ export default function EditProfilePage() {
         bankAccountNumber: profileInfo?.bankAccountNumber,
         specialty: profileInfo?.specialty,
       });
+      const tellerId = getTellerId();
 
-      const response = await fetch(`/api/tellers/${tellerId}`, {
+      const response = await apiFetch(`/tellers/${tellerId}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",

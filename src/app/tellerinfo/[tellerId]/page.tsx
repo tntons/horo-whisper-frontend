@@ -17,8 +17,7 @@ export default function TellerDetail() {
   const fetchTellerDetails = async () => {
     try {
       const response = await apiFetch(`/tellers/${tellerId}`);
-      const data = await response.data;
-      setTeller(data);
+      setTeller(response);
     } catch (err) {
       setError(err.message);
     } finally {

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { BsPencil } from "react-icons/bs";
 import { apiFetch } from "@/lib/api/fetch";
 import { signOut } from "next-auth/react";
+import { getTellerId } from "@/app/utils/getTellerId";
 
 interface TellerProfile {
   tellerId: number;
@@ -40,6 +41,7 @@ export default function TellerProfilePage() {
 
   const fetchProfile = async () => {
     try {
+      const tellerId = getTellerId();
       const response = await apiFetch(`/tellers/${tellerId}`);
       const data = await response.data;
       setProfileInfo(data);
