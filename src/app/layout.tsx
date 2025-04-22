@@ -20,7 +20,7 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: "Horo Whisper",
-  description: "Fortune telling application",
+  description: "Whisper from the universe just for you",
 };
 
 export default function RootLayout({
