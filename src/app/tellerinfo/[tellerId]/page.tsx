@@ -20,7 +20,7 @@ interface Review {
 }
 
 interface TellerDetail extends Teller {
-  name: string
+  tellerName: string
   totalNumberOfReviews: number
   reviews: Review[]
 }
@@ -39,6 +39,7 @@ export default function TellerDetail() {
     try {
       const response = await apiFetch(`/tellers/${tellerId}`);
       setTeller(response);
+      console.log("Teller details:", response);
     } catch (error) {
       console.log("Error fetching teller details:", error);
     } finally {
@@ -75,7 +76,7 @@ export default function TellerDetail() {
     packages,
     reviews,
     profilePic,
-    name,
+    tellerName,
     specialty,
     bio,
     traffic,
@@ -102,7 +103,7 @@ export default function TellerDetail() {
 
             <div className="flex-1">
               <div className="flex justify-between w-full">
-                <h2 className="font-normal text-lg mt-2">{name}</h2>
+                <h2 className="font-normal text-lg mt-2">{tellerName}</h2>
                 <p className="text-gray-500 underline">Report</p>
               </div>
 
