@@ -62,9 +62,6 @@ export default function EditProfile() {
         } else {
           setPrediction({ ...prediction, customerId: id });
         }
-
-        console.log("uploaded user: ", user);
-        console.log("uploaded pred: ", prediction);
       } catch (err) {
         console.error(err);
         toast.error("Failed to load profile");
