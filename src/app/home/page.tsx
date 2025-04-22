@@ -66,6 +66,32 @@ export default function Home() {
       const payload = await apiFetch(`/customers/sessions`);
       console.log("Session data", payload);
       setSessions(payload.data);
+      const socket = io('http://localhost:8000', {
+        auth: { token: localStorage.getItem('APP_TOKEN') }
+      })
+      payload.data.forEach((sess: Session) => {
+        console.log("Subscribe Session ID", sess.id);
+        socket.emit('subscribeSession', sess.id)
+      })
+      socket.on('sessionUpdate', ({ sessionId, lastMessage, unreadCount, lastMessageTime }) => {
+        console.log('sessionUpdate', sessionId, lastMessage, unreadCount, lastMessageTime)
+        setSessions(s =>
+          s.map(sess =>
+            sess.id === sessionId
+              ? {
+                ...sess,
+                lastChat: {
+                  ...sess.lastChat,
+                  content: lastMessage,
+                  timestamp: lastMessageTime    
+                },
+                unreadCount
+              }
+              : sess
+          )
+        )
+      })
+      return () => { socket.disconnect() }
     } catch (error) {
       console.error("Error fetching sessions:", error);
     }
@@ -90,21 +116,6 @@ export default function Home() {
     fetchPrediction();
     fetchSessions();
   }, []);
-
-  // useEffect(() => {
-  //   const socket = io('http://localhost:8000', {
-  //     auth: { token: localStorage.getItem('APP_TOKEN') }
-  //   })
-  //   socket.emit('joinUpdates')
-  //   socket.on('sessionUpdate', (upd: Partial<Session> & { sessionId: number }) => {
-  //     setSessions(s =>
-  //       s.map(sess =>
-  //         sess.id === upd.id ? { ...sess, ...upd } : sess
-  //       )
-  //     )
-  //   })
-  //   return () => { socket.disconnect() }
-  // }, [])
 
 
   const currentSessions = sessions.filter(

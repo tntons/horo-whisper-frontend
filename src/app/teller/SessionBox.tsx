@@ -3,20 +3,35 @@ import React, { useState, useEffect } from 'react';
 import { RiDeleteBinLine } from "react-icons/ri";
 import { apiFetch } from '@/lib/api/fetch';
 import { useRouter } from 'next/navigation';
+import { formatDate, formatTime } from '@/app/utils/date';
 interface SessionBoxProps {
-    sessionId: number;
-    name: string;
-    detail: string;
-    date: string | null;
-    time: string | null;
-    current?: boolean;
-    past?: boolean;
-    upcoming?: boolean;
-    message?: number;
-    onSessionUpdate?: () => void;
+    sessionId: number
+    name: string
+    detail: string   
+    date: string | null   // (you can remove if you never use it)
+    time: string | null
+    current?: boolean
+    past?: boolean
+    upcoming?: boolean
+    message?: number 
+    lastMessage?: string
+    timeSendLastMessage?: string
+    unreadCount?: number
+    onSessionUpdate?: () => void
 }
 
-const SessionBox = ({ sessionId, name, detail, date, time, current, past, upcoming, message, onSessionUpdate }: SessionBoxProps) => {
+const SessionBox = ({ 
+    sessionId,
+    name,
+    detail,
+    lastMessage,
+    timeSendLastMessage,
+    unreadCount,
+    current,
+    past,
+    upcoming,
+    onSessionUpdate,
+ }: SessionBoxProps) => {
     const [isAccepted, setIsAccepted] = useState(false);
     const [isDeclined, setIsDeclined] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
@@ -86,18 +101,16 @@ const SessionBox = ({ sessionId, name, detail, date, time, current, past, upcomi
                     {/* left Column - Details */}
                     <div className="flex flex-col gap-1">
                         <h2>{name}</h2>
-                        <p className="text-md ">{detail}</p>
-                        <p className="text-md text-greydate">{date}</p>
+                        <p className="text-md ">{lastMessage}</p>
+                        <p className="text-md text-greydate">{formatDate(timeSendLastMessage)}</p>
                     </div>
 
                     {/* Right Column*/}
                     <div className="flex flex-col items-end gap-1">
-                        <p className="mr-0.5">{time}</p>
-                        {message !== undefined && message > 0 && current && (
-                            <div className="flex items-center justify-center w-8 h-8 bg-purple04 rounded-full">
-                                <span className="text-lg text-white">{message}</span>
-                            </div>
-                        )}
+                        <p className="mr-0.5">{formatTime(timeSendLastMessage)}</p>
+                        <div className="flex items-center justify-center w-8 h-8 bg-purple04 rounded-full">
+                            <span className="text-md text-white">{unreadCount}</span>
+                        </div>
                         {upcoming && (
                             <button onClick={() => { handleDeclineSession(sessionId) }}>
                                 <RiDeleteBinLine className="text-red-500 mt-6 mr-0.5" size={24} />

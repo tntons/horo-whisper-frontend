@@ -65,7 +65,7 @@ const SessionBox = ({
         ? `Session ended ${timeAgo(sessionEndAt)}`
         : 'Session ended —'
       break
-      
+
     case "Declined":
       statusMessage = "Session declined";
       showActiveStatus = false;
@@ -140,7 +140,7 @@ const SessionBox = ({
                 <p className="mr-0.5">{formatTime(timeSendLastMessage)}</p>
                 <div className="flex items-center justify-center w-7 h-7 bg-purple04 rounded-full">
                     <span className="text-md text-white">{numberUnreadMessage}</span>
-                  </div>
+                </div>
               </>
           ) : timeSendLastMessage ? (
               // no unread but has a time

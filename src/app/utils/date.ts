@@ -30,5 +30,6 @@ export function timeAgo(iso: string): string {
   const hours = Math.floor(delta / 3_600_000)
   if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`
   const minutes = Math.floor((delta % 3_600_000) / 60_000)
-  return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`
+  if (minutes > 0) return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`
+  return 'just now'
 }
