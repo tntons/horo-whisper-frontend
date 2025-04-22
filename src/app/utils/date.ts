@@ -24,3 +24,11 @@ export const formatDuration = (startIso?: string, endIso?: string) => {
     const mins = Math.floor((diff % 3_600_000) / 60_000)
     return `${hrs}hr ${mins}min`
 }
+
+export function timeAgo(iso: string): string {
+  const delta = Date.now() - new Date(iso).getTime()
+  const hours = Math.floor(delta / 3_600_000)
+  if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`
+  const minutes = Math.floor((delta % 3_600_000) / 60_000)
+  return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`
+}

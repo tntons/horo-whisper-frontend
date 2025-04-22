@@ -6,13 +6,14 @@ import SessionBox from "@/app/home/SessionBox";
 import { apiFetch } from "@/lib/api/fetch";
 import { getLuckyColor } from "./GetLuckyColor";
 import { getCustomerId } from "@/app/utils/getCustomer";
+import { io } from "socket.io-client";
 
 interface Session {
   id: number;
   customerId: number;
   tellerId: number;
   createdAt: string;
-  endedAt: string | null;
+  endedAt: string;
   sessionStatus: string;
   paymentId: number;
   teller: {
@@ -20,6 +21,11 @@ interface Session {
       username: string;
     };
   };
+  lastChat: {
+    content: string;
+    timestamp: string;
+  }
+  unreadCount: number;
 }
 
 interface Prediction {
@@ -46,15 +52,15 @@ export default function Home() {
   useEffect(() => {
     const fetchCustomerId = async () => {
       try {
-        const id = await getCustomerId();
-        setCustomerId(id);
+        const id = await getCustomerId()
+        setCustomerId(id)
       } catch (error) {
-        console.error("Error fetching customer ID:", error);
+        console.error('Error fetching customer ID:', error)
       }
-    };
-    fetchCustomerId();
-  }, []);
-
+    }
+    fetchCustomerId()
+  }, [])
+  
   const fetchSessions = async () => {
     try {
       const payload = await apiFetch(`/customers/sessions`);
@@ -64,6 +70,7 @@ export default function Home() {
       console.error("Error fetching sessions:", error);
     }
   };
+
   const fetchPrediction = async () => {
     try {
       const response = await apiFetch(
@@ -83,6 +90,22 @@ export default function Home() {
     fetchPrediction();
     fetchSessions();
   }, []);
+
+  // useEffect(() => {
+  //   const socket = io('http://localhost:8000', {
+  //     auth: { token: localStorage.getItem('APP_TOKEN') }
+  //   })
+  //   socket.emit('joinUpdates')
+  //   socket.on('sessionUpdate', (upd: Partial<Session> & { sessionId: number }) => {
+  //     setSessions(s =>
+  //       s.map(sess =>
+  //         sess.id === upd.id ? { ...sess, ...upd } : sess
+  //       )
+  //     )
+  //   })
+  //   return () => { socket.disconnect() }
+  // }, [])
+
 
   const currentSessions = sessions.filter(
     (session) => session.sessionStatus === "Active"
@@ -232,6 +255,10 @@ export default function Home() {
                   sessionId={session.id}
                   sessionStatus={session.sessionStatus}
                   paymentId={session.paymentId}
+                  timeSendLastMessage={session.lastChat?.timestamp || ""}
+                  lastMessage={session.lastChat?.content || ""}
+                  numberUnreadMessage={session.unreadCount}
+                  sessionEndAt={session.endedAt}
                 />
               ))}
             </div>
@@ -269,6 +296,9 @@ export default function Home() {
                   sessionId={session.id}
                   sessionStatus={session.sessionStatus}
                   paymentId={session.paymentId}
+                  timeSendLastMessage={session.lastChat?.timestamp || ""}
+                  lastMessage={session.lastChat?.content || ""}
+                  numberUnreadMessage={session.unreadCount}
                 />
               ))}
             </div>
