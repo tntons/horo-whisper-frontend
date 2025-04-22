@@ -6,12 +6,13 @@ import SearchFilter from "./SearchFilter";
 import SearchSort from "./SearchSort";
 import { useState, useEffect, useMemo } from "react";
 import { apiFetch } from "@/lib/api/fetch";
+import { defaultProfilePic } from "@/app/utils/defaultProfilePic";
 
 export default function BrowseTeller() {
   interface Teller {
     tellerId: number;
     tellerName: string;
-    imageSrc?: string;
+    profilePic?: string;
     averageRating?: number;
     specialty?: string[];
     bio?: string;
@@ -96,6 +97,7 @@ export default function BrowseTeller() {
     fetchTellers();
   }, []);
 
+
   return (
     <div className="main-content w-full flex flex-col overflow-y-auto">
       <div className="sticky top-0 pt-4 pb-2 z-10 flex items-start px-4 justify-between gap-3">
@@ -124,7 +126,7 @@ export default function BrowseTeller() {
             <TellerCardBrowse
               key={index}
               tellerId={teller.tellerId}
-              imageSrc={teller.imageSrc || "/default-profile.png"}
+              imageSrc={teller?.profilePic ? teller.profilePic : defaultProfilePic}
               rating={teller.averageRating || 0}
               tellerName={teller.tellerName || "Unknown"}
               tags={teller.specialty || []}

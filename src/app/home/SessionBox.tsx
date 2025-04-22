@@ -2,6 +2,7 @@ import Image from "next/image";
 import { GrNext } from "react-icons/gr";
 import React from "react";
 import { useRouter } from "next/navigation";
+import { formatTime, timeAgo } from "../utils/date";
 
 interface SessionBoxProps {
   name: string;
@@ -10,7 +11,11 @@ interface SessionBoxProps {
   sessionStatus: string;
   paymentId: number;
   sessionId: number;
+  lastMessage?: string;
+  timeSendLastMessage?: string;
+  numberUnreadMessage?: number;
   onPaymentVerified?: () => void;
+  sessionEndAt?: string;
 }
 
 const SessionBox = ({
@@ -20,6 +25,10 @@ const SessionBox = ({
   sessionStatus,
   paymentId,
   sessionId,
+  lastMessage,
+  timeSendLastMessage,
+  numberUnreadMessage,
+  sessionEndAt,
   onPaymentVerified,
 }: SessionBoxProps) => {
   let statusMessage = "";
@@ -44,12 +53,19 @@ const SessionBox = ({
       showActiveStatus = false;
       showReviewBadge = false;
       break;
-    case "Active":
-      statusMessage = "Last reply: 2 hours ago"; // Fix later when the chat is completed
-      break;
-    case "Ended":
-      statusMessage = "Session ended 2 hours ago"; //Fix with endedDate
-      break;
+
+    case 'Active':
+      statusMessage = timeSendLastMessage
+        ? `Last reply ${timeAgo(timeSendLastMessage)}`
+        : 'Last reply —'
+      break
+
+    case 'Ended':
+      statusMessage = sessionEndAt
+        ? `Session ended ${timeAgo(sessionEndAt)}`
+        : 'Session ended —'
+      break
+
     case "Declined":
       statusMessage = "Session declined";
       showActiveStatus = false;
@@ -88,7 +104,7 @@ const SessionBox = ({
       {/* Middle Column - Details */}
       <div className="flex flex-col flex-grow mx-3 justify-start">
         <h2 className="text-md font-bold leading-tight">{name}</h2>
-        {showDate && <p className="text-md">{date}</p>}
+        {showDate && <p className="text-md text-gray-500">{lastMessage}</p>}
 
         <div className="flex flex-row items-center gap-1 mt-1">
           {showActiveStatus && (
@@ -118,7 +134,26 @@ const SessionBox = ({
       </div>
 
       {/* Right Column - Next Icon*/}
-      <GrNext className="fill-purple04" size={24} />
+      <div className="flex flex-col items-end gap-1">
+        {numberUnreadMessage && numberUnreadMessage > 0 ? (
+              <>
+                <p className="mr-0.5">{formatTime(timeSendLastMessage)}</p>
+                <div className="flex items-center justify-center w-7 h-7 bg-purple04 rounded-full">
+                    <span className="text-md text-white">{numberUnreadMessage}</span>
+                </div>
+              </>
+          ) : timeSendLastMessage ? (
+              // no unread but has a time
+              <>
+                <p className="mr-0.5">{formatTime(timeSendLastMessage)}</p>
+                <div className="flex items-center justify-center w-7 h-7 rounded-full">
+                </div>
+              </>
+            ) : (
+            // neither unread nor time: show next arrow
+            <GrNext className="fill-purple04" size={24} />
+          )}
+      </div>
     </div>
   );
 };

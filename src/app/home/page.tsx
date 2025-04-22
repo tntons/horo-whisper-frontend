@@ -6,13 +6,14 @@ import SessionBox from "@/app/home/SessionBox";
 import { apiFetch } from "@/lib/api/fetch";
 import { getLuckyColor } from "./GetLuckyColor";
 import { getCustomerId } from "@/app/utils/getCustomer";
+import { io } from "socket.io-client";
 
 interface Session {
   id: number;
   customerId: number;
   tellerId: number;
   createdAt: string;
-  endedAt: string | null;
+  endedAt: string;
   sessionStatus: string;
   paymentId: number;
   teller: {
@@ -20,6 +21,11 @@ interface Session {
       username: string;
     };
   };
+  lastChat: {
+    content: string;
+    timestamp: string;
+  }
+  unreadCount: number;
 }
 
 interface Prediction {
@@ -46,24 +52,51 @@ export default function Home() {
   useEffect(() => {
     const fetchCustomerId = async () => {
       try {
-        const id = await getCustomerId();
-        setCustomerId(id);
+        const id = await getCustomerId()
+        setCustomerId(id)
       } catch (error) {
-        console.error("Error fetching customer ID:", error);
+        console.error('Error fetching customer ID:', error)
       }
-    };
-    fetchCustomerId();
-  }, []);
-
+    }
+    fetchCustomerId()
+  }, [])
+  
   const fetchSessions = async () => {
     try {
       const payload = await apiFetch(`/customers/sessions`);
       console.log("Session data", payload);
       setSessions(payload.data);
+      const socket = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
+        auth: { token: localStorage.getItem('APP_TOKEN') }
+      })
+      payload.data.forEach((sess: Session) => {
+        console.log("Subscribe Session ID", sess.id);
+        socket.emit('subscribeSession', sess.id)
+      })
+      socket.on('sessionUpdate', ({ sessionId, lastMessage, unreadCount, lastMessageTime }) => {
+        console.log('sessionUpdate', sessionId, lastMessage, unreadCount, lastMessageTime)
+        setSessions(s =>
+          s.map(sess =>
+            sess.id === sessionId
+              ? {
+                ...sess,
+                lastChat: {
+                  ...sess.lastChat,
+                  content: lastMessage,
+                  timestamp: lastMessageTime    
+                },
+                unreadCount
+              }
+              : sess
+          )
+        )
+      })
+      return () => { socket.disconnect() }
     } catch (error) {
       console.error("Error fetching sessions:", error);
     }
   };
+
   const fetchPrediction = async () => {
     try {
       const response = await apiFetch(
@@ -83,6 +116,7 @@ export default function Home() {
     fetchPrediction();
     fetchSessions();
   }, []);
+
 
   const currentSessions = sessions.filter(
     (session) => session.sessionStatus === "Active"
@@ -232,6 +266,10 @@ export default function Home() {
                   sessionId={session.id}
                   sessionStatus={session.sessionStatus}
                   paymentId={session.paymentId}
+                  timeSendLastMessage={session.lastChat?.timestamp || ""}
+                  lastMessage={session.lastChat?.content || ""}
+                  numberUnreadMessage={session.unreadCount}
+                  sessionEndAt={session.endedAt}
                 />
               ))}
             </div>
@@ -269,6 +307,9 @@ export default function Home() {
                   sessionId={session.id}
                   sessionStatus={session.sessionStatus}
                   paymentId={session.paymentId}
+                  timeSendLastMessage={session.lastChat?.timestamp || ""}
+                  lastMessage={session.lastChat?.content || ""}
+                  numberUnreadMessage={session.unreadCount}
                 />
               ))}
             </div>

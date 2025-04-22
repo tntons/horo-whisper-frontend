@@ -78,7 +78,7 @@ export default function Chat() {
     useEffect(() => {
         if (!sessionId) return
         // connect once
-        socketRef.current = io('http://localhost:8000', {
+        socketRef.current = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
             auth: { token: localStorage.getItem('APP_TOKEN') }
         })
         socketRef.current.emit('join', sessionId)

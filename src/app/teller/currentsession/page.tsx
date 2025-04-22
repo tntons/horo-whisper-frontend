@@ -7,6 +7,7 @@ import SearchFilter from "../../browseTeller/SearchFilter";
 import SearchSort from "../../browseTeller/SearchSort";
 import { apiFetch } from "@/lib/api/fetch";
 import { getTellerId } from "@/app/utils/getTellerId";
+import { io } from "socket.io-client";
 
 interface Session {
   sessionId: number;
@@ -21,6 +22,11 @@ interface Session {
   createdTime: string;
   endedDate: string | null;
   endedTime: string | null;
+  lastChat: {
+    content: string,
+    timestamp: string
+  },
+  unreadCount: number
 }
 
 interface SessionInfo {
@@ -44,27 +50,53 @@ export default function CurrentSession() {
   >(null);
   const [isLoading, setIsLoading] = useState(true);
   const [sortOption, setSortOption] = useState("Latest: newest first");
+  const [sessions, setSessions] = useState<Session[]>([]);
 
   const menuItems = [
     { title: "Past Sessions", path: "/teller/pastsession" },
     { title: "Upcoming Sessions", path: "/teller/upcomingsession" },
   ];
 
-  const fetchSessionData = async () => {
-    try {
-      const tellerId = await getTellerId();
-      const response = await apiFetch(`/tellers/${tellerId}/current-session`);
-      setSessionInfo(response);
-    } catch (error) {
-      setSessionInfo(null);
-      console.error("Error fetching session info:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  let socket: ReturnType<typeof io>;
+
+  async function fetchSessionData() {
+    const tellerId = await getTellerId();
+    const res = await apiFetch(`/tellers/${tellerId}/current-session`);
+    console.log("session info:", res);
+    setSessionInfo(res);
+    setSessions(res.data);
+
+    socket = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
+      auth: { token: localStorage.getItem("APP_TOKEN") },
+    });
+    res.data.sessions.forEach((sess: Session) => {
+      socket.emit("subscribeSession", sess.sessionId);
+    });
+    socket.on(
+      "sessionUpdate",
+      ({ sessionId, lastMessage, unreadCount, lastMessageTime }) => {
+        setSessions((ss) =>
+          ss.map((s) =>
+            s.sessionId === sessionId
+              ? {
+                ...s,
+                lastChat: { content: lastMessage, timestamp: lastMessageTime },
+                unreadCount,
+              }
+              : s
+          )
+        );
+      }
+    );
+  }
 
   useEffect(() => {
-    fetchSessionData();
+    fetchSessionData()
+      .catch(console.error)
+      .finally(() => setIsLoading(false));
+    return () => {
+      socket?.disconnect();
+    };
   }, []);
 
   const filteredSession =
@@ -119,7 +151,9 @@ export default function CurrentSession() {
                   date={session.createdDate} // must change to latest message date
                   time={session.createdTime}
                   current={true}
-                  message={3}
+                  lastMessage={session.lastChat.content}
+                  timeSendLastMessage={session.lastChat.timestamp}
+                  unreadCount={session.unreadCount}
                 />
               ))}
             </div>
