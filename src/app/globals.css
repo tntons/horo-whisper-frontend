@@ -70,8 +70,11 @@ html, body {
   position: fixed;
   left: 0;
   right: 0;
-  bottom: env(safe-area-inset-bottom);          /* pins nav just above the home indicator */
-  height: 56px;                                 /* adjust to your nav height */
+  bottom: 0;                     /* pin to bottom of viewport */
+  height: 56px;                  /* your desired nav‐bar height */
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--background);
+  z-index: 50;
 }
 
 /* ——— utility & overrides (no changes here) ——— */

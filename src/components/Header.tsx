@@ -49,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      <nav className="absolute top-0 left-0 w-full h-[76px] bg-blue01 text-white flex items-center justify-center z-50">
+      <nav className="absolute top-0 left-0 w-full h-[66px] bg-blue01 text-white flex items-center justify-center z-50">
         {shouldShowBackButton && (
           <button
             onClick={() => router.back()}
