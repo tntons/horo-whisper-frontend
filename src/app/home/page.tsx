@@ -131,10 +131,11 @@ export default function Home() {
 
 
   return (
-    <div className="h-screen w-full overflow-y-scroll no-scrollbar font-inter">
-      <section className="w-full bg-gradient-to-b from-[#090C6C] via-[#575ABA] via-100% to-[#575ABA] py-4 px-4">
-        <div className="flex items-center justify-center">
-          <h1 className="text-white mb-2 text-lg font-bold">
+    <div className="h-full w-full overflow-y-scroll no-scrollbar font-inter snap-y snap-mandatory ">
+      {/* size of the section can be fix here */}
+      <section className="h-[33vh] w-full bg-gradient-to-b from-[#090C6C] via-[#575ABA] via-100% to-[#575ABA] py-4 px-4 snap-start">
+        <div className="flex items-center justify-center mb-2">
+          <h1 className="text-white text-lg font-bold">
             Your Daily Horoscope
           </h1>
         </div>
@@ -142,14 +143,15 @@ export default function Home() {
         {isLoading ? (
           <div></div>
         ) : predictionData ? (
-          <div className="flex flex-row w-full h-full space-x-2 justify-between p-2 gap-2">
+          // size of the preidiction box can be fix here
+          <div className="flex flex-row w-full h-[27vh] space-x-2 justify-between p-2 gap-2"> 
             {/* Left Island */}
-            <div className="bg-purple02 w-8/12 h-full rounded-lg ">
-              <div className="flex flex-col h-full p-3 gap-1">
-                <h1 className="text-white text-md font-bold">
+            <div className="bg-purple02 w-8/12 h-full rounded-lg">
+              <div className="flex flex-col h-full p-2">
+                <h1 className="text-white text-md font-bold mb-1">
                   Today's Prediction
                 </h1>
-                <div className="flex w-full h-full bg-purple03 rounded-lg p-2">
+                <div className="flex w-full flex-1 bg-purple03 rounded-lg p-2">
                   <p className="text-white text-base">
                     {predictionData &&
                       "prediction" in predictionData &&
@@ -210,7 +212,7 @@ export default function Home() {
         )}
       </section>
 
-      <section className="w-full h-screen bg-background justify-center items-center px-8 pt-6">
+      <section className="w-full min-h-screen bg-background justify-center items-center px-8 pt-6 snap-start">
         <div className="flex flex-col gap-6 pb-4">
           <button
             className="bg-purple04 text-white rounded-xl py-2 justify-center items-center"

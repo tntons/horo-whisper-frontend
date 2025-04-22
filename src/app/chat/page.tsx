@@ -6,9 +6,25 @@ import { IoSend } from 'react-icons/io5'
 import { AiFillPicture } from 'react-icons/ai'
 import Image from 'next/image'
 import { apiFetch } from '@/lib/api/fetch'
+import { formatDate, formatDuration, formatTime } from '@/app/utils/date'
+import { useMemo } from 'react'
+import { Customer, Teller } from '@/app/utils/type'
 
 interface Message { id: number; content: string; timestamp: string; isUser: boolean }
 let socket: Socket
+
+interface SessionInfo {
+    customer: Customer
+    teller: Teller
+    senderRole: string
+    session: {
+        id: number
+        timeStart: string
+        timeEnd: string
+        status: string
+    }
+}
+
 
 export default function Chat() {
     const router = useRouter()
@@ -22,6 +38,9 @@ export default function Chat() {
     const socketRef = useRef<Socket | null>(null)
     const currentUserId = useRef<number | null>(null)
     const containerRef = useRef<HTMLDivElement>(null)
+    const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null)
+    const [sender, setSender] = useState<Customer | Teller | null>(null)
+    const [receiver, setReceiver] = useState<Customer | Teller | null>(null)
     const [autoScroll, setAutoScroll] = useState(true)
     const [isEnded, setIsEnded] = useState(false)
 
@@ -84,13 +103,33 @@ export default function Chat() {
             setIsEnded(true);
         });
 
-        // initial load via REST (optional)
-        fetch(`http://localhost:8000/chats/${sessionId}`, {
-            headers: { Authorization: `Bearer ${localStorage.getItem('APP_TOKEN')}` }
-        })
-            .then(r => r.json())
-            .then(d => setMessages(d.data))
-
+        // initial load via REST
+        async function loadInitialData() {
+            try {
+                const [historyRes, infoRes] = await Promise.all([
+                    apiFetch(`/chats/history/${sessionId}`),
+                    apiFetch(`/chats/info/${sessionId}`)
+                ])
+                console.log('Session Info:', infoRes.data)
+                console.log('Chat History:', historyRes.data)
+                const customer = infoRes.data.customer
+                const teller = infoRes.data.teller
+                if(infoRes.data.senderRole == 'customer') {
+                    currentUserId.current = customer.userId
+                    setSender(customer)
+                    setReceiver(teller)
+                } else {
+                    currentUserId.current = teller.userId
+                    setSender(teller)
+                    setReceiver(customer)
+                }
+                setMessages(historyRes.data)
+                setSessionInfo(infoRes.data)
+            } catch (err) {
+                console.error('Error loading initial data:', err)
+            }
+        }
+        loadInitialData()
 
         return () => {
             if (!socketRef.current) {
@@ -121,10 +160,6 @@ export default function Chat() {
         setInputValue('')
     }
 
-    const handleShareAttributes = () => {
-        console.log("handleShareAttributes")
-    }
-
     const handleEndSession = async () => {
         try {
             const res = await apiFetch(`/tellers/end-session/${sessionId}`, { method: 'PATCH' }, { skipAuth: false })
@@ -144,18 +179,42 @@ export default function Chat() {
     }
 
 
-    useEffect(() => {
-        async function loadCurrentUser() {
-            try {
-                const res = await apiFetch('/me', { method: 'GET' }, { skipAuth: false })
-                console.log('Current user:', res.id)
-                currentUserId.current = res.id
-            } catch (error) {
-                console.error(error)
-            }
+    const handleSharePrediction = () => {
+        const pa = sessionInfo?.customer.prediction
+        if (!pa || !socketRef.current) return
+        console.log('Sharing prediction:', pa)
+        const lines: string[] = []
+        if (pa.birthPlace) lines.push(`birth place: ${pa.birthPlace}`)
+        if (pa.birthTime) lines.push(`birth time: ${pa.birthTime}`)
+        if (pa.zodiacSign) lines.push(`zodiac sign: ${pa.zodiacSign}`)
+        if (pa.career) lines.push(`career: ${pa.career}`)
+        if (pa.relationship) lines.push(`relationship: ${pa.relationship}`)
+
+        const text = lines.join('\n')
+        socketRef.current.emit('sendMessage', { sessionId, content: text })
+    }
+
+    const timeLeft = useMemo(() => {
+        if (!sessionInfo) {
+            console.debug('timeLeft: sessionInfo is null')
+            return 'sessionInfo is null'
         }
-        loadCurrentUser()
-    }, [])
+        const { timeStart, timeEnd } = sessionInfo.session
+        if (!timeStart) {
+            console.debug('timeLeft: timeStart is null')
+            return 'timeStart is null'
+        }
+        if (!timeEnd) {
+            console.debug('timeLeft: timeEnd is null')
+            return 'timeEnd is null'
+        }
+        const result = formatDuration(timeStart, timeEnd)
+        if (!result) {
+            console.debug('timeLeft: formatDuration returned falsy')
+            return 'cannot calculate duration'
+        }
+        return result
+    }, [sessionInfo])
 
     return (
         <div className="flex flex-col h-full relative">
@@ -169,8 +228,9 @@ export default function Chat() {
                                 <Image src="/teller00.png" fill alt="Teller profile" className="object-cover" />
                             </div>
                             <div className="flex flex-col flex-grow justify-center mx-3">
-                                <h2>Golf the teller</h2>
-                                <h1 className='text-md'>Start: 23 Mar 2025 : 10:00 </h1>
+                                <h2>{sender?.user.username}</h2>
+                                <h1 className='text-md'>Start: {formatDate(sessionInfo?.session.timeStart)} :{' '}
+                                    {formatTime(sessionInfo?.session.timeStart)}</h1>
                                 <span className='text-md text-[#727272] underline mt-2 '>Report</span>
                             </div>
                         </div>
@@ -179,21 +239,29 @@ export default function Chat() {
                     <div className="flex flex-col gap-2 w-3/12 h-full">
                         <div className="flex flex-col bg-greybackground w-full h-1/2 rounded-lg border border-greyborder items-center justify-center">
                             <span className='text-base'>Time Left</span>
-                            <span className='text-md font-bold'>13hr 14min</span>
+                            <span className='text-md font-bold'>{timeLeft}</span>
                         </div>
                         <div className="flex flex-col bg-greybackground w-full h-1/2 rounded-lg border border-greyborder items-center justify-center">
-                            <button className='flex flex-col items-center justify-center'
-                                onClick={isCustomer ? handleShareAttributes : handleEndSession}>
-                                {isCustomer ? (
-                                    <>
-                                        <span className='text-base font-bold text-purple02'>Share Prediction </span>
-                                        <span className='text-base font-bold text-purple02'>Attributes </span>
-                                    </>
-                                ) : (
-                                    <span className='text-base font-bold text-purple02'>End Session</span>
-                                )}
-
-                            </button>
+                            {sessionInfo?.senderRole === 'customer' ? (
+                                <button
+                                    onClick={handleSharePrediction}
+                                    className='flex flex-col items-center justify-center'
+                                >
+                                    <span className='text-base font-bold text-purple02'>
+                                        Share Prediction
+                                    </span>
+                                    <span className='text-base font-bold text-purple02'>
+                                        Attributes
+                                    </span>
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={handleEndSession}
+                                    className='text-base font-bold text-purple02'
+                                >
+                                    End Session
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -225,7 +293,12 @@ export default function Chat() {
                                         ? 'bg-[#D2D4FF] text-black rounded-br-none'
                                         : 'bg-white text-black rounded-bl-none'
                                         }`}>
-                                        <p className="text-md">{message.content}</p>
+                                        <p
+                                            className="text-md"
+                                            style={{ whiteSpace: 'pre-wrap' }}
+                                        >
+                                            {message.content}
+                                        </p>
                                     </div>
                                     <span className={`text-sm text-gray-500 ${message.isUser ? 'text-right' : 'text-left'}`}>
                                         {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
