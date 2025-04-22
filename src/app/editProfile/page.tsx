@@ -114,12 +114,13 @@ export default function EditProfile() {
 
       <button
         onClick={handleLogout}
-        className="self-end mb-4 text-sm text-red-600 hover:underline"
+        className="self-end  px-3 py-2 text-[11px] font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors duration-200"
       >
         Logout
       </button>
 
-      <div className="w-[75%] mt-4">
+      {/* Edit Profile Section */}
+      <div className="w-[75%] mt-2">
         <h2 className="text-xl font-bold text-[#171717] mb-4">Edit Profile</h2>
         <div className="flex flex-col text-[14px] gap-2">
           <label className="block mb-1 font-normal text-[#171717]">

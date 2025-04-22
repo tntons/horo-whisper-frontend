@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { ListFilter } from "lucide-react";
+import { Dispatch, SetStateAction } from 'react'
 
 interface SearchFilterProps {
   selectedTags: string[];
   setSelectedTags: (tags: string[]) => void;
-  priceRange: number[];
-  setPriceRange: (range: number[]) => void;
+  priceRange: [number, number];
+  setPriceRange: Dispatch<SetStateAction<[number, number]>>
   allTags: string[];
 }
 
