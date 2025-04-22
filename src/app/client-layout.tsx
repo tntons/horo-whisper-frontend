@@ -2,6 +2,8 @@
 import Header from "../components/Header";
 import Navbar from "../components/Navbar";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+import { SessionProvider } from "next-auth/react";
 
 export default function ClientLayout({
   children,
@@ -15,6 +17,18 @@ export default function ClientLayout({
     pathname?.startsWith("/chat") ? pathname : "",
   ]; // Add any paths where you want to hide the navbar
   const hideHeaderPaths = ["/welcome"]; // Add any paths where you want to hide the header
+
+  useEffect(() => {
+    const setVh = () => {
+      document.documentElement.style.setProperty(
+        '--vh',
+        `${window.innerHeight * 0.01}px`
+      );
+    };
+    window.addEventListener('resize', setVh);
+    setVh();
+    return () => window.removeEventListener('resize', setVh);
+  }, []);
 
   return (
     <div className="container">
@@ -30,7 +44,9 @@ export default function ClientLayout({
             : "pt-[76px]"
         }`}
       >
-        {children}
+        <SessionProvider>
+          {children}
+        </SessionProvider>
       </div>
     </div>
   );

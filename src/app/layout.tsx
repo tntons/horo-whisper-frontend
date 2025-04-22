@@ -28,12 +28,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className="body-container no-scrollbar">
         <ClientLayout>
           <Suspense>
-            {children}
+              {children}
           </Suspense>
         </ClientLayout>
       </body>

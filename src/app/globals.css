@@ -17,69 +17,78 @@
 :root {
   --background: #FEF0E5;
   --foreground: #171717;
+  /* for JS‑fallback dynamic‑vh if you choose to use it */
+  --vh: 1vh;
 }
-/* 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
 
+/* ——— full‑screen layout using dynamic viewport ——— */
 html, body {
-  height: 100vh;
+  height: 100dvh;               /* fills the device viewport */
+  width: 100dvw;  
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: center; /* Centers the container horizontally */
-  align-items: center; /* Centers the container vertically */
+  justify-content: center;      /* centers your .container */
+  align-items: center;
   overflow: hidden;
 }
 
 .body-container {
   height: 100%;
-  overflow: hidden; /* Prevent scrollbars on the body container */
+  width: 100%;
+  overflow: hidden;             /* prevent body scrolling */
+  display: flex;
+  flex-direction: column;
 }
 
+/* your app container */
 .container {
   color: var(--foreground);
   background: var(--background);
-  height: 100vh;
-  width: calc(100vh * (390 / 844));
+  height: 100%;
+  width: 100vw;            /* full viewport width */
+  max-width: 100%;         /* never shrink below device width */
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Keeps Navbar at the top */
+  justify-content: flex-start;
   align-items: center;
   margin: 0 auto;
   overflow: hidden;
   position: relative;
 }
 
-/* Add styles for the main content area */
+/* ——— safe‑area adjustments ——— */
 .main-content {
   flex: 1;
   overflow-y: auto;
   width: 100%;
   height: 100%;
-  /* padding-top: 76px;
-  padding-bottom: 76px; */
+  padding-bottom: env(safe-area-inset-bottom); /* lifts content above the home indicator */
 }
 
+.navbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: env(safe-area-inset-bottom);          /* pins nav just above the home indicator */
+  height: 56px;                                 /* adjust to your nav height */
+}
+
+/* ——— utility & overrides (no changes here) ——— */
 .no-scrollbar {
-  scrollbar-width: none; /* For Firefox */
-  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  scrollbar-width: none;       /* Firefox */
+  -ms-overflow-style: none;    /* IE/Edge */
 }
-
 .no-scrollbar::-webkit-scrollbar {
-  display: none; /* For Chrome, Safari, and Opera */
+  display: none;               /* Chrome, Safari, Opera */
 }
 
 .custom-toast {
-  font-size: 14px; /* Adjust font size */
-  padding: 14px; /* Adjust padding */
-  border-radius: 8px; /* Adjust border radius */
-  background-color: #F6F6F6; /* Custom success background color */
-  color: #000000; /* Custom text color */
+  font-size: 14px;
+  padding: 14px;
+  border-radius: 8px;
+  background-color: #F6F6F6;
+  color: #000000;
 }
 
 input[type="range"].slider-blue::-webkit-slider-thumb {
@@ -88,3 +97,12 @@ input[type="range"].slider-blue::-webkit-slider-thumb {
 input[type="range"].slider-blue {
   accent-color: #2C2D4D;
 }
+
+/* Dark‑mode variables (uncomment if needed)
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+*/

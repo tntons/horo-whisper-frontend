@@ -40,7 +40,7 @@ export default function Welcome() {
         <div className="flex flex-col items-center p-4">
             <div className="mt-40">
                 <Image
-                    src="/logo.svg"
+                    src="/logo.png"
                     alt="Teller"
                     width={130}
                     height={130}
