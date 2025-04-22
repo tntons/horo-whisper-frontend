@@ -12,7 +12,7 @@ export async function apiFetch(
     headers.set('Authorization', `Bearer ${token}`)
   }
 
-  const res = await fetch(`http://localhost:8000${path}`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}${path}`, {
     ...opts,
     headers,
   })

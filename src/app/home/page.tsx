@@ -66,7 +66,7 @@ export default function Home() {
       const payload = await apiFetch(`/customers/sessions`);
       console.log("Session data", payload);
       setSessions(payload.data);
-      const socket = io('http://localhost:8000', {
+      const socket = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
         auth: { token: localStorage.getItem('APP_TOKEN') }
       })
       payload.data.forEach((sess: Session) => {

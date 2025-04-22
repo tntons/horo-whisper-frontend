@@ -66,7 +66,7 @@ export default function CurrentSession() {
     setSessionInfo(res);
     setSessions(res.data);
 
-    socket = io("http://localhost:8000", {
+    socket = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
       auth: { token: localStorage.getItem("APP_TOKEN") },
     });
     res.data.sessions.forEach((sess: Session) => {
