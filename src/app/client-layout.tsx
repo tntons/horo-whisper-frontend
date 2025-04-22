@@ -30,24 +30,28 @@ export default function ClientLayout({
     return () => window.removeEventListener('resize', setVh);
   }, []);
 
-  return (
-    <div className="container">
-      {!hideHeaderPaths.includes(pathname || "") && <Header />}
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
 
-      {!hideNavbarPaths.includes(pathname || "") && (
-        <Navbar pathname={pathname || ""} />
-      )}
-      <div
-        className={`main-content no-scrollbar ${
-          !hideNavbarPaths.includes(pathname || "")
-            ? "pt-[76px] pb-[76px]"
-            : "pt-[76px]"
-        }`}
-      >
-        <SessionProvider>
-          {children}
-        </SessionProvider>
+  return (
+    <SessionProvider>
+      <div className="container">
+        {!hideHeaderPaths.includes(pathname || "") && <Header />}
+
+        {!hideNavbarPaths.includes(pathname || "") && (
+          <Navbar pathname={pathname || ""} />
+        )}
+        <div
+          className={`main-content no-scrollbar ${
+            !hideNavbarPaths.includes(pathname || "")
+              ? "pt-[76px] pb-[76px]"
+              : "pt-[76px]"
+          }`}
+        >
+            {children}
+        </div>
       </div>
-    </div>
+    </SessionProvider>
   );
 }
