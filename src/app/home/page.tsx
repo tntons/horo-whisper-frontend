@@ -146,13 +146,13 @@ export default function Home() {
           // size of the preidiction box can be fix here
           <div className="flex flex-row w-full h-[27vh] space-x-2 justify-between p-2 gap-2"> 
             {/* Left Island */}
-            <div className="bg-purple02 w-8/12 h-full rounded-lg">
+            <div className="bg-purple02 w-full md:w-8/12 h-full rounded-lg">
               <div className="flex flex-col h-full p-2">
                 <h1 className="text-white text-md font-bold mb-1">
                   Today's Prediction
                 </h1>
-                <div className="flex w-full flex-1 bg-purple03 rounded-lg p-2">
-                  <p className="text-white text-base">
+                <div className="flex w-full flex-1 bg-purple03 rounded-lg p-2 overflow-hidden">
+                  <p className="text-white text-base overflow-y-auto max-h-full">
                     {predictionData &&
                       "prediction" in predictionData &&
                       predictionData.prediction}
