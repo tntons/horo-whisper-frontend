@@ -67,7 +67,7 @@ html, body {
   /* leave room for header at top */
   padding-top: var(--header-height);
   /* leave room for nav + home indicator at bottom */
-  padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom));
+  /* padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom)); */
 }
 
 .navbar {

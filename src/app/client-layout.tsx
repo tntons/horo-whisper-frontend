@@ -30,6 +30,10 @@ export default function ClientLayout({
     return () => window.removeEventListener('resize', setVh);
   }, []);
 
+  const hideNavbar =
+    pathname.startsWith("/teller/") ||
+    pathname.startsWith("/chat")
+
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [pathname])
@@ -43,7 +47,11 @@ export default function ClientLayout({
           <Navbar pathname={pathname || ""} />
         )}
         <div
-          className={`main-content no-scrollbar`}
+          className={`main-content no-scrollbar 
+            ${!hideNavbar
+              ? 'pb-[calc(var(--nav-height)+env(safe-area-inset-bottom))]'
+              : ''}
+          `}
         >
             {children}
         </div>
