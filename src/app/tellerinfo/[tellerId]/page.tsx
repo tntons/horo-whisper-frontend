@@ -161,7 +161,7 @@ export default function TellerDetail() {
         </div>
 
         {/* Reviews Section */}
-        <div className="mx-4 mb-20 border border-greyborder rounded-t-lg">
+        <div className="mx-4 mb-4 border border-greyborder rounded-t-lg">
           <div className="bg-purple02 text-white px-4 py-2 rounded-t-lg">
             <h1>Reviews</h1>
           </div>
