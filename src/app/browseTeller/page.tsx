@@ -6,6 +6,7 @@ import SearchFilter from "./SearchFilter";
 import SearchSort from "./SearchSort";
 import { useState, useEffect, useMemo } from "react";
 import { apiFetch } from "@/lib/api/fetch";
+import { defaultProfilePic } from "@/app/utils/defaultProfilePic";
 
 export default function BrowseTeller() {
   interface Teller {
@@ -124,7 +125,7 @@ export default function BrowseTeller() {
             <TellerCardBrowse
               key={index}
               tellerId={teller.tellerId}
-              imageSrc={teller.imageSrc || "/default-profile.png"}
+              imageSrc={teller?.profilePic ? teller.profilePic : defaultProfilePic}
               rating={teller.averageRating || 0}
               tellerName={teller.tellerName || "Unknown"}
               tags={teller.specialty || []}
