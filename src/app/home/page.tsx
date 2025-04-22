@@ -148,7 +148,7 @@ export default function Home() {
                   Today's Prediction
                 </h1>
                 <div className="flex w-full flex-1 bg-purple03 rounded-lg p-2 overflow-hidden">
-                  <p className="text-white text-base overflow-y-auto max-h-full">
+                  <p className="text-white text-base overflow-y-auto no-scrollbar max-h-full">
                     {predictionData &&
                       "prediction" in predictionData &&
                       predictionData.prediction}
