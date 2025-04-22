@@ -1,0 +1,1 @@
+export const defaultProfilePic = "https://firebasestorage.googleapis.com/v0/b/horowhisperfile.firebasestorage.app/o/images%2FdefaultUser.png?alt=media&token=d98c73a4-5e8d-450f-b817-f55cc726f77e";

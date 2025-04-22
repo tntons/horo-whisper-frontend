@@ -1,9 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { toast, ToastContainer } from "react-toastify";
 import { apiFetch } from "@/lib/api/fetch";
 import { getTellerId } from "@/app/utils/getTellerId";
+import { storage } from "@/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { v4 } from "uuid";
+import { defaultProfilePic } from "@/app/utils/defaultProfilePic";
 
 interface TellerProfile {
   tellerId: number;
@@ -15,14 +20,17 @@ interface TellerProfile {
   bankAccountNumber: string;
 }
 
+
+
 export default function EditProfilePage() {
   const [profileInfo, setProfileInfo] = useState<TellerProfile>();
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const tellerId = await getTellerId();
-
         const response = await apiFetch(`/tellers/${tellerId}`);
         const data = await response;
         setProfileInfo(data);
@@ -33,6 +41,47 @@ export default function EditProfilePage() {
 
     fetchProfile();
   }, []);
+
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      
+      // Create a unique filename
+      const uniqueFileName = `profile_${v4()}_${file.name}`;
+      const imageRef = ref(storage, `image/${uniqueFileName}`);
+      
+      // Upload the file
+      await uploadBytes(imageRef, file);
+      
+      // Get the download URL
+      const downloadURL = await getDownloadURL(imageRef);
+      
+      // Update profile info with new image URL
+      setProfileInfo(prev => prev ? { ...prev, profilePic: downloadURL } : prev);
+      
+      toast.success("Profile picture uploaded successfully!", {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast.error("Failed to upload profile picture", {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const allMethods = ["Tarot Card", "Palm Reading", "Astrology", "Others"];
   const allSpecialties = [
@@ -100,6 +149,7 @@ export default function EditProfilePage() {
         bankname: profileInfo?.bankName,
         bankAccountNumber: profileInfo?.bankAccountNumber,
         specialty: profileInfo?.specialty,
+        profilePic: profileInfo?.profilePic
       });
       const tellerId = await getTellerId();
       console.log("tellerId: ", tellerId);
@@ -114,6 +164,7 @@ export default function EditProfilePage() {
           bankName: profileInfo?.bankName,
           bankAccountNumber: profileInfo?.bankAccountNumber,
           specialty: profileInfo?.specialty,
+          profilePic: profileInfo?.profilePic,
         }),
       });
       console.log("Response:", response);
@@ -128,7 +179,12 @@ export default function EditProfilePage() {
         className: "custom-toast",
       });
     } catch (error) {
-      console.error("Error saving packages:", error);
+      console.error("Error saving profile:", error);
+      toast.error("Failed to update profile", {
+        position: "bottom-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+      });
     }
   };
 
@@ -137,7 +193,51 @@ export default function EditProfilePage() {
       <ToastContainer />
       {/* Content */}
       <div className="p-4 mx-4 mt-4">
-        <h2 className="text-xl font-bold mb-3">Edit Profile</h2>
+        <h2 className="text-xl font-bold text-center mb-6">Edit Profile</h2>
+
+        {/* Profile Picture Section */}
+        <div className="mb-6">
+          <label className="block text-[14px] mb-3">Profile Picture</label>
+          <div className="flex flex-col items-center gap-4">
+            <div 
+              className="relative w-32 h-32 rounded-full overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
+            >
+      
+                <Image
+                  src={profileInfo?.profilePic ? profileInfo.profilePic : defaultProfilePic}
+                  alt="Profile"
+                  fill
+                  className="object-cover"
+                  onError={(e) => {
+                    // If the image fails to load, fall back to the default image
+                    const target = e.target as HTMLImageElement;
+                    target.src = defaultProfilePic;
+                  }}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority
+                />
+
+              {isUploading && (
+                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                  <div className="loading-spinner"></div>
+                </div>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+            <button 
+              onClick={handleImageClick}
+              className="bg-[#1F2359] text-white text-md py-2 px-4 rounded-full hover:bg-opacity-90 transition-colors"
+            >
+              Change Profile Image
+            </button>
+          </div>
+        </div>
 
         {/* Bio Section */}
         <div className="mb-3">
@@ -154,38 +254,32 @@ export default function EditProfilePage() {
           />
         </div>
 
-        {/* Profile Picture */}
-        <div className="mb-3">
-          <label className="block text-[14px] mb-1">Choose your pic</label>
-          <button className="bg-[#9C9C9C] text-white font-light py-2 px-5 rounded-full">
-            Choose File
-          </button>
-        </div>
-
         {/* Bank Section */}
-        <div className="mb-3">
-          <label className="block text-[14px] mb-1">Bank Name</label>
-          <input
-            className="w-full text-[13px] p-3 border border-gray-300 rounded-md"
-            value={profileInfo?.bankName || ""}
-            onChange={(e) =>
-              setProfileInfo((prev) =>
-                prev ? { ...prev, bankName: e.target.value } : prev
-              )
-            }
-          />
-        </div>
-        <div className="mb-3">
-          <label className="block text-[14px] mb-1">Bank Account</label>
-          <input
-            className="w-full text-[13px] p-3 border border-gray-300 rounded-md"
-            value={profileInfo?.bankAccountNumber || ""}
-            onChange={(e) =>
-              setProfileInfo((prev) =>
-                prev ? { ...prev, bankAccountNumber: e.target.value } : prev
-              )
-            }
-          />
+        <div className="space-y-4 mb-6">
+          <div>
+            <label className="block text-[14px] mb-1">Bank Name</label>
+            <input
+              className="w-full text-[13px] p-3 border border-gray-300 rounded-md"
+              value={profileInfo?.bankName || ""}
+              onChange={(e) =>
+                setProfileInfo((prev) =>
+                  prev ? { ...prev, bankName: e.target.value } : prev
+                )
+              }
+            />
+          </div>
+          <div>
+            <label className="block text-[14px] mb-1">Bank Account</label>
+            <input
+              className="w-full text-[13px] p-3 border border-gray-300 rounded-md"
+              value={profileInfo?.bankAccountNumber || ""}
+              onChange={(e) =>
+                setProfileInfo((prev) =>
+                  prev ? { ...prev, bankAccountNumber: e.target.value } : prev
+                )
+              }
+            />
+          </div>
         </div>
 
         {/* Reading Methods */}
@@ -230,16 +324,32 @@ export default function EditProfilePage() {
           </div>
         </div>
 
-        {/* Done Button */}
-        <div className="flex justify-center">
+        {/* Save Button */}
+        <div className="flex justify-center mt-8">
           <button
             onClick={handleSave}
-            className="bg-[#1F2359] text-white text-xl py-2 px-24 rounded-lg"
+            className="bg-[#1F2359] text-white text-xl py-2 px-24 rounded-lg hover:bg-opacity-90 transition-colors"
           >
             Done
           </button>
         </div>
       </div>
+
+      <style jsx>{`
+        .loading-spinner {
+          border: 3px solid rgba(255, 255, 255, 0.3);
+          border-radius: 50%;
+          border-top: 3px solid white;
+          width: 24px;
+          height: 24px;
+          animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }

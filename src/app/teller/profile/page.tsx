@@ -7,9 +7,11 @@ import { BsPencil } from "react-icons/bs";
 import { apiFetch } from "@/lib/api/fetch";
 import { signOut } from "next-auth/react";
 import { getTellerId } from "@/app/utils/getTellerId";
+import { defaultProfilePic } from "@/app/utils/defaultProfilePic";
 
 interface TellerProfile {
   tellerId: number;
+  profilePic :string;
   tellerName: string;
   specialty: string[];
   bio: string;
@@ -96,11 +98,10 @@ export default function TellerProfilePage() {
               onClick={toggleAcceptingCustomers}
             >
               <div
-                className={`w-4 h-4 rounded-full transition-all duration-300 ${
-                  acceptingCustomers
+                className={`w-4 h-4 rounded-full transition-all duration-300 ${acceptingCustomers
                     ? "bg-indigo-900 transform translate-x-6"
                     : "bg-gray-400"
-                }`}
+                  }`}
               />
             </div>
           </div>
@@ -111,7 +112,7 @@ export default function TellerProfilePage() {
           <div className="flex gap-4">
             <div className="w-24 h-24 relative mb-4">
               <Image
-                src="/default-profile.png"
+                src={profileInfo?.profilePic ? profileInfo.profilePic : defaultProfilePic}
                 alt="Teller profile"
                 width={92}
                 height={124}
