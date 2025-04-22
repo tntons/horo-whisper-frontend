@@ -200,20 +200,20 @@ export default function EditProfilePage() {
           <label className="block text-[14px] mb-3">Profile Picture</label>
           <div className="flex flex-col items-center gap-4">
             <div 
+              onClick={handleImageClick}
               className="relative w-32 h-32 rounded-full overflow-hidden cursor-pointer hover:opacity-90 transition-opacity"
             >
-      
                 <Image
                   src={profileInfo?.profilePic ? profileInfo.profilePic : defaultProfilePic}
                   alt="Profile"
-                  fill
-                  className="object-cover"
+                  width={128}
+                  height={128}
+                  className="object-cover w-full h-full"
                   onError={(e) => {
                     // If the image fails to load, fall back to the default image
                     const target = e.target as HTMLImageElement;
                     target.src = defaultProfilePic;
                   }}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   priority
                 />
 

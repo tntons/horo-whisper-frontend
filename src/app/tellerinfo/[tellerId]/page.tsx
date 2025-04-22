@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { Clock } from "lucide-react";
 import { MessageSquareCode } from "lucide-react";
 import { apiFetch } from "@/lib/api/fetch";
+import Image from "next/image";
+import { defaultProfilePic } from "@/app/utils/defaultProfilePic";
 
 interface Review {
   id: number;
@@ -63,6 +65,7 @@ export default function TellerDetail() {
   const {
     packages,
     reviews,
+    profilePic,
     tellerName,
     specialty,
     bio,
@@ -77,8 +80,15 @@ export default function TellerDetail() {
         {/* Teller Info Card */}
         <div className="bg-greybackground m-4 rounded-lg p-3 border border-greyborder">
           <div className="flex gap-4">
-            <div className="w-24 h-28 bg-gray-200 rounded-lg flex-shrink-0">
-              {/* Placeholder for teller image */}
+            <div className="relative w-24 h-28 bg-gray-200 rounded-lg flex-shrink-0 overflow-hidden">
+              <Image 
+                src={teller?.profilePic ? teller.profilePic : defaultProfilePic} 
+                alt="Teller" 
+                width={96}
+                height={112}
+                className="object-cover w-full h-full"
+                priority
+              />
             </div>
 
             <div className="flex-1">
@@ -169,7 +179,15 @@ export default function TellerDetail() {
                 className="bg-white p-3 border-b-2 border-greyborder"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-7 h-7 bg-[#D9D9D9] rounded-full"></div>
+                <div className="relative w-7 h-7 rounded-full overflow-hidden">
+                    <Image
+                      src={defaultProfilePic}
+                      alt={`${review.username}'s profile`}
+                      width={28}
+                      height={28}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-center">
                       <p>{review.username}</p>
