@@ -38,15 +38,16 @@ export default function TellerProfilePage() {
     setAcceptingCustomers(!acceptingCustomers);
   };
 
-  const tellerId = 1; // Replace with actual teller ID later
   const [profileInfo, setProfileInfo] = useState<TellerProfile>();
 
   const fetchProfile = async () => {
     try {
-      const tellerId = getTellerId();
+      const tellerId = await getTellerId();
+      console.log("tellerId: ", tellerId);
       const response = await apiFetch(`/tellers/${tellerId}`);
-      const data = await response.data;
+      const data = await response;
       setProfileInfo(data);
+      console.log("Teller profile data:", data);
     } catch (error) {
       console.error("Error fetching teller profile:", error);
     }

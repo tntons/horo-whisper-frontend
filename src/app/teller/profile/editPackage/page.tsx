@@ -21,7 +21,7 @@ export default function EditPackagePage() {
   const fetchPackage = async () => {
     try {
       const response = await apiFetch(`/tellers/teller-package`);
-      const data = await response.data;
+      const data = await response;
       setPackageInfo(data.data);
     } catch (error) {
       console.error("Error fetching package:", error);

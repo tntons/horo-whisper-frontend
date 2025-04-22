@@ -16,14 +16,15 @@ interface TellerProfile {
 }
 
 export default function EditProfilePage() {
-  const tellerId = getTellerId();
   const [profileInfo, setProfileInfo] = useState<TellerProfile>();
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        const tellerId = await getTellerId();
+
         const response = await apiFetch(`/tellers/${tellerId}`);
-        const data = await response.data;
+        const data = await response;
         setProfileInfo(data);
       } catch (error) {
         console.error("Error fetching teller profile:", error);
