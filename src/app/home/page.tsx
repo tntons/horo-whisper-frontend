@@ -7,6 +7,7 @@ import { apiFetch } from "@/lib/api/fetch";
 import { getLuckyColor } from "./GetLuckyColor";
 import { getCustomerId } from "@/app/utils/getCustomer";
 import { io } from "socket.io-client";
+import { defaultProfilePic } from "@/app/utils/defaultProfilePic";
 
 interface Session {
   id: number;
@@ -17,6 +18,7 @@ interface Session {
   sessionStatus: string;
   paymentId: number;
   teller: {
+    profilePic:string;
     user: {
       username: string;
     };
@@ -270,6 +272,7 @@ export default function Home() {
                   lastMessage={session.lastChat?.content || ""}
                   numberUnreadMessage={session.unreadCount}
                   sessionEndAt={session.endedAt}
+                  profilePic={session.teller?.profilePic ? session.teller.profilePic : defaultProfilePic}
                 />
               ))}
             </div>
@@ -289,6 +292,7 @@ export default function Home() {
                   sessionId={session.id}
                   paymentId={session.paymentId} // Pass the paymentId
                   onPaymentVerified={fetchSessions} // Callback to refresh sessions
+                  profilePic={session.teller?.profilePic ? session.teller.profilePic : defaultProfilePic}
                 />
               ))}
             </div>
@@ -310,6 +314,7 @@ export default function Home() {
                   timeSendLastMessage={session.lastChat?.timestamp || ""}
                   lastMessage={session.lastChat?.content || ""}
                   numberUnreadMessage={session.unreadCount}
+                  profilePic={session.teller?.profilePic ? session.teller.profilePic : defaultProfilePic}
                 />
               ))}
             </div>

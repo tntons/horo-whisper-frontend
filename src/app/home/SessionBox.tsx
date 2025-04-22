@@ -16,6 +16,7 @@ interface SessionBoxProps {
   numberUnreadMessage?: number;
   onPaymentVerified?: () => void;
   sessionEndAt?: string;
+  profilePic:string;
 }
 
 const SessionBox = ({
@@ -29,6 +30,7 @@ const SessionBox = ({
   timeSendLastMessage,
   numberUnreadMessage,
   sessionEndAt,
+  profilePic,
   onPaymentVerified,
 }: SessionBoxProps) => {
   let statusMessage = "";
@@ -88,7 +90,7 @@ const SessionBox = ({
       {/* Left Column - Image */}
       <div className="relative w-[45px] h-full bg-gray-300 rounded-lg flex-shrink-0 overflow-hidden">
         <Image
-          src="/teller00.png"
+          src={profilePic}
           width={45}
           height={45}
           alt="Teller profile"
