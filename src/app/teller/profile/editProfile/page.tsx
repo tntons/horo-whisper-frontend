@@ -101,7 +101,8 @@ export default function EditProfilePage() {
         bankAccountNumber: profileInfo?.bankAccountNumber,
         specialty: profileInfo?.specialty,
       });
-      const tellerId = getTellerId();
+      const tellerId = await getTellerId();
+      console.log("tellerId: ", tellerId);
 
       const response = await apiFetch(`/tellers/${tellerId}`, {
         method: "PATCH",
@@ -115,8 +116,7 @@ export default function EditProfilePage() {
           specialty: profileInfo?.specialty,
         }),
       });
-
-      if (!response.ok) throw new Error("Failed to update profile");
+      console.log("Response:", response);
 
       toast.success("You've successfully made the change!", {
         position: "bottom-center",

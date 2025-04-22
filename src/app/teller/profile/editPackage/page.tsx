@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { Minus } from "lucide-react";
 import { apiFetch } from "@/lib/api/fetch";
+import { getTellerId } from "@/app/utils/getTellerId";
 
 interface PackageItem {
   id: number;
@@ -15,14 +16,17 @@ interface PackageItem {
 }
 
 export default function EditPackagePage() {
-  const tellerId = 1; // Replace with actual teller ID later
   const [packageInfo, setPackageInfo] = useState<PackageItem[]>([]);
+  const [tellerId, setTellerId] = useState<number>(0);
 
   const fetchPackage = async () => {
     try {
-      const response = await apiFetch(`/tellers/teller-package`);
+      const fetchTellerId = await getTellerId();
+      setTellerId(fetchTellerId);
+
+      const response = await apiFetch(`/tellers/${tellerId}/teller-package`);
       const data = await response;
-      setPackageInfo(data.data);
+      setPackageInfo(data);
     } catch (error) {
       console.error("Error fetching package:", error);
     }
@@ -77,15 +81,14 @@ export default function EditPackagePage() {
     try {
       console.log("Packages submitted:", packageInfo);
 
-      const response = await apiFetch(`/tellers/teller-package`, {
+      const response = await apiFetch(`/tellers/${tellerId}/teller-package`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ packages: packageInfo }),
       });
-
-      if (!response.ok) throw new Error("Failed to update packages");
+      console.log("Response:", response);
 
       toast.success("You've successfully made the change!", {
         position: "bottom-center",
