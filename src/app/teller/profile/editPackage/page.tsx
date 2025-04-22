@@ -19,24 +19,33 @@ export default function EditPackagePage() {
   const [packageInfo, setPackageInfo] = useState<PackageItem[]>([]);
   const [tellerId, setTellerId] = useState<number>(0);
 
-  const fetchPackage = async () => {
-    try {
-      const fetchTellerId = await getTellerId();
-      setTellerId(fetchTellerId);
-
-      const response = await apiFetch(`/tellers/${tellerId}/teller-package`);
-      const data = await response;
-      setPackageInfo(data);
-    } catch (error) {
-      console.error("Error fetching package:", error);
-    }
-  };
-
   useEffect(() => {
-    fetchPackage();
+    const fetchId = async () => {
+      const id = await getTellerId();
+      setTellerId(id);
+    };
+
+    fetchId();
   }, []);
 
-  console.log(packageInfo);
+  useEffect(() => {
+    if (tellerId === 0) console.log("Teller ID is not set yet.");
+
+    const fetchPackage = async () => {
+      try {
+        console.log("tellerId: ", tellerId);
+        const response = await apiFetch(`/tellers/${tellerId}/teller-package`);
+        const data = await response.data;
+        setPackageInfo(data);
+      } catch (error) {
+        console.error("Error fetching package:", error);
+      }
+    };
+
+    fetchPackage();
+  }, [tellerId]);
+
+  console.log("packageInfo: ", packageInfo);
 
   const addPackageItem = () => {
     const newItem: PackageItem = {
