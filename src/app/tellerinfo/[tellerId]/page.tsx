@@ -7,6 +7,8 @@ import { MessageSquareCode } from "lucide-react";
 import { apiFetch } from "@/lib/api/fetch";
 import Image from "next/image";
 import { defaultProfilePic } from "@/app/utils/defaultProfilePic";
+import { Teller } from "@/app/utils/type";
+import { extname } from "path";
 
 interface Review {
   id: number;
@@ -16,9 +18,16 @@ interface Review {
   comment: string;
   profilePic: string;
 }
+
+interface TellerDetail extends Teller {
+  name: string
+  totalNumberOfReviews: number
+  reviews: Review[]
+}
+
 export default function TellerDetail() {
   const { tellerId } = useParams(); // Get the tellerId from the URL
-  const [teller, setTeller] = useState(null);
+  const [teller, setTeller] = useState<TellerDetail | null>(null);
 
   const [reviewInfo, setReviewInfo] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,7 +75,7 @@ export default function TellerDetail() {
     packages,
     reviews,
     profilePic,
-    tellerName,
+    name,
     specialty,
     bio,
     traffic,
@@ -93,7 +102,7 @@ export default function TellerDetail() {
 
             <div className="flex-1">
               <div className="flex justify-between w-full">
-                <h2 className="font-normal text-lg mt-2">{tellerName}</h2>
+                <h2 className="font-normal text-lg mt-2">{name}</h2>
                 <p className="text-gray-500 underline">Report</p>
               </div>
 

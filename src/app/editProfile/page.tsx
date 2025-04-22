@@ -6,70 +6,86 @@ import "react-toastify/dist/ReactToastify.css";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api/fetch";
+import { getCustomerId } from "@/app/utils/getCustomer";
+
+interface User {
+  username: string;
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+}
+
+interface Prediction {
+  customerId: number;
+  birthTime: string;
+  birthPlace: string;
+  relationship: string;
+}
 
 export default function EditProfile() {
-  const [userName, setUserName] = useState("");
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [timeOfBirth, setTimeOfBirth] = useState("");
-  const [whatever, setWhatever] = useState("");
-  const [something, setSomething] = useState("");
+  const [customerId, setCustomerId] = useState<number | null>(null);
+  const [user, setUser] = useState<User>({
+    username: "",
+    firstName: "",
+    lastName: "",
+    birthDate: "",
+  });
+  const [prediction, setPrediction] = useState<Prediction>({
+    customerId: 0,
+    birthTime: "",
+    birthPlace: "",
+    relationship: "",
+  });
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const router = useRouter();
 
-  // load existing profile & prediction attributes on mount
   useEffect(() => {
     async function loadProfile() {
       try {
-        const res = await apiFetch(`/customers/profile`);
-        console.log("response", res);
-        const user = res.data.user;
-        console.log("user", user);
-        setUserName(user.username || "");
-        setName(user.firstName || "");
-        setSurname(user.lastName || "");
+        const id = await getCustomerId();
+        setCustomerId(id);
 
-        if (user.birthDate) {
-          const dt = new Date(user.birthDate);
-
-          setDateOfBirth(dt.toISOString().split("T")[0]);
-
-          setTimeOfBirth(dt.toTimeString().split(" ")[0].slice(0, 5));
+        const res = await apiFetch(`/customers/id/${id}`);
+        setUser({
+          username: res.user.username ?? "",
+          firstName: res.user.firstName ?? "",
+          lastName: res.user.lastName ?? "",
+          birthDate: res.user.birthDate ? res.user.birthDate.split("T")[0] : "",
+        });
+        if (res.prediction) {
+          setPrediction({
+            customerId: res.prediction.customerId ?? id,
+            birthTime: res.prediction.birthTime ?? "",
+            birthPlace: res.prediction.birthPlace ?? "",
+            relationship: res.prediction.relationship ?? "",
+          });
         } else {
-          setDateOfBirth("");
-          setTimeOfBirth("");
+          setPrediction({ ...prediction, customerId: id });
         }
-        // setWhatever(prediction?.birthPlace || "")
-        // setSomething(prediction?.relationship || "")
       } catch (err) {
         console.error(err);
         toast.error("Failed to load profile");
       }
     }
+
     loadProfile();
   }, []);
 
   const handleSubmit = async () => {
+    if (!customerId) return;
     setLoadingSubmit(true);
     try {
-      // update basic profile
-      await apiFetch("/customers/profile", {
-        method: "PATCH",
-        body: JSON.stringify({
-          firstName: name,
-          birthDate: dateOfBirth,
-          birthTime: timeOfBirth,
-        }),
+      const body = JSON.stringify({
+        user: user,
+        prediction: prediction,
       });
-      // update prediction attributes
-      // await apiFetch('/customers/prediction-attributes', {
-      //   method: 'PATCH',
-      //   body: JSON.stringify({
-      //     birthPlace: whatever,
-      //     relationship: something
-      //   })
-      // })
+      console.log("req body: ", body);
+
+      await apiFetch(`/customers/id/${customerId}`, {
+        method: "PATCH",
+        body: body,
+      });
+
       toast.success("You've successfully updated your profile!", {
         position: "bottom-center",
         autoClose: 3000,
@@ -96,7 +112,6 @@ export default function EditProfile() {
     <div className="flex flex-col overflow-y-auto no-scrollbar items-center w-full h-full bg-[#FEF0E5] px-4 py-6">
       <ToastContainer />
 
-      {/* Logout Button */}
       <button
         onClick={handleLogout}
         className="self-end  px-3 py-2 text-[11px] font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors duration-200"
@@ -108,97 +123,86 @@ export default function EditProfile() {
       <div className="w-[75%] mt-2">
         <h2 className="text-xl font-bold text-[#171717] mb-4">Edit Profile</h2>
         <div className="flex flex-col text-[14px] gap-2">
-          <div>
-            <label className="block mb-1 font-normal text-[#171717]">
-              User Name
-            </label>
-            <input
-              type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-normal text-[#171717]">
-              First Name
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-normal text-[#171717]">
-              Last Name
-            </label>
-            <input
-              type="text"
-              value={surname}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2"
-            />
-          </div>
+          <label className="block mb-1 font-normal text-[#171717]">
+            User Name
+          </label>
+          <input
+            type="text"
+            value={user.username}
+            onChange={(e) => setUser({ ...user, username: e.target.value })}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+          />
+          <label className="block mb-1 font-normal text-[#171717]">
+            First Name
+          </label>
+          <input
+            type="text"
+            value={user.firstName}
+            onChange={(e) => setUser({ ...user, firstName: e.target.value })}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+          />
+          <label className="block mb-1 font-normal text-[#171717]">
+            Last Name
+          </label>
+          <input
+            type="text"
+            value={user.lastName}
+            onChange={(e) => setUser({ ...user, lastName: e.target.value })}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+          />
         </div>
       </div>
 
-      {/* Edit Prediction Attributes Section */}
       <div className="w-[75%] mt-6">
         <h2 className="text-xl font-bold text-[#171717] mb-4">
           Edit Prediction Attributes
         </h2>
-
         <div className="flex flex-col text-[14px] gap-2">
-          <div>
-            <label className="block mb-1 font-normal text-[#171717]">
-              Date of Birth
-            </label>
-            <input
-              type="date"
-              value={dateOfBirth}
-              onChange={(e) => setDateOfBirth(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 text-[14px] font-normal text-[#171717]">
-              Time of Birth
-            </label>
-            <input
-              type="time"
-              value={timeOfBirth}
-              onChange={(e) => setTimeOfBirth(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-normal text-[#171717]">
-              Birth Place
-            </label>
-            <input
-              type="text"
-              value={whatever}
-              onChange={(e) => setWhatever(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2"
-            />
-          </div>
-          <div>
-            <label className="block mb-1 font-normal text-[#171717]">
-              Relationship
-            </label>
-            <input
-              type="text"
-              value={something}
-              onChange={(e) => setSomething(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2"
-            />
-          </div>
+          <label className="block mb-1 font-normal text-[#171717]">
+            Date of Birth
+          </label>
+          <input
+            type="date"
+            value={user.birthDate ?? ""}
+            onChange={(e) => setUser({ ...user, birthDate: e.target.value })}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+          />
+          <label className="block mb-1 font-normal text-[#171717]">
+            Time of Birth
+          </label>
+          <input
+            type="time"
+            value={prediction.birthTime}
+            onChange={(e) =>
+              setPrediction({ ...prediction, birthTime: e.target.value })
+            }
+            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+          />
+          <label className="block mb-1 font-normal text-[#171717]">
+            Birth Place
+          </label>
+          <input
+            type="text"
+            value={prediction.birthPlace}
+            onChange={(e) =>
+              setPrediction({ ...prediction, birthPlace: e.target.value })
+            }
+            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+          />
+          <label className="block mb-1 font-normal text-[#171717]">
+            Relationship
+          </label>
+          <input
+            type="text"
+            value={prediction.relationship}
+            onChange={(e) =>
+              setPrediction({ ...prediction, relationship: e.target.value })
+            }
+            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+          />
         </div>
       </div>
 
-      {/* Done Button */}
       <button
         onClick={handleSubmit}
         disabled={loadingSubmit}
