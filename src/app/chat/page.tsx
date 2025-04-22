@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, useRef, ChangeEvent } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { io, Socket } from 'socket.io-client'
 import { IoSend } from 'react-icons/io5'
 import { AiFillPicture } from 'react-icons/ai'
@@ -11,6 +11,7 @@ interface Message { id: number; content: string; timestamp: string; isUser: bool
 let socket: Socket
 
 export default function Chat() {
+    const router = useRouter()
     const params = useSearchParams()
     const sessionId = Number(params.get('sessionId'))
     const userType = params.get('usertype')
@@ -262,7 +263,7 @@ export default function Chat() {
                         <span className="text-white text-lg">Session is Ended</span>
                         {isCustomer && (
                         <button
-                            onClick={() => console.log('Review clicked')}
+                            onClick={() => router.push(`/review/${sessionId}`)}
                             className="bg-white text-lg text-[#565896] px-4 py-1 rounded-lg hover:bg-opacity-90 transition-colors font-medium"
                         >
                             Write me a Review!
