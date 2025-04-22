@@ -19,38 +19,45 @@ interface PackageInfo {
   }>;
 }
 export default function ChoosePackage() {
-  const [packageInfo, setPackageInfo] = useState<PackageInfo | null>(null)
-  const [selectedPackage, setSelectedPackage] = useState<number | null>(null)
-  const [selectedAnonymity, setSelectedAnonymity] = useState<number | null>(null)
-  const [isConfirm, setIsConfirm] = useState(false)
-  const {tellerId} = useParams()
-  const [customerId , setCustomerId] = useState<number | null>(null)
+  const [packageInfo, setPackageInfo] = useState<PackageInfo | null>(null);
+  const [selectedPackage, setSelectedPackage] = useState<number | null>(null);
+  const [selectedAnonymity, setSelectedAnonymity] = useState<number | null>(
+    null
+  );
+  const [isConfirm, setIsConfirm] = useState(false);
+  const { tellerId } = useParams();
+  const [customerId, setCustomerId] = useState<number | null>(null);
+
+  if (typeof tellerId !== "string") {
+    throw new Error("Invalid tellerId");
+  }
 
   useEffect(() => {
     const fetchCustomerId = async () => {
       try {
-        const id = await getCustomerId()
-        setCustomerId(id)
+        const id = await getCustomerId();
+        setCustomerId(id);
+        console.log("customerId: ", id);
       } catch (error) {
-        console.error('Error fetching customer ID:', error)
+        console.error("Error fetching customer ID:", error);
       }
-    }
-    fetchCustomerId()
-  }, [])
+    };
+    fetchCustomerId();
+  }, []);
   const fetchPackage = async () => {
     try {
-
+      console.log("tellerId: ", tellerId);
       // setTellerId(tellerId)
-      const data = await apiFetch(`/tellers/${tellerId}/teller-package`)
-      setPackageInfo(data)
+      const data = await apiFetch(`/tellers/${tellerId}/teller-package`);
+      setPackageInfo(data);
     } catch (error) {
-      console.error('Error fetching package:', error)
+      console.error("Error fetching package:", error);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchPackage()                             
-  }, [])
+    fetchPackage();
+  }, []);
   useEffect(() => {
     console.log(selectedPackage);
   }, [selectedPackage]);
@@ -63,14 +70,12 @@ export default function ChoosePackage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          customerId: customerId, 
-          tellerId: parseInt(tellerId),
+          customerId: customerId,
+          tellerId: parseInt(tellerId, 10),
           packageId: selectedPackage,
         }),
       });
       console.log(response);
-
-  
 
       setIsConfirm(true);
 

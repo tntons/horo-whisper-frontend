@@ -32,6 +32,7 @@ interface PackageItem {
 
 export default function TellerProfilePage() {
   const [acceptingCustomers, setAcceptingCustomers] = useState(true);
+  const [tellerId, setTellerId] = useState<number | null>(null);
   const router = useRouter();
 
   const toggleAcceptingCustomers = () => {
@@ -40,22 +41,31 @@ export default function TellerProfilePage() {
 
   const [profileInfo, setProfileInfo] = useState<TellerProfile>();
 
-  const fetchProfile = async () => {
-    try {
-      const tellerId = await getTellerId();
-      console.log("tellerId: ", tellerId);
-      const response = await apiFetch(`/tellers/${tellerId}`);
-      const data = await response;
-      setProfileInfo(data);
-      console.log("Teller profile data:", data);
-    } catch (error) {
-      console.error("Error fetching teller profile:", error);
-    }
-  };
+  useEffect(() => {
+    const fetchId = async () => {
+      const id = await getTellerId();
+      setTellerId(id);
+    };
+
+    fetchId();
+  }, []);
 
   useEffect(() => {
+    if (!tellerId) return;
+
+    const fetchProfile = async () => {
+      try {
+        const response = await apiFetch(`/tellers/${tellerId}`);
+        const data = await response;
+        setProfileInfo(data);
+        console.log("profileInfo: ", data);
+      } catch (error) {
+        console.error("Error fetching teller profile:", error);
+      }
+    };
+
     fetchProfile();
-  }, []);
+  }, [tellerId]);
 
   const handleLogout = async () => {
     localStorage.removeItem("APP_TOKEN");
