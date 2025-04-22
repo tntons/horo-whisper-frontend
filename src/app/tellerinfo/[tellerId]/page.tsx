@@ -18,7 +18,6 @@ export default function TellerDetail() {
   const { tellerId } = useParams(); // Get the tellerId from the URL
   const [teller, setTeller] = useState(null);
 
-
   const [reviewInfo, setReviewInfo] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -53,12 +52,9 @@ export default function TellerDetail() {
     fetchReviews();
   }, []);
 
-
-
   if (isLoading) {
     return <p className="text-center mt-4 text-lg text-blue01">Loading...</p>;
   }
-
 
   if (!teller) {
     return <p className="text-center mt-4">No teller details found.</p>;
@@ -187,7 +183,7 @@ export default function TellerDetail() {
                   </div>
                 </div>
 
-                <h1 className="text-[13px] font-medium mt-2">TILEEEE</h1>
+                {/* <h1 className="text-[13px] font-medium mt-2">TILEEEE</h1> */}
                 <p className="mt-0.5">{review.comment}</p>
               </div>
             ))}

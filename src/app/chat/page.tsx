@@ -217,7 +217,7 @@ export default function Chat() {
     }, [sessionInfo])
 
     return (
-        <div className="flex flex-col h-full relative">
+        <div className="flex flex-col h-full font-inter relative">
             {/* header section */}
             <section className="bg-[#565896] w-full h-28">
                 <div className="flex flex-row h-full items-center justify-between p-3 gap-2">

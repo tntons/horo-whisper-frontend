@@ -43,23 +43,23 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [customerId, setCustomerId] = useState<number | null>(null);
 
-    useEffect(() => {
-      const fetchCustomerId = async () => {
-        try {
-          const id = await getCustomerId()
-          setCustomerId(id)
-        } catch (error) {
-          console.error('Error fetching customer ID:', error)
-        }
+  useEffect(() => {
+    const fetchCustomerId = async () => {
+      try {
+        const id = await getCustomerId();
+        setCustomerId(id);
+      } catch (error) {
+        console.error("Error fetching customer ID:", error);
       }
-      fetchCustomerId()
-    }, [])
-  
+    };
+    fetchCustomerId();
+  }, []);
+
   const fetchSessions = async () => {
     try {
-      const payload = await apiFetch(`/customers/sessions`)
-      console.log('Session data', payload)
-      setSessions(payload.data) 
+      const payload = await apiFetch(`/customers/sessions`);
+      console.log("Session data", payload);
+      setSessions(payload.data);
     } catch (error) {
       console.error("Error fetching sessions:", error);
     }
@@ -67,14 +67,14 @@ export default function Home() {
   const fetchPrediction = async () => {
     try {
       const response = await apiFetch(
-        `/customers/daily-prediction/${customerId}`,
+        `/customers/daily-prediction/${customerId}`
       );
       const data = await response.data;
       setPredictionData(data);
       setIsLoading(false);
     } catch (error) {
       console.error("Error fetching prediction:", error);
-      setPredictionData(null)
+      setPredictionData(null);
       setIsLoading(false);
     }
   };
@@ -83,7 +83,6 @@ export default function Home() {
     fetchPrediction();
     fetchSessions();
   }, []);
-
 
   const currentSessions = sessions.filter(
     (session) => session.sessionStatus === "Active"
@@ -129,22 +128,19 @@ export default function Home() {
       return 0; // Keep the order for other statuses
     });
 
-
   return (
     <div className="h-full w-full overflow-y-scroll no-scrollbar font-inter snap-y snap-mandatory ">
       {/* size of the section can be fix here */}
       <section className="h-[33vh] w-full bg-gradient-to-b from-[#090C6C] via-[#575ABA] via-100% to-[#575ABA] py-4 px-4 snap-start">
         <div className="flex items-center justify-center mb-2">
-          <h1 className="text-white text-lg font-bold">
-            Your Daily Horoscope
-          </h1>
+          <h1 className="text-white text-lg font-bold">Your Daily Horoscope</h1>
         </div>
 
         {isLoading ? (
           <div></div>
         ) : predictionData ? (
           // size of the preidiction box can be fix here
-          <div className="flex flex-row w-full h-[27vh] space-x-2 justify-between p-2 gap-2"> 
+          <div className="flex flex-row w-full h-[27vh] space-x-2 justify-between p-2 gap-2">
             {/* Left Island */}
             <div className="bg-purple02 w-full md:w-8/12 h-full rounded-lg">
               <div className="flex flex-col h-full p-2">
