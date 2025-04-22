@@ -37,27 +37,23 @@ export default function Welcome() {
     }, [router])
 
     return (
-        <div className="flex flex-col items-center p-4">
-            <div className="mt-40">
-                <Image
-                    src="/logo.png"
-                    alt="Teller"
-                    width={130}
-                    height={130}
-                    className="rounded-lg"
-                />
-            </div>
-            <div className="mt-2">
-                <h1 className="text-[35px] font-normal font-playfair text-black">HoroWhisper</h1>
-            </div>
-            <div>
-                <button
-                    className="bg-purple04 mt-24 text-white font-normal px-8 py-2 rounded-lg"
-                    onClick={handleLogin}
-                >
-                    <h1 className="text-[18px]">Login with Google</h1>
-                </button>
-            </div>
+        <div className="flex flex-col items-center justify-center min-h-screen p-4">
+            <Image
+                src="/logo.png"
+                alt="HoroWhisper Logo"
+                width={130}
+                height={130}
+                className="rounded-lg mb-4"
+            />
+            <h1 className="text-[35px] font-playfair text-black mb-8">
+                HoroWhisper
+            </h1>
+            <button
+                className="bg-purple04 text-white font-normal px-8 py-2 rounded-lg"
+                onClick={handleLogin}
+            >
+                <span className="text-[18px]">Login with Google</span>
+            </button>
         </div>
     );
 }
