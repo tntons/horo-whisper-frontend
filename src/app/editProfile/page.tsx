@@ -1,68 +1,67 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from "react"
-import { toast, ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
-import { signOut } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import { apiFetch } from "@/lib/api/fetch"
+import React, { useState, useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { apiFetch } from "@/lib/api/fetch";
 
 export default function EditProfile() {
-  const [name, setName] = useState("")
-  const [surname, setSurname] = useState("")
-  const [dateOfBirth, setDateOfBirth] = useState("")
-  const [timeOfBirth, setTimeOfBirth] = useState("")
-  const [whatever, setWhatever] = useState("")
-  const [something, setSomething] = useState("")
-  const [loadingSubmit, setLoadingSubmit] = useState(false)
-  const router = useRouter()
+  const [userName, setUserName] = useState("");
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [timeOfBirth, setTimeOfBirth] = useState("");
+  const [whatever, setWhatever] = useState("");
+  const [something, setSomething] = useState("");
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const router = useRouter();
 
   // load existing profile & prediction attributes on mount
   useEffect(() => {
     async function loadProfile() {
       try {
-        const res = await apiFetch(`/customers/profile`)
-        console.log('response', res)
-        const user = res.data.user
-        console.log('user', user)
-        setName(user.firstName || "")
-        setSurname(user.lastName || "")
+        const res = await apiFetch(`/customers/profile`);
+        console.log("response", res);
+        const user = res.data.user;
+        console.log("user", user);
+        setUserName(user.username || "");
+        setName(user.firstName || "");
+        setSurname(user.lastName || "");
 
         if (user.birthDate) {
-          const dt = new Date(user.birthDate)
+          const dt = new Date(user.birthDate);
 
-          setDateOfBirth(dt.toISOString().split('T')[0])
-  
-          setTimeOfBirth(dt
-            .toTimeString()
-            .split(' ')[0]
-            .slice(0, 5))
+          setDateOfBirth(dt.toISOString().split("T")[0]);
+
+          setTimeOfBirth(dt.toTimeString().split(" ")[0].slice(0, 5));
         } else {
-          setDateOfBirth('')
-          setTimeOfBirth('')
+          setDateOfBirth("");
+          setTimeOfBirth("");
         }
         // setWhatever(prediction?.birthPlace || "")
         // setSomething(prediction?.relationship || "")
       } catch (err) {
-        console.error(err)
-        toast.error("Failed to load profile")
+        console.error(err);
+        toast.error("Failed to load profile");
       }
     }
-    loadProfile()
-  }, [])
+    loadProfile();
+  }, []);
 
   const handleSubmit = async () => {
-    setLoadingSubmit(true)
+    setLoadingSubmit(true);
     try {
       // update basic profile
-      await apiFetch('/customers/profile', {
-        method: 'PATCH',
+      await apiFetch("/customers/profile", {
+        method: "PATCH",
         body: JSON.stringify({
           firstName: name,
           birthDate: dateOfBirth,
-          birthTime: timeOfBirth
-        })
-      })
+          birthTime: timeOfBirth,
+        }),
+      });
       // update prediction attributes
       // await apiFetch('/customers/prediction-attributes', {
       //   method: 'PATCH',
@@ -78,23 +77,23 @@ export default function EditProfile() {
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
-        className: "custom-toast"
-      })
+        className: "custom-toast",
+      });
     } catch (err) {
-      console.error(err)
-      toast.error("Update failed")
+      console.error(err);
+      toast.error("Update failed");
     } finally {
-      setLoadingSubmit(false)
+      setLoadingSubmit(false);
     }
-  }
+  };
 
   const handleLogout = async () => {
-    localStorage.removeItem("APP_TOKEN")
-    await signOut({ callbackUrl: "/login" })
-  }
+    localStorage.removeItem("APP_TOKEN");
+    await signOut({ callbackUrl: "/login" });
+  };
 
   return (
-    <div className="flex flex-col items-center w-full h-full bg-[#FEF0E5] px-4 py-6">
+    <div className="flex flex-col overflow-y-auto no-scrollbar items-center w-full h-full bg-[#FEF0E5] px-4 py-6">
       <ToastContainer />
 
       {/* Logout Button */}
@@ -111,7 +110,18 @@ export default function EditProfile() {
         <div className="flex flex-col text-[14px] gap-2">
           <div>
             <label className="block mb-1 font-normal text-[#171717]">
-              Name
+              User Name
+            </label>
+            <input
+              type="text"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-normal text-[#171717]">
+              First Name
             </label>
             <input
               type="text"
@@ -122,7 +132,7 @@ export default function EditProfile() {
           </div>
           <div>
             <label className="block mb-1 font-normal text-[#171717]">
-              Surname
+              Last Name
             </label>
             <input
               type="text"
@@ -131,39 +141,38 @@ export default function EditProfile() {
               className="w-full border border-gray-300 rounded-lg px-3 py-2"
             />
           </div>
-          <div className="flex justify-between text-[14px] gap-4">
-            <div className="flex-1">
-              <label className="block mb-1 font-normal text-[#171717]">
-                Date of Birth
-              </label>
-              <input
-                type="date"
-                value={dateOfBirth}
-                onChange={(e) => setDateOfBirth(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              />
-            </div>
-            <div className="flex-1">
-              <label className="block mb-1 text-[14px] font-normal text-[#171717]">
-                Time of Birth
-              </label>
-              <input
-                type="time"
-                value={timeOfBirth}
-                onChange={(e) => setTimeOfBirth(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              />
-            </div>
-          </div>
         </div>
       </div>
 
       {/* Edit Prediction Attributes Section */}
-      <div className="w-[75%] mt-10">
+      <div className="w-[75%] mt-6">
         <h2 className="text-xl font-bold text-[#171717] mb-4">
           Edit Prediction Attributes
         </h2>
+
         <div className="flex flex-col text-[14px] gap-2">
+          <div>
+            <label className="block mb-1 font-normal text-[#171717]">
+              Date of Birth
+            </label>
+            <input
+              type="date"
+              value={dateOfBirth}
+              onChange={(e) => setDateOfBirth(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 text-[14px] font-normal text-[#171717]">
+              Time of Birth
+            </label>
+            <input
+              type="time"
+              value={timeOfBirth}
+              onChange={(e) => setTimeOfBirth(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+            />
+          </div>
           <div>
             <label className="block mb-1 font-normal text-[#171717]">
               Birth Place
@@ -198,5 +207,5 @@ export default function EditProfile() {
         {loadingSubmit ? "Updating..." : "Done"}
       </button>
     </div>
-  )
+  );
 }
