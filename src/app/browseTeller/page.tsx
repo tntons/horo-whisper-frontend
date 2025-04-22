@@ -12,7 +12,7 @@ export default function BrowseTeller() {
   interface Teller {
     tellerId: number;
     tellerName: string;
-    imageSrc?: string;
+    profilePic?: string;
     averageRating?: number;
     specialty?: string[];
     bio?: string;
@@ -96,6 +96,7 @@ export default function BrowseTeller() {
   useEffect(() => {
     fetchTellers();
   }, []);
+
 
   return (
     <div className="main-content w-full flex flex-col overflow-y-auto">
