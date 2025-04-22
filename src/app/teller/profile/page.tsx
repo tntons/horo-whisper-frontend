@@ -79,12 +79,14 @@ export default function TellerProfilePage() {
       {/* Main content */}
       <div className="w-[90%] mx-auto">
         {/* Accepting customers toggle */}
-        <button
-          onClick={handleLogout}
-          className="self-end mb-4 text-sm text-red-600 hover:underline"
-        >
-          Logout
-        </button>
+        <div className="flex justify-end">
+          <button
+            onClick={handleLogout}
+            className="mb-3 px-3 py-2 text-[11px] font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors duration-200"
+          >
+            Logout
+          </button>
+        </div>
 
         <div className="bg-white rounded-lg p-4 mb-4 shadow">
           <div className="flex justify-between items-center ml-2 mr-4">
