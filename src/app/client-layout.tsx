@@ -43,11 +43,7 @@ export default function ClientLayout({
           <Navbar pathname={pathname || ""} />
         )}
         <div
-          className={`main-content no-scrollbar ${
-            !hideNavbarPaths.includes(pathname || "")
-              ? "pt-[76px] pb-[76px]"
-              : "pt-[76px]"
-          }`}
+          className={`main-content no-scrollbar`}
         >
             {children}
         </div>
