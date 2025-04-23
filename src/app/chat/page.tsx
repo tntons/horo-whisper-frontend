@@ -208,7 +208,7 @@ export default function Chat() {
   const timeLeft = useMemo(() => {
     if (!sessionInfo) {
       console.debug("timeLeft: sessionInfo is null");
-      return "sessionInfo is null123";
+      return "sessionInfo is null1234";
     }
     const { timeStart, timeEnd } = sessionInfo.session;
     if (!timeStart) {
@@ -244,7 +244,7 @@ export default function Chat() {
                 />
               </div>
               <div className="flex flex-col flex-grow justify-center mx-3">
-                <h2>{reciever?.user.username}</h2>
+                <h2>{receiver?.user.username}</h2>
                 <h1 className="text-md">
                   Start: {formatDate(sessionInfo?.session.timeStart)} :{" "}
                   {formatTime(sessionInfo?.session.timeStart)}
