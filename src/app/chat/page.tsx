@@ -237,7 +237,7 @@ export default function Chat() {
             <div className="flex flex-row items-center h-full p-3 gap-3">
               <div className="relative w-[50px] h-full bg-gray-300 rounded-lg flex-shrink-0 overflow-hidden">
                 <Image
-                  src="/teller00.png"
+                  src={receiver?.profilePic || "/teller00.png"}
                   fill
                   alt="Teller profile"
                   className="object-cover"
@@ -305,7 +305,7 @@ export default function Chat() {
                 {!message.isUser && (
                   <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
                     <Image
-                      src="/teller00.png"
+                      src={receiver?.profilePic || "/teller00.png"}
                       width={32}
                       height={32}
                       alt="Teller profile"
