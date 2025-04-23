@@ -198,7 +198,7 @@ export default function Chat() {
     const timeLeft = useMemo(() => {
         if (!sessionInfo) {
             console.debug('timeLeft: sessionInfo is null')
-            return 'sessionInfo is null'
+            return 'sessionInfo is null1'
         }
         const { timeStart, timeEnd } = sessionInfo.session
         if (!timeStart) {
