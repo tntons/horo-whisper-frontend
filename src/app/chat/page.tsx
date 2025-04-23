@@ -348,15 +348,19 @@ export default function Chat() {
             <button className="mt-2">
               <AiFillPicture className="fill-white" size={20} />
             </button>
-            <textarea
-              ref={textareaRef}
-              value={inputValue}
-              onChange={handleTextareaChange}
-              placeholder="Type your message..."
-              rows={1}
-              className="flex-1 bg-[#F5F5F5] px-3 py-2 text-md focus:outline-none resize-none overflow-auto min-h-[16px]"
-              style={{ lineHeight: "20px", maxHeight: "120px" }}
-            />
+                      <textarea
+                          ref={textareaRef}
+                          value={inputValue}
+                          onChange={handleTextareaChange}
+                          placeholder="Type your message…"
+                          rows={1}
+                          className="
+    flex-1 bg-[#F5F5F5] px-3 py-2
+    text-base        /* 16px font */
+    focus:outline-none resize-none overflow-auto min-h-[16px]
+  "
+                          style={{ lineHeight: "20px", maxHeight: "120px" }}
+                      />
             <button className="mt-2" onClick={handleSendMessage}>
               <IoSend className="fill-white" size={20} />
             </button>
