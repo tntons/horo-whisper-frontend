@@ -60,7 +60,7 @@ export default function PastSession() {
     const res = await apiFetch(`/tellers/${tellerId}/past-session`);
     console.log("session info:", res);
     setSessionInfo(res);
-    setSessions(res.data);
+    setSessions(res.data.sessions);
 
     socket = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
       auth: { token: localStorage.getItem("APP_TOKEN") },
@@ -71,6 +71,7 @@ export default function PastSession() {
     socket.on(
       "sessionUpdate",
       ({ sessionId, lastMessage, unreadCount, lastMessageTime }) => {
+        console.log("sessionUpdate", sessionId, lastMessage, unreadCount);
         setSessions((ss) =>
           ss.map((s) =>
             s.sessionId === sessionId
