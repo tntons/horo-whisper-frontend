@@ -107,10 +107,20 @@ const SessionBox = ({
 
                     {/* Right Column*/}
                     <div className="flex flex-col items-end gap-1">
-                        <p className="mr-0.5">{formatTime(timeSendLastMessage)}</p>
-                        <div className="flex items-center justify-center w-8 h-8 bg-purple04 rounded-full">
-                            <span className="text-md text-white">{unreadCount}</span>
-                        </div>
+                        {unreadCount!==undefined && unreadCount>0 ? (
+                        <>
+                            <p className="mr-0.5">{formatTime(timeSendLastMessage)}</p>
+                            <div className="flex items-center justify-center w-8 h-8 bg-purple04 rounded-full">
+                                <span className="text-md text-white">{unreadCount}</span>
+                            </div>
+                        </>) : (
+                        <>
+                            <p className="mr-0.5">{formatTime(timeSendLastMessage)}</p>
+                            <div className="flex items-center justify-center w-8 h-8 rounded-full">
+                            </div>
+                        </>
+                        
+                        )}
                         {upcoming && (
                             <button onClick={() => { handleDeclineSession(sessionId) }}>
                                 <RiDeleteBinLine className="text-red-500 mt-6 mr-0.5" size={24} />

@@ -20,7 +20,7 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: "Horo Whisper",
-  description: "Fortune telling application",
+  description: "Whisper from the universe just for you",
 };
 
 export default function RootLayout({
@@ -28,12 +28,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
       <body className="body-container no-scrollbar">
         <ClientLayout>
           <Suspense>
-            {children}
+              {children}
           </Suspense>
         </ClientLayout>
       </body>

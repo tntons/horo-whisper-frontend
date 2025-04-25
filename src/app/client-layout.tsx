@@ -2,6 +2,8 @@
 import Header from "../components/Header";
 import Navbar from "../components/Navbar";
 import { usePathname } from "next/navigation";
+import { useEffect } from "react";
+import { SessionProvider } from "next-auth/react";
 
 export default function ClientLayout({
   children,
@@ -16,22 +18,44 @@ export default function ClientLayout({
   ]; // Add any paths where you want to hide the navbar
   const hideHeaderPaths = ["/welcome"]; // Add any paths where you want to hide the header
 
-  return (
-    <div className="container">
-      {!hideHeaderPaths.includes(pathname || "") && <Header />}
+  useEffect(() => {
+    const setVh = () => {
+      document.documentElement.style.setProperty(
+        '--vh',
+        `${window.innerHeight * 0.01}px`
+      );
+    };
+    window.addEventListener('resize', setVh);
+    setVh();
+    return () => window.removeEventListener('resize', setVh);
+  }, []);
 
-      {!hideNavbarPaths.includes(pathname || "") && (
-        <Navbar pathname={pathname || ""} />
-      )}
-      <div
-        className={`main-content no-scrollbar ${
-          !hideNavbarPaths.includes(pathname || "")
-            ? "pt-[76px] pb-[76px]"
-            : "pt-[76px]"
-        }`}
-      >
-        {children}
+  const hideNavbar =
+    pathname.startsWith("/teller/") ||
+    pathname.startsWith("/chat")
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+
+  return (
+    <SessionProvider>
+      <div className="container">
+        {!hideHeaderPaths.includes(pathname || "") && <Header />}
+
+        {!hideNavbarPaths.includes(pathname || "") && (
+          <Navbar pathname={pathname || ""} />
+        )}
+        <div
+          className={`main-content no-scrollbar 
+            ${!hideNavbar
+              ? 'pb-[calc(var(--nav-height)+env(safe-area-inset-bottom))]'
+              : ''}
+          `}
+        >
+            {children}
+        </div>
       </div>
-    </div>
+    </SessionProvider>
   );
 }

@@ -86,7 +86,7 @@ export default function ChoosePackage() {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-y-auto">
       {isConfirm && <ConfirmBox />}
       <Box title="Choose Package">
         <div className="flex flex-col gap-3">

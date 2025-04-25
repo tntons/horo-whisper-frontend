@@ -36,7 +36,7 @@ export default function SelectRolePage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
+    <div className="flex flex-col items-center justify-center h-full p-4">
       <div className="text-2xl font-semibold mb-6 text-center">
         Please select your role
       </div>

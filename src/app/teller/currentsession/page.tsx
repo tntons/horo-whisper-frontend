@@ -64,7 +64,7 @@ export default function CurrentSession() {
     const res = await apiFetch(`/tellers/${tellerId}/current-session`);
     console.log("session info:", res);
     setSessionInfo(res);
-    setSessions(res.data);
+    setSessions(res.data.sessions);
 
     socket = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
       auth: { token: localStorage.getItem("APP_TOKEN") },
@@ -75,17 +75,21 @@ export default function CurrentSession() {
     socket.on(
       "sessionUpdate",
       ({ sessionId, lastMessage, unreadCount, lastMessageTime }) => {
-        setSessions((ss) =>
-          ss.map((s) =>
-            s.sessionId === sessionId
+        console.log("sessionUpdate", sessionId, lastMessage, unreadCount);
+        setSessions(s =>
+          s.map(sess =>
+            sess.sessionId == sessionId
               ? {
-                ...s,
-                lastChat: { content: lastMessage, timestamp: lastMessageTime },
-                unreadCount,
+                ...sess,
+                lastChat: {
+                  content: lastMessage,
+                  timestamp: lastMessageTime
+                },
+                unreadCount
               }
-              : s
+              : sess
           )
-        );
+        )
       }
     );
   }
@@ -99,23 +103,17 @@ export default function CurrentSession() {
     };
   }, []);
 
-  const filteredSession =
-    sessionInfo && "data" in sessionInfo
-      ? sessionInfo.data.sessions
-        .filter((session) =>
-          session.username.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-        .sort((a, b) => {
-          // Convert date and time strings to comparable format
-          const dateTimeA = new Date(`${a.createdDate} ${a.createdTime}`);
-          const dateTimeB = new Date(`${b.createdDate} ${b.createdTime}`);
-
-          // Sort based on selected option
-          return sortOption === "Earliest: oldest first"
-            ? dateTimeA.getTime() - dateTimeB.getTime()  // Ascending order
-            : dateTimeB.getTime() - dateTimeA.getTime(); // Descending order
-        })
-      : [];
+  const filteredSession = sessions
+    .filter((session) =>
+      session.username.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      const dateTimeA = new Date(`${a.createdDate} ${a.createdTime}`).getTime();
+      const dateTimeB = new Date(`${b.createdDate} ${b.createdTime}`).getTime();
+      return sortOption === "Earliest: oldest first"
+        ? dateTimeA - dateTimeB
+        : dateTimeB - dateTimeA;
+    });
 
   return (
     <div className="flex flex-col items-center h-screen font-inter">

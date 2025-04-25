@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useEffect, useState, useRef, ChangeEvent } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
@@ -12,211 +12,221 @@ import { useMemo } from 'react'
 import { Customer, Teller } from '@/app/utils/type'
 import { defaultProfilePic } from "@/app/utils/defaultProfilePic";
 
-interface Message { id: number; content: string; timestamp: string; isUser: boolean }
-let socket: Socket
+interface Message {
+  id: number;
+  content: string;
+  timestamp: string;
+  isUser: boolean;
+}
+let socket: Socket;
 
 interface SessionInfo {
-    customer: Customer
-    teller: Teller
-    senderRole: string
-    session: {
-        id: number
-        timeStart: string
-        timeEnd: string
-        status: string
-    }
+  customer: Customer;
+  teller: Teller;
+  senderRole: string;
+  session: {
+    id: number;
+    timeStart: string;
+    timeEnd: string;
+    status: string;
+  };
 }
 
-
 export default function Chat() {
-    const router = useRouter()
-    const params = useSearchParams()
-    const sessionId = Number(params.get('sessionId'))
-    const userType = params.get('usertype')
-    const isCustomer = userType == 'customer' ? true : false
-    const [messages, setMessages] = useState<Message[]>([])
-    const [inputValue, setInputValue] = useState('')
-    const textareaRef = useRef<HTMLTextAreaElement>(null)
-    const socketRef = useRef<Socket | null>(null)
-    const currentUserId = useRef<number | null>(null)
-    const containerRef = useRef<HTMLDivElement>(null)
-    const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null)
-    const [sender, setSender] = useState<Customer | Teller | null>(null)
-    const [receiver, setReceiver] = useState<Customer | Teller | null>(null)
-    const [autoScroll, setAutoScroll] = useState(true)
-    const [isEnded, setIsEnded] = useState(false)
+  const router = useRouter();
+  const params = useSearchParams();
+  const sessionId = Number(params.get("sessionId"));
+  const userType = params.get("usertype");
+  const isCustomer = userType == "customer" ? true : false;
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const socketRef = useRef<Socket | null>(null);
+  const currentUserId = useRef<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null);
+  const [sender, setSender] = useState<Customer | Teller | null>(null);
+  const [receiver, setReceiver] = useState<Customer | Teller | null>(null);
+  const [autoScroll, setAutoScroll] = useState(true);
+  const [isEnded, setIsEnded] = useState(false);
 
-    const handleScroll = () => {
-        if (!containerRef.current) return
-        const { scrollTop, scrollHeight, clientHeight } = containerRef.current
-        setAutoScroll(scrollHeight - scrollTop - clientHeight < 50)
+  const handleScroll = () => {
+    if (!containerRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+    setAutoScroll(scrollHeight - scrollTop - clientHeight < 50);
+  };
+
+  const fetchSessionStatus = async () => {
+    try {
+      const res = await apiFetch(
+        `/tellers/sessiondata/${sessionId}`,
+        { method: "GET" },
+        { skipAuth: false }
+      );
+      console.log("Fetch Session Data", res);
+      if (res.data.sessionStatus == "Ended") {
+        setIsEnded(true);
+      } else {
+        setIsEnded(false);
+      }
+    } catch (error) {
+      console.error(error);
     }
+  };
 
-    const fetchSessionStatus = async () => {
-        try {
-            const res = await apiFetch(`/tellers/sessiondata/${sessionId}`, { method: 'GET' }, { skipAuth: false })
-            console.log('Fetch Session Data', res)
-            if (res.data.sessionStatus == 'Ended') {
-                setIsEnded(true)
-            } else {
-                setIsEnded(false)
-            }
+  useEffect(() => {
+    fetchSessionStatus();
+  }, []);
 
-        } catch (error) {
-            console.error(error)
-        }
+  useEffect(() => {
+    if (autoScroll && containerRef.current) {
+      containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
+  }, [messages, autoScroll]);
 
-    useEffect(() => {
-        fetchSessionStatus()
-    }, [])
+  useEffect(() => {
+    if (!sessionId) return;
+    // connect once
+    socketRef.current = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
+      auth: { token: localStorage.getItem("APP_TOKEN") },
+    });
+    socketRef.current.emit("join", sessionId);
 
-    useEffect(() => {
-        if (autoScroll && containerRef.current) {
-            containerRef.current.scrollTop = containerRef.current.scrollHeight
+    socketRef.current.on("newMessage", (chat: any) => {
+      console.log("New message user:", currentUserId.current);
+      console.log("New message sender:", chat.senderId);
+      const isUser = chat.senderId == currentUserId.current;
+      setMessages((msgs) => [
+        ...msgs,
+        {
+          id: chat.id,
+          content: chat.content,
+          timestamp: chat.createdAt,
+          isUser: isUser,
+        },
+      ]);
+    });
+
+    socketRef.current.on("sessionEnded", () => {
+      console.log("listening session ended");
+      setIsEnded(true);
+    });
+
+    // initial load via REST
+    async function loadInitialData() {
+      try {
+        const [historyRes, infoRes] = await Promise.all([
+          apiFetch(`/chats/history/${sessionId}`),
+          apiFetch(`/chats/info/${sessionId}`),
+        ]);
+        console.log("Session Info:", infoRes.data);
+        console.log("Chat History:", historyRes.data);
+        const customer = infoRes.data.customer;
+        const teller = infoRes.data.teller;
+        if (infoRes.data.senderRole == "customer") {
+          currentUserId.current = customer.userId;
+          setSender(customer);
+          setReceiver(teller);
+        } else {
+          currentUserId.current = teller.userId;
+          setSender(teller);
+          setReceiver(customer);
         }
-    }, [messages, autoScroll])
-
-    useEffect(() => {
-        if (!sessionId) return
-        // connect once
-        socketRef.current = io(process.env.NEXT_PUBLIC_BACKEND_URL, {
-            auth: { token: localStorage.getItem('APP_TOKEN') }
-        })
-        socketRef.current.emit('join', sessionId)
-
-        socketRef.current.on('newMessage', (chat: any) => {
-            console.log('New message user:', currentUserId.current)
-            console.log('New message sender:', chat.senderId)
-            const isUser = chat.senderId == currentUserId.current
-            setMessages(msgs => [
-                ...msgs,
-                {
-                    id: chat.id,
-                    content: chat.content,
-                    timestamp: chat.createdAt,
-                    isUser: isUser
-                }
-            ])
-        })
-
-        socketRef.current.on('sessionEnded', () => {
-            console.log('listening session ended')
-            setIsEnded(true);
-        });
-
-        // initial load via REST
-        async function loadInitialData() {
-            try {
-                const [historyRes, infoRes] = await Promise.all([
-                    apiFetch(`/chats/history/${sessionId}`),
-                    apiFetch(`/chats/info/${sessionId}`)
-                ])
-                console.log('Session Info:', infoRes.data)
-                console.log('Chat History:', historyRes.data)
-                const customer = infoRes.data.customer
-                const teller = infoRes.data.teller
-                if(infoRes.data.senderRole == 'customer') {
-                    currentUserId.current = customer.userId
-                    setSender(customer)
-                    setReceiver(teller)
-                } else {
-                    currentUserId.current = teller.userId
-                    setSender(teller)
-                    setReceiver(customer)
-                }
-                setMessages(historyRes.data)
-                setSessionInfo(infoRes.data)
-            } catch (err) {
-                console.error('Error loading initial data:', err)
-            }
-        }
-        loadInitialData()
-
-        return () => {
-            if (!socketRef.current) {
-                console.error('Socket not connected yet')
-                return
-            }
-            socketRef.current.disconnect()
-        }
-    }, [sessionId])
-
-    const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        setInputValue(e.target.value)
-        if (textareaRef.current) {
-            textareaRef.current.style.height = 'inherit'
-            const sh = textareaRef.current.scrollHeight
-            textareaRef.current.style.height = `${Math.min(sh, 120)}px`
-        }
+        setMessages(historyRes.data);
+        setSessionInfo(infoRes.data);
+      } catch (err) {
+        console.error("Error loading initial data:", err);
+      }
     }
+    loadInitialData();
 
-    const handleSendMessage = () => {
-        if (!inputValue.trim() || !sessionId) return
-        const payload = { sessionId, content: inputValue }
-        if (!socketRef.current) {
-            console.error('Socket not connected yet')
-            return
-        }
-        socketRef.current.emit('sendMessage', payload)
-        setInputValue('')
+    return () => {
+      if (!socketRef.current) {
+        console.error("Socket not connected yet");
+        return;
+      }
+      socketRef.current.disconnect();
+    };
+  }, [sessionId]);
+
+  const handleTextareaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setInputValue(e.target.value);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "inherit";
+      const sh = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = `${Math.min(sh, 120)}px`;
     }
+  };
 
-    const handleEndSession = async () => {
-        try {
-            const res = await apiFetch(`/tellers/end-session/${sessionId}`, { method: 'PATCH' }, { skipAuth: false })
-            console.log('Session ended:', res)
-
-            if (!socketRef.current) {
-                console.error('Socket not connected yet')
-                return
-            }
-            socketRef.current.emit('endSession', { sessionId });
-            console.log('session end is clicked')
-
-            setIsEnded(true)
-        } catch (error) {
-            console.error(error)
-        }
+  const handleSendMessage = () => {
+    if (!inputValue.trim() || !sessionId) return;
+    const payload = { sessionId, content: inputValue };
+    if (!socketRef.current) {
+      console.error("Socket not connected yet");
+      return;
     }
+    socketRef.current.emit("sendMessage", payload);
+    setInputValue("");
+  };
 
+  const handleEndSession = async () => {
+    try {
+      const res = await apiFetch(
+        `/tellers/end-session/${sessionId}`,
+        { method: "PATCH" },
+        { skipAuth: false }
+      );
+      console.log("Session ended:", res);
 
-    const handleSharePrediction = () => {
-        const pa = sessionInfo?.customer.prediction
-        if (!pa || !socketRef.current) return
-        console.log('Sharing prediction:', pa)
-        const lines: string[] = []
-        if (pa.birthPlace) lines.push(`birth place: ${pa.birthPlace}`)
-        if (pa.birthTime) lines.push(`birth time: ${pa.birthTime}`)
-        if (pa.zodiacSign) lines.push(`zodiac sign: ${pa.zodiacSign}`)
-        if (pa.career) lines.push(`career: ${pa.career}`)
-        if (pa.relationship) lines.push(`relationship: ${pa.relationship}`)
+      if (!socketRef.current) {
+        console.error("Socket not connected yet");
+        return;
+      }
+      socketRef.current.emit("endSession", { sessionId });
+      console.log("session end is clicked");
 
-        const text = lines.join('\n')
-        socketRef.current.emit('sendMessage', { sessionId, content: text })
+      setIsEnded(true);
+    } catch (error) {
+      console.error(error);
     }
+  };
 
-    const timeLeft = useMemo(() => {
-        if (!sessionInfo) {
-            console.debug('timeLeft: sessionInfo is null')
-            return 'sessionInfo is null'
-        }
-        const { timeStart, timeEnd } = sessionInfo.session
-        if (!timeStart) {
-            console.debug('timeLeft: timeStart is null')
-            return 'timeStart is null'
-        }
-        if (!timeEnd) {
-            console.debug('timeLeft: timeEnd is null')
-            return 'timeEnd is null'
-        }
-        const result = formatDuration(timeStart, timeEnd)
-        if (!result) {
-            console.debug('timeLeft: formatDuration returned falsy')
-            return 'cannot calculate duration'
-        }
-        return result
-    }, [sessionInfo])
+  const handleSharePrediction = () => {
+    const pa = sessionInfo?.customer.prediction;
+    if (!pa || !socketRef.current) return;
+    console.log("Sharing prediction:", pa);
+    const lines: string[] = [];
+    if (pa.birthPlace) lines.push(`birth place: ${pa.birthPlace}`);
+    if (pa.birthTime) lines.push(`birth time: ${pa.birthTime}`);
+    if (pa.zodiacSign) lines.push(`zodiac sign: ${pa.zodiacSign}`);
+    if (pa.career) lines.push(`career: ${pa.career}`);
+    if (pa.relationship) lines.push(`relationship: ${pa.relationship}`);
+
+    const text = lines.join("\n");
+    socketRef.current.emit("sendMessage", { sessionId, content: text });
+  };
+
+  const timeLeft = useMemo(() => {
+    if (!sessionInfo) {
+      console.debug("timeLeft: sessionInfo is null");
+      return "sessionInfo is null1234";
+    }
+    const { timeStart, timeEnd } = sessionInfo.session;
+    if (!timeStart) {
+      console.debug("timeLeft: timeStart is null");
+      return "timeStart is null";
+    }
+    if (!timeEnd) {
+      console.debug("timeLeft: timeEnd is null");
+      return "timeEnd is null";
+    }
+    const result = formatDuration(timeStart, timeEnd);
+    if (!result) {
+      console.debug("timeLeft: formatDuration returned falsy");
+      return "cannot calculate duration";
+    }
+    return result;
+  }, [sessionInfo]);
 
     return (
         <div className="flex flex-col h-full font-inter relative">
@@ -313,41 +323,45 @@ export default function Chat() {
                 </div>
             </section>
 
-            {!isEnded ? (
-                <div className="w-full bg-[#565896] border-t border-gray-200 px-4 py-3">
-                    <div className="flex flex-row items-start gap-6">
-                        <button className="mt-2">
-                            <AiFillPicture className="fill-white" size={20} />
-                        </button>
-                        <textarea
-                            ref={textareaRef}
-                            value={inputValue}
-                            onChange={handleTextareaChange}
-                            placeholder="Type your message..."
-                            rows={1}
-                            className="flex-1 bg-[#F5F5F5] px-3 py-2 text-md focus:outline-none resize-none overflow-auto min-h-[16px]"
-                            style={{ lineHeight: '20px', maxHeight: '120px' }}
-                        />
-                        <button className="mt-2" onClick={handleSendMessage}>
-                            <IoSend className="fill-white" size={20} />
-                        </button>
-                    </div>
-                </div>
-            ) : (
-                <div className="w-full bg-[#565896] border-t border-gray-200 px-4 py-2">
-                    <div className="flex flex-col items-center justify-between gap-2">
-                        <span className="text-white text-lg">Session is Ended</span>
-                        {isCustomer && (
-                        <button
-                            onClick={() => router.push(`/review/${sessionId}`)}
-                            className="bg-white text-lg text-[#565896] px-4 py-1 rounded-lg hover:bg-opacity-90 transition-colors font-medium"
-                        >
-                            Write me a Review!
-                        </button>
-                        )}
-                    </div>
-                </div>
-            )}
+      {!isEnded ? (
+        <div className="w-full bg-[#565896] border-t border-gray-200 px-4 py-3">
+          <div className="flex flex-row items-start gap-6">
+            <button className="mt-2">
+              <AiFillPicture className="fill-white" size={20} />
+            </button>
+                      <textarea
+                          ref={textareaRef}
+                          value={inputValue}
+                          onChange={handleTextareaChange}
+                          placeholder="Type your message…"
+                          rows={1}
+                          className="
+    flex-1 bg-[#F5F5F5] px-3 py-2
+    text-base        /* 16px font */
+    focus:outline-none resize-none overflow-auto min-h-[16px]
+  "
+                          style={{ lineHeight: "20px", maxHeight: "120px" }}
+                      />
+            <button className="mt-2" onClick={handleSendMessage}>
+              <IoSend className="fill-white" size={20} />
+            </button>
+          </div>
         </div>
-    );
+      ) : (
+        <div className="w-full bg-[#565896] border-t border-gray-200 px-4 py-2">
+          <div className="flex flex-col items-center justify-between gap-2">
+            <span className="text-white text-lg">Session is Ended</span>
+            {isCustomer && (
+              <button
+                onClick={() => router.push(`/review/${sessionId}`)}
+                className="bg-white text-lg text-[#565896] px-4 py-1 rounded-lg hover:bg-opacity-90 transition-colors font-medium"
+              >
+                Write me a Review!
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }

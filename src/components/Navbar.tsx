@@ -9,7 +9,7 @@ const Navbar = ({ pathname }: { pathname: string }) => {
   const router = useRouter();
 
   return (
-    <nav className="absolute bottom-0 left-0 w-full h-[76px] bg-blue01 text-white flex items-center justify-center z-50">
+    <nav className="absolute bottom-0 left-0 w-full h-[66px] bg-blue01 text-white flex items-center justify-center z-50">
       <div className="flex flex-row items-center justify-center gap-24">
         <MdHomeFilled
           className="fill-current"

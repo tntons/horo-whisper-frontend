@@ -6,6 +6,7 @@ import PaySuccessBox from '@/app/payment/[paymentId]/PaySuccessBox';
 import PayFailBox from '@/app/payment/[paymentId]/PayFailBox';
 import WaitingBox from '@/app/payment/[paymentId]/WaitingBox';
 import { apiFetch } from '@/lib/api/fetch';
+import Image from 'next/image';
 interface PaymentInfo {
     data: {
         package: {
@@ -107,7 +108,7 @@ export default function Payment() {
                     ) : (
                         <>
                             <h2>Total: {paymentInfo?.data.package.price} Baht</h2>
-                            <img src="/promptPayQr.png" width={250} height={250} />
+                                <Image src="https://firebasestorage.googleapis.com/v0/b/horowhisperfile.firebasestorage.app/o/images%2FpromptPayQR.png?alt=media&token=a4f524ae-7588-4da4-8008-630274afe806" width={250} height={250} alt='QR' />
                             <CountdownTimer
                                 key={timerKey}
                                 onTimeout={() => setIsPaySuccess(false)}
