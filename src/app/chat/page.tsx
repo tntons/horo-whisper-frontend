@@ -10,6 +10,7 @@ import { apiFetch } from '@/lib/api/fetch'
 import { formatDate, formatDuration, formatTime } from '@/app/utils/date'
 import { useMemo } from 'react'
 import { Customer, Teller } from '@/app/utils/type'
+import { defaultProfilePic } from "@/app/utils/defaultProfilePic";
 
 interface Message { id: number; content: string; timestamp: string; isUser: boolean }
 let socket: Socket
@@ -226,7 +227,8 @@ export default function Chat() {
                     <div className="bg-greybackground w-9/12 h-full rounded-lg border border-greyborder">
                         <div className='flex flex-row items-center h-full p-3 gap-3'>
                             <div className="relative w-[50px] h-full bg-gray-300 rounded-lg flex-shrink-0 overflow-hidden">
-                                <Image src="/teller00.png" fill alt="Teller profile" className="object-cover" />
+                                <Image src={isCustomer? 'https://firebasestorage.googleapis.com/v0/b/horowhisperfile.firebasestorage.app/o/images%2FS__13353034_0.jpg?alt=media&token=460f88e2-0c9a-4833-8582-0e96608dd454' :defaultProfilePic }
+                                 fill alt="Teller profile" className="object-cover" />
                             </div>
                             <div className="flex flex-col flex-grow justify-center mx-3">
                                 <h2>{sender?.user.username}</h2>
@@ -281,7 +283,7 @@ export default function Chat() {
                                 {!message.isUser && (
                                     <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
                                         <Image
-                                            src="/teller00.png"
+                                            src={isCustomer? 'https://firebasestorage.googleapis.com/v0/b/horowhisperfile.firebasestorage.app/o/images%2FS__13353034_0.jpg?alt=media&token=460f88e2-0c9a-4833-8582-0e96608dd454' :defaultProfilePic }
                                             width={32}
                                             height={32}
                                             alt="Teller profile"
